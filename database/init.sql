@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS terrains;
 DROP TABLE IF EXISTS sports;
 DROP TABLE IF EXISTS time_slots;
 DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS site_events;
 DROP TABLE IF EXISTS contact_messages;
 DROP TABLE IF EXISTS gym_subscriptions;
@@ -93,6 +94,17 @@ CREATE TABLE admin_users (
 	email VARCHAR(150) NOT NULL UNIQUE,
 	password_hash VARCHAR(255) NOT NULL,
 	role ENUM('admin', 'manager', 'super_admin') NOT NULL DEFAULT 'admin',
+	status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
+	last_login_at TIMESTAMP NULL DEFAULT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE users (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	full_name VARCHAR(120) NOT NULL,
+	email VARCHAR(150) NOT NULL UNIQUE,
+	password_hash VARCHAR(255) NOT NULL,
 	status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
 	last_login_at TIMESTAMP NULL DEFAULT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
