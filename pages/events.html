@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements & Tournois – Urban Center Hessi Djerbi</title>
+    <meta name="description" content="Tournois de football, soirées padel, défis fitness et événements sportifs à Urban Center Hessi Djerbi.">
+    <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages.css">
+</head>
+<body>
+    <nav id="main-nav">
+        <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="nav-menu">
+            <li><a href="../Urban Center.html">Accueil</a></li>
+            <li><a href="about.html">À Propos</a></li>
+            <li><a href="installations.html">Installations</a></li>
+            <li><a href="events.html" class="nav-active">Événements</a></li>
+            <li><a href="gallery.html">Galerie</a></li>
+            <li><a href="news.html">Actualités</a></li>
+            <li><a href="../Urban Center.html#abonnements" class="bt nav-cta">Réserver</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Événements & Tournois</h1>
+        <p>Compétitions, soirées sportives et challenges pour tous les niveaux. Inscrivez-vous et vivez l'expérience Urban Center.</p>
+    </div>
+
+    <!-- Événements à venir -->
+    <section class="container">
+        <h2 class="section-title reveal">Prochains événements</h2>
+        <div class="events-grid">
+
+            <div class="event-card reveal">
+                <div class="event-header event-header--football">
+                    <span class="event-sport">⚽ Football</span>
+                    <span class="event-date">Chaque vendredi</span>
+                </div>
+                <div class="event-body">
+                    <h3>Tournoi Hebdomadaire 5v5</h3>
+                    <p>Compétition de football en salle pour équipes locales. 4 équipes par session, matchs aller-retour avec trophée mensuel pour les finalistes.</p>
+                    <ul class="event-details">
+                        <li>📅 Tous les vendredis à 19h00</li>
+                        <li>👥 4 équipes · 5 joueurs/équipe</li>
+                        <li>📍 Terrain de football Urban Center</li>
+                    </ul>
+                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
+                </div>
+            </div>
+
+            <div class="event-card reveal">
+                <div class="event-header event-header--padel">
+                    <span class="event-sport">🎾 Padel</span>
+                    <span class="event-date">Samedis</span>
+                </div>
+                <div class="event-body">
+                    <h3>Soirée Padel Open</h3>
+                    <p>Matchs et inscriptions pour joueurs de padel de tous niveaux. Format double élimination avec remise de prix pour les meilleurs joueurs.</p>
+                    <ul class="event-details">
+                        <li>📅 Chaque samedi à 18h00</li>
+                        <li>👥 Duos · 2v2</li>
+                        <li>📍 Court de Padel Urban Center</li>
+                    </ul>
+                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
+                </div>
+            </div>
+
+            <div class="event-card reveal">
+                <div class="event-header event-header--fitness">
+                    <span class="event-sport">�� Fitness</span>
+                    <span class="event-date">1er dimanche / mois</span>
+                </div>
+                <div class="event-body">
+                    <h3>Fitness Challenge Mensuel</h3>
+                    <p>Sessions d'entraînement collectif et défi sportif mensuel animé par notre coach. Classement et récompenses pour les plus assidus.</p>
+                    <ul class="event-details">
+                        <li>📅 1er dimanche du mois à 10h00</li>
+                        <li>👥 Ouvert à tous les abonnés</li>
+                        <li>📍 Salle de Fitness Urban Center</li>
+                    </ul>
+                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
+                </div>
+            </div>
+
+            <div class="event-card reveal">
+                <div class="event-header event-header--tennis">
+                    <span class="event-sport">🎾 Tennis</span>
+                    <span class="event-date">Mensuel</span>
+                </div>
+                <div class="event-body">
+                    <h3>Tournoi Tennis Amateur</h3>
+                    <p>Compétition amicale en simple pour les membres et visiteurs du complexe. Tirage au sort des tableaux et matchs en 2 sets.</p>
+                    <ul class="event-details">
+                        <li>📅 Dernier dimanche du mois</li>
+                        <li>👥 Individuel · Tous niveaux</li>
+                        <li>📍 Court de Tennis Urban Center</li>
+                    </ul>
+                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Formulaire d'inscription -->
+    <section id="inscription" class="container" style="padding-top:0">
+        <h2 class="section-title reveal">S'inscrire à un événement</h2>
+        <div class="event-form-wrap reveal">
+            <form class="event-form" action="../php/contact.php" method="POST">
+                <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ev-name">Nom complet *</label>
+                        <input type="text" id="ev-name" name="name" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ev-phone">Téléphone *</label>
+                        <input type="tel" id="ev-phone" name="phone" placeholder="Numéro de téléphone" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ev-event">Événement souhaité *</label>
+                    <select id="ev-event" name="message" required>
+                        <option value="">Choisir un événement</option>
+                        <option value="Tournoi Football 5v5">⚽ Tournoi Football 5v5</option>
+                        <option value="Soirée Padel Open">🎾 Soirée Padel Open</option>
+                        <option value="Fitness Challenge">💪 Fitness Challenge Mensuel</option>
+                        <option value="Tournoi Tennis">🎾 Tournoi Tennis Amateur</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ev-email">Email (pour confirmation)</label>
+                    <input type="email" id="ev-email" name="email" placeholder="votre@email.com">
+                </div>
+                <button type="submit" class="submit-btn">Envoyer ma demande d'inscription</button>
+                <p id="my-form-status" class="contact-form-response"></p>
+            </form>
+        </div>
+    </section>
+
+    <section class="container" style="padding-top:0">
+        <div class="cta-band reveal">
+            <h2>Vous voulez organiser un événement privé ?</h2>
+            <p>Anniversaires, team-building, tournois d'entreprise — Urban Center est disponible pour vos événements privés.</p>
+            <a href="../Urban Center.html#contactez-nous" class="bt">Nous contacter</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
+        <p style="margin-top:8px;opacity:0.7;font-size:0.9rem;">
+            <a href="../Urban Center.html" style="color:#ff7a18;text-decoration:none;">Accueil</a> &nbsp;·&nbsp;
+            <a href="installations.html" style="color:#ff7a18;text-decoration:none;">Installations</a> &nbsp;·&nbsp;
+            <a href="gallery.html" style="color:#ff7a18;text-decoration:none;">Galerie</a> &nbsp;·&nbsp;
+            <a href="../Urban Center.html#contactez-nous" style="color:#ff7a18;text-decoration:none;">Contact</a>
+        </p>
+    </footer>
+    <script src="../assets/js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie – Urban Center Hessi Djerbi</title>
+    <meta name="description" content="Galerie photos des terrains, installations et événements du complexe sportif Urban Center Hessi Djerbi.">
+    <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages.css">
+</head>
+<body>
+    <nav id="main-nav">
+        <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="nav-menu">
+            <li><a href="../Urban Center.html">Accueil</a></li>
+            <li><a href="about.html">À Propos</a></li>
+            <li><a href="installations.html">Installations</a></li>
+            <li><a href="events.html">Événements</a></li>
+            <li><a href="gallery.html" class="nav-active">Galerie</a></li>
+            <li><a href="news.html">Actualités</a></li>
+            <li><a href="../Urban Center.html#abonnements" class="bt nav-cta">Réserver</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Galerie photos</h1>
+        <p>Découvrez nos terrains, équipements et moments forts du complexe Urban Center Hessi Djerbi.</p>
+    </div>
+
+    <!-- Filtre catégories -->
+    <section class="container">
+        <div class="gallery-filters reveal">
+            <button class="filter-btn active" data-filter="all">Tout</button>
+            <button class="filter-btn" data-filter="football">⚽ Football</button>
+            <button class="filter-btn" data-filter="padel">🎾 Padel</button>
+            <button class="filter-btn" data-filter="tennis">🎾 Tennis</button>
+            <button class="filter-btn" data-filter="fitness">💪 Fitness</button>
+        </div>
+
+        <div class="gallery-grid gallery-grid--lg">
+
+            <div class="gallery-item reveal" data-category="football">
+                <img src="../assets/img/urban.jpg" alt="Terrain de football Urban Center" loading="lazy">
+                <div class="gallery-overlay"><span>⚽ Terrain Football</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="football">
+                <img src="../assets/img/8.jpg" alt="Crampons Urban Center" loading="lazy">
+                <div class="gallery-overlay"><span>⚽ Équipement Football</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="padel">
+                <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=80" alt="Court de padel" loading="lazy">
+                <div class="gallery-overlay"><span>🎾 Court Padel</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="padel">
+                <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=800&q=80" alt="Raquettes de padel" loading="lazy">
+                <div class="gallery-overlay"><span>🎾 Padel Équipement</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="tennis">
+                <img src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=800&q=80" alt="Court de tennis" loading="lazy">
+                <div class="gallery-overlay"><span>�� Court Tennis</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="tennis">
+                <img src="https://images.unsplash.com/photo-1595435742656-5272d0b3fa82?auto=format&fit=crop&w=800&q=80" alt="Raquette de tennis" loading="lazy">
+                <div class="gallery-overlay"><span>🎾 Tennis Équipement</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="fitness">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80" alt="Salle de fitness" loading="lazy">
+                <div class="gallery-overlay"><span>💪 Salle Fitness</span></div>
+            </div>
+
+            <div class="gallery-item reveal" data-category="fitness">
+                <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=800&q=80" alt="Équipements fitness" loading="lazy">
+                <div class="gallery-overlay"><span>💪 Équipements Fitness</span></div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="container" style="padding-top:0">
+        <div class="cta-band reveal">
+            <h2>Venez vivre l'expérience</h2>
+            <p>Réservez votre terrain ou abonnez-vous à la salle de fitness dès aujourd'hui.</p>
+            <a href="../Urban Center.html#abonnements" class="bt">Réserver maintenant</a>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu photo">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
+        <img id="lightbox-img" src="" alt="Aperçu">
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
+        <p style="margin-top:8px;opacity:0.7;font-size:0.9rem;">
+            <a href="../Urban Center.html" style="color:#ff7a18;text-decoration:none;">Accueil</a> &nbsp;·&nbsp;
+            <a href="installations.html" style="color:#ff7a18;text-decoration:none;">Installations</a> &nbsp;·&nbsp;
+            <a href="news.html" style="color:#ff7a18;text-decoration:none;">Actualités</a> &nbsp;·&nbsp;
+            <a href="../Urban Center.html#contactez-nous" style="color:#ff7a18;text-decoration:none;">Contact</a>
+        </p>
+    </footer>
+    <script src="../assets/js/app.js" defer></script>
+    <script>
+    // Gallery filter + lightbox for this page
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.gallery-item[data-category]');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const f = btn.dataset.filter;
+                items.forEach(item => {
+                    item.style.display = (f === 'all' || item.dataset.category === f) ? '' : 'none';
+                });
+            });
+        });
+        // Lightbox
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+        const lbClose = document.getElementById('lightbox-close');
+        document.querySelectorAll('.gallery-item img').forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => {
+                lbImg.src = img.src; lbImg.alt = img.alt;
+                lb.classList.add('open');
+            });
+        });
+        lbClose.addEventListener('click', () => lb.classList.remove('open'));
+        lb.addEventListener('click', e => { if(e.target === lb) lb.classList.remove('open'); });
+        window.addEventListener('keydown', e => { if(e.key==='Escape') lb.classList.remove('open'); });
+    });
+    </script>
+</body>
+</html>
