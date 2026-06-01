@@ -1,9 +1,4 @@
-/* =============================================
-   pages.css — styles partagés pages vitrines
-   Mobile-first
-   ============================================= */
-
-/* ── Nav brand (logo + nom) ── */
+/* Logo + nom dans la nav */
 .nav-brand {
     display: flex;
     align-items: center;
@@ -22,7 +17,7 @@
     margin-top: 4px;
 }
 
-/* ── Page hero (banner haut de page) ── */
+/* Hero des pages */
 .page-hero {
     background: linear-gradient(160deg, #0f172a 0%, #1e3c72 55%, rgba(255,122,24,0.5) 140%);
     color: white;
@@ -54,7 +49,7 @@
     line-height: 1.7;
 }
 
-/* ── CTA band ── */
+/* Bandeau d'appel */
 .cta-band {
     background: linear-gradient(135deg, #1e3c72, #0f172a);
     color: white;
@@ -67,7 +62,7 @@
 .cta-band p  { color: rgba(255,255,255,0.8); margin-bottom: 24px; line-height: 1.6; }
 .cta-band .bt { display: inline-block; }
 
-/* ── About page ── */
+/* About */
 .about-intro {
     display: grid;
     grid-template-columns: 1fr;
@@ -133,7 +128,7 @@
 .team-card span { color: #ff7a18; font-size: 0.85rem; font-weight: 700; }
 .team-card p { color: #64748b; font-size: 0.88rem; margin: 8px 16px 0; line-height: 1.55; }
 
-/* ── Installations page ── */
+/* Installations */
 .install-card {
     display: grid;
     grid-template-columns: 1fr;
@@ -196,7 +191,7 @@
 .tarif-label { color: #64748b; font-size: 0.9rem; }
 .tarif-price { color: #ff7a18; font-size: 1.2rem; font-weight: 800; margin-left: auto; }
 
-/* ── Events page ── */
+/* Événements */
 .events-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -276,7 +271,7 @@
     background: #fff;
 }
 
-/* ── News page ── */
+/* News */
 .news-featured {
     display: grid;
     grid-template-columns: 1fr;
@@ -338,14 +333,14 @@
 .news-tag--sport   { background: rgba(22,101,52,0.1);   color: #166534; }
 .news-tag--info    { background: rgba(15,23,42,0.06);   color: #374151; }
 
-/* Absolute badge inside news-img-wrap */
+/* Badge dans news */
 .news-img-wrap .news-tag {
     position: absolute;
     top: 10px; left: 10px;
     margin: 0;
 }
 
-/* ── Gallery page ── */
+/* Galerie */
 .gallery-filters {
     display: flex;
     gap: 10px;
@@ -400,7 +395,7 @@
 .gallery-grid--lg .gallery-item:hover img { transform: scale(1.06); }
 @media(min-width:768px){ .gallery-grid--lg .gallery-item img { height: 260px; } }
 
-/* Lightbox close button */
+/* Bouton lightbox */
 .lightbox-close {
     position: absolute;
     top: 16px; right: 20px;

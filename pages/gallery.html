@@ -32,7 +32,6 @@
         <p>Découvrez nos terrains, équipements et moments forts du complexe Urban Center Hessi Djerbi.</p>
     </div>
 
-    <!-- Filtre catégories -->
     <section class="container">
         <div class="gallery-filters reveal">
             <button class="filter-btn active" data-filter="all">Tout</button>
@@ -95,7 +94,6 @@
         </div>
     </section>
 
-    <!-- Lightbox -->
     <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu photo">
         <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">✕</button>
         <img id="lightbox-img" src="" alt="Aperçu">
@@ -112,7 +110,7 @@
     </footer>
     <script src="../assets/js/app.js" defer></script>
     <script>
-    // Gallery filter + lightbox for this page
+    // Filtre + lightbox
     document.addEventListener('DOMContentLoaded', () => {
         const filterBtns = document.querySelectorAll('.filter-btn');
         const items = document.querySelectorAll('.gallery-item[data-category]');
@@ -126,7 +124,6 @@
                 });
             });
         });
-        // Lightbox
         const lb = document.getElementById('lightbox');
         const lbImg = document.getElementById('lightbox-img');
         const lbClose = document.getElementById('lightbox-close');

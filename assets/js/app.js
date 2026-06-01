@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ── Hamburger menu ──────────────────────────────────────────
   const navToggle = document.getElementById('nav-toggle');
   const navMenu = document.getElementById('nav-menu');
   if (navToggle && navMenu) {
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
       navToggle.classList.toggle('open', isOpen);
       navToggle.setAttribute('aria-expanded', String(isOpen));
     });
-    // Close menu when a link is clicked (mobile UX)
     navMenu.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('nav-open');
@@ -17,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-  // ── Subscription form mobile toggle ─────────────────────────
   const subToggle = document.getElementById('sub-toggle');
   const subWrapper = document.getElementById('sub-wrapper');
   if (subToggle && subWrapper) {
@@ -225,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
   );
   sections.forEach((section) => sectionObserver.observe(section));
 
-  // Lightbox gallery
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
   lightbox.innerHTML = '<img alt="Aperçu" />';
@@ -247,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.key === 'Escape') closeLightbox();
   });
 
-  // Back to top button
   const topButton = document.createElement('button');
   topButton.className = 'topbar';
   topButton.type = 'button';

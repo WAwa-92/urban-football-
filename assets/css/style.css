@@ -149,7 +149,7 @@ nav {
     flex-wrap: wrap;
 }
 
-/* Hamburger button — visible only on mobile */
+/* Bouton menu mobile */
 .nav-toggle {
     display: flex;
     flex-direction: column;
@@ -177,7 +177,7 @@ nav {
     transition: transform 0.3s ease, opacity 0.3s ease;
     transform-origin: center;
 }
-/* Animated X when open */
+/* Animation X */
 .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .nav-toggle.open span:nth-child(2) { opacity: 0; }
 .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -254,7 +254,7 @@ nav a.nav-action-secondary:hover {
     background: rgba(255,255,255,0.14);
 }
 
-/* Desktop nav — inline from 900px */
+/* Nav desktop */
 @media (min-width: 900px) {
     .nav-toggle { display: none; }
     nav ul {
@@ -410,7 +410,7 @@ nav a.nav-action-secondary:hover {
     padding-top: 10px;
 }
 
-/* spotlight-card: mobile-first defined below (line ~575) */
+/* Spotlight */
 
 .spotlight-tag {
     display: inline-block;
@@ -510,7 +510,7 @@ nav a.nav-action-secondary:hover {
     flex-wrap: wrap;
     margin-top: 20px;
 }
-/* Mobile: hide subscription form behind toggle */
+/* Formulaire abonnement mobile */
 .form-mobile-toggle {
     display: flex;
     align-items: center;
@@ -547,21 +547,21 @@ nav a.nav-action-secondary:hover {
     .form-mobile-toggle { display: none; }
     .form-subscription-wrapper .contact-form { display: block !important; }
 }
-/* Hide optional comment textarea on mobile */
+/* Cache commentaire mobile */
 .form-group--optional {
     display: none;
 }
 @media (min-width: 768px) {
     .form-group--optional { display: block; }
 }
-/* Hide last 2 gallery items on homepage mobile */
+/* Cache 2 images mobile */
 .gallery-item--hide-mobile {
     display: none;
 }
 @media (min-width: 640px) {
     .gallery-item--hide-mobile { display: block; }
 }
-/* Homepage gallery: 2 cols on mobile */
+/* Galerie accueil mobile */
 .gallery-section .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -669,7 +669,7 @@ footer {
     font-size: 1.1em;
     margin-top: 10px;
 }
-/* Spotlight card: mobile = stacked, desktop = 2-col */
+/* Spotlight card */
 .spotlight-card {
     display: grid;
     grid-template-columns: 1fr;
@@ -690,7 +690,7 @@ footer {
     .spotlight-media img { height: 360px; }
 }
 
-/* Hero-actions responsive handled above */
+/* Hero-actions responsive */
 @media (min-width: 480px) {
     .hero-actions { flex-direction: row; justify-content: center; }
 }
@@ -760,7 +760,7 @@ footer {
     font-size: 0.9em;
 }
 
-/* ===== Modern UI refresh ===== */
+/* Modern UI */
 :root {
     --bg: #f4f7fb;
     --surface: rgba(255, 255, 255, 0.86);
@@ -1121,7 +1121,7 @@ textarea::placeholder {
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
 }
 
-/* Mobile defaults (already base) — desktop enhancements */
+/* Ajustements desktop */
 .hero {
     background-attachment: scroll;
 }
@@ -1214,7 +1214,7 @@ textarea::placeholder {
     }
 }
 
-/* Contact form fields — full width, no margin-left */
+/* Champs contact */
 .contact-form-txt,
 .contact-form-email,
 .contact-form-phone,
@@ -1332,7 +1332,7 @@ textarea::placeholder {
     margin-bottom: 40px;
 }
 
-/* gallery-grid already defined above with mobile-first breakpoints */
+/* gallery-grid plus haut */
 
 .container-image {
     display: grid;
@@ -1362,7 +1362,7 @@ textarea::placeholder {
     scroll-margin-top: 80px;
 }
 
-/* ===== Final UI consistency overrides ===== */
+/* Ajustements UI */
 nav {
     gap: 10px;
 }
