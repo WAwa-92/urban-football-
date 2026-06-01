@@ -17,12 +17,11 @@
         </button>
         <ul id="nav-menu">
             <li><a href="../Urban Center.html">Accueil</a></li>
-            <li><a href="about.html">À Propos</a></li>
             <li><a href="installations.html">Installations</a></li>
             <li><a href="events.html" class="nav-active">Événements</a></li>
             <li><a href="gallery.html">Galerie</a></li>
-            <li><a href="news.html">Actualités</a></li>
-            <li><a href="../Urban Center.html#abonnements" class="bt nav-cta">Réserver</a></li>
+            <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
+            <li><a href="reservation.html" class="bt nav-cta">Réserver</a></li>
         </ul>
     </nav>
 
@@ -34,76 +33,13 @@
     <!-- Événements à venir -->
     <section class="container">
         <h2 class="section-title reveal">Prochains événements</h2>
-        <div class="events-grid">
-
+        <div class="events-grid" id="events-grid">
             <div class="event-card reveal">
-                <div class="event-header event-header--football">
-                    <span class="event-sport">⚽ Football</span>
-                    <span class="event-date">Chaque vendredi</span>
-                </div>
                 <div class="event-body">
-                    <h3>Tournoi Hebdomadaire 5v5</h3>
-                    <p>Compétition de football en salle pour équipes locales. 4 équipes par session, matchs aller-retour avec trophée mensuel pour les finalistes.</p>
-                    <ul class="event-details">
-                        <li>📅 Tous les vendredis à 19h00</li>
-                        <li>👥 4 équipes · 5 joueurs/équipe</li>
-                        <li>📍 Terrain de football Urban Center</li>
-                    </ul>
-                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
+                    <h3>Chargement des événements...</h3>
+                    <p>Les événements publiés dans l'espace admin vont s'afficher ici automatiquement.</p>
                 </div>
             </div>
-
-            <div class="event-card reveal">
-                <div class="event-header event-header--padel">
-                    <span class="event-sport">🎾 Padel</span>
-                    <span class="event-date">Samedis</span>
-                </div>
-                <div class="event-body">
-                    <h3>Soirée Padel Open</h3>
-                    <p>Matchs et inscriptions pour joueurs de padel de tous niveaux. Format double élimination avec remise de prix pour les meilleurs joueurs.</p>
-                    <ul class="event-details">
-                        <li>📅 Chaque samedi à 18h00</li>
-                        <li>👥 Duos · 2v2</li>
-                        <li>📍 Court de Padel Urban Center</li>
-                    </ul>
-                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
-                </div>
-            </div>
-
-            <div class="event-card reveal">
-                <div class="event-header event-header--fitness">
-                    <span class="event-sport">�� Fitness</span>
-                    <span class="event-date">1er dimanche / mois</span>
-                </div>
-                <div class="event-body">
-                    <h3>Fitness Challenge Mensuel</h3>
-                    <p>Sessions d'entraînement collectif et défi sportif mensuel animé par notre coach. Classement et récompenses pour les plus assidus.</p>
-                    <ul class="event-details">
-                        <li>📅 1er dimanche du mois à 10h00</li>
-                        <li>👥 Ouvert à tous les abonnés</li>
-                        <li>📍 Salle de Fitness Urban Center</li>
-                    </ul>
-                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
-                </div>
-            </div>
-
-            <div class="event-card reveal">
-                <div class="event-header event-header--tennis">
-                    <span class="event-sport">🎾 Tennis</span>
-                    <span class="event-date">Mensuel</span>
-                </div>
-                <div class="event-body">
-                    <h3>Tournoi Tennis Amateur</h3>
-                    <p>Compétition amicale en simple pour les membres et visiteurs du complexe. Tirage au sort des tableaux et matchs en 2 sets.</p>
-                    <ul class="event-details">
-                        <li>📅 Dernier dimanche du mois</li>
-                        <li>👥 Individuel · Tous niveaux</li>
-                        <li>📍 Court de Tennis Urban Center</li>
-                    </ul>
-                    <a href="#inscription" class="bt event-btn">S'inscrire</a>
-                </div>
-            </div>
-
         </div>
     </section>
 
@@ -126,11 +62,7 @@
                 <div class="form-group">
                     <label for="ev-event">Événement souhaité *</label>
                     <select id="ev-event" name="message" required>
-                        <option value="">Choisir un événement</option>
-                        <option value="Tournoi Football 5v5">⚽ Tournoi Football 5v5</option>
-                        <option value="Soirée Padel Open">🎾 Soirée Padel Open</option>
-                        <option value="Fitness Challenge">💪 Fitness Challenge Mensuel</option>
-                        <option value="Tournoi Tennis">🎾 Tournoi Tennis Amateur</option>
+                        <option value="">Chargement des événements...</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -161,5 +93,106 @@
         </p>
     </footer>
     <script src="../assets/js/app.js" defer></script>
+    <script>
+        (() => {
+            const defaultEvents = [
+                {
+                    title: 'Tournoi Hebdomadaire 5v5',
+                    sport_type: 'football',
+                    date_label: 'Chaque vendredi',
+                    description: 'Compétition de football en salle pour équipes locales avec trophée mensuel pour les finalistes.',
+                    detail_1: '📅 Tous les vendredis à 19h00',
+                    detail_2: '👥 4 équipes · 5 joueurs/équipe',
+                    detail_3: '📍 Terrain de football Urban Center',
+                    cta_label: "S'inscrire"
+                },
+                {
+                    title: 'Soirée Padel Open',
+                    sport_type: 'padel',
+                    date_label: 'Samedis',
+                    description: 'Matchs et inscriptions pour joueurs de padel de tous niveaux en format double élimination.',
+                    detail_1: '📅 Chaque samedi à 18h00',
+                    detail_2: '👥 Duos · 2v2',
+                    detail_3: '📍 Court de Padel Urban Center',
+                    cta_label: "S'inscrire"
+                },
+                {
+                    title: 'Fitness Challenge Mensuel',
+                    sport_type: 'fitness',
+                    date_label: '1er dimanche / mois',
+                    description: 'Sessions d\'entraînement collectif et défi sportif mensuel animé par notre coach.',
+                    detail_1: '📅 1er dimanche du mois à 10h00',
+                    detail_2: '👥 Ouvert à tous les abonnés',
+                    detail_3: '📍 Salle de Fitness Urban Center',
+                    cta_label: "S'inscrire"
+                },
+                {
+                    title: 'Tournoi Tennis Amateur',
+                    sport_type: 'tennis',
+                    date_label: 'Mensuel',
+                    description: 'Compétition amicale en simple pour les membres et visiteurs du complexe avec tirage au sort.',
+                    detail_1: '📅 Dernier dimanche du mois',
+                    detail_2: '👥 Individuel · Tous niveaux',
+                    detail_3: '📍 Court de Tennis Urban Center',
+                    cta_label: "S'inscrire"
+                }
+            ];
+
+            const sportMap = {
+                football: { label: '⚽ Football', className: 'event-header--football' },
+                padel: { label: '🏓 Padel', className: 'event-header--padel' },
+                fitness: { label: '💪 Fitness', className: 'event-header--fitness' },
+                tennis: { label: '🎾 Tennis', className: 'event-header--tennis' },
+                multi: { label: '🏟 Multi-sport', className: 'event-header--football' },
+                other: { label: '📣 Annonce', className: 'event-header--tennis' }
+            };
+
+            const grid = document.getElementById('events-grid');
+            const select = document.getElementById('ev-event');
+
+            const escapeHtml = (value) => String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+
+            const render = (events) => {
+                if (!Array.isArray(events) || events.length === 0) {
+                    events = defaultEvents;
+                }
+
+                grid.innerHTML = events.map((event) => {
+                    const sport = sportMap[event.sport_type] || sportMap.other;
+                    const details = [event.detail_1, event.detail_2, event.detail_3].filter(Boolean);
+                    return `
+                        <div class="event-card reveal is-visible">
+                            <div class="event-header ${sport.className}">
+                                <span class="event-sport">${escapeHtml(sport.label)}</span>
+                                <span class="event-date">${escapeHtml(event.date_label)}</span>
+                            </div>
+                            <div class="event-body">
+                                <h3>${escapeHtml(event.title)}</h3>
+                                <p>${escapeHtml(event.description)}</p>
+                                <ul class="event-details">
+                                    ${details.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('')}
+                                </ul>
+                                <a href="#inscription" class="bt event-btn">${escapeHtml(event.cta_label || "S'inscrire")}</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                select.innerHTML = '<option value="">Choisir un événement</option>' + events.map((event) => (
+                    `<option value="${escapeHtml(event.title)}">${escapeHtml(event.title)}</option>`
+                )).join('');
+            };
+
+            fetch('../php/public_events.php')
+                .then((response) => response.ok ? response.json() : Promise.reject())
+                .then((events) => render(events))
+                .catch(() => render(defaultEvents));
+        })();
+    </script>
 </body>
 </html>

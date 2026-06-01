@@ -5,6 +5,8 @@ session_start();
 
 function ensureDefaultAdmin(PDO $pdo): void
 {
+    ensureSiteEventsTable($pdo);
+
     $count = (int) $pdo->query('SELECT COUNT(*) FROM admin_users')->fetchColumn();
 
     if ($count === 0) {

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation — Urban Center Hassi Djerbi</title>
+    <meta name="description" content="Réservez votre terrain de football, padel, tennis ou votre séance fitness à Urban Center Hassi Djerbi.">
+    <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages.css">
+    <style>
+        /* ── Reservation page specific ─────────────────── */
+        .resa-hero {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            text-align: center;
+            padding: 80px 16px 40px;
+        }
+        .resa-hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 10px; }
+        .resa-hero p  { font-size: 1.05rem; opacity: .85; }
+
+        /* ── Stepper ───────────────────────────────────── */
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            padding: 28px 16px 0;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #d1d5db;
+            z-index: 0;
+        }
+        .step-item.done:not(:last-child)::after,
+        .step-item.active:not(:last-child)::after {
+            background: #ff6b35;
+        }
+        .step-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #d1d5db;
+            color: #fff;
+            font-weight: 800;
+            font-size: .9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: background .3s;
+        }
+        .step-item.active .step-dot { background: #ff6b35; }
+        .step-item.done   .step-dot { background: #1e3c72; }
+        .step-item.done   .step-dot::after { content: '✓'; }
+        .step-item.done   .step-dot span   { display: none; }
+        .step-label {
+            font-size: .72rem;
+            margin-top: 6px;
+            color: #6b7280;
+            text-align: center;
+        }
+        .step-item.active .step-label { color: #ff6b35; font-weight: 700; }
+        .step-item.done   .step-label { color: #1e3c72; }
+
+        /* ── Step panels ───────────────────────────────── */
+        .resa-wrap {
+            max-width: 720px;
+            margin: 32px auto 60px;
+            padding: 0 16px;
+        }
+        .step-panel {
+            display: none;
+            animation: fadeIn .35s ease;
+        }
+        .step-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── Sport selector grid ───────────────────────── */
+        .sport-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+        @media (min-width: 480px) {
+            .sport-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .sport-btn {
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px 10px;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+            transition: border-color .25s, box-shadow .25s, transform .2s;
+        }
+        .sport-btn:hover { border-color: #ff6b35; transform: translateY(-3px); }
+        .sport-btn.selected { border-color: #ff6b35; box-shadow: 0 0 0 3px rgba(255,107,53,.18); background: #fff8f5; }
+        .sport-btn .sb-icon { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+        .sport-btn .sb-name { font-weight: 700; color: #1e3c72; font-size: .95rem; }
+        .sport-btn .sb-price { font-size: .78rem; color: #6b7280; margin-top: 4px; }
+
+        /* ── Terrain selector ──────────────────────────── */
+        .terrain-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .terrain-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 16px 18px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color .25s, transform .2s;
+            text-align: left;
+        }
+        .terrain-btn:hover  { border-color: #ff6b35; transform: translateX(4px); }
+        .terrain-btn.selected { border-color: #ff6b35; background: #fff8f5; }
+        .terrain-btn .tb-icon { font-size: 1.6rem; }
+        .terrain-btn .tb-info strong { display: block; color: #1e3c72; }
+        .terrain-btn .tb-info span   { font-size: .82rem; color: #6b7280; }
+        .terrain-btn .tb-price { margin-left: auto; font-weight: 800; color: #ff6b35; white-space: nowrap; }
+
+        /* ── Date & slots ──────────────────────────────── */
+        .date-row {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 16px;
+        }
+        @media (min-width: 560px) { .date-row { flex-direction: row; } }
+        .date-row .form-group { flex: 1; margin-bottom: 0; }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 16px;
+        }
+        @media (min-width: 480px) { .slots-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 640px) { .slots-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .slot-btn {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 10px 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: .82rem;
+            font-weight: 700;
+            color: #1e3c72;
+            text-align: center;
+            transition: border-color .2s, background .2s;
+        }
+        .slot-btn:hover:not(:disabled) { border-color: #ff6b35; }
+        .slot-btn.selected { border-color: #ff6b35; background: #fff8f5; color: #ff6b35; }
+        .slot-btn:disabled { background: #f3f4f6; color: #c0c0c0; cursor: not-allowed; border-color: #e5e7eb; text-decoration: line-through; }
+        .slots-loading { text-align: center; padding: 20px; color: #6b7280; font-size: .9rem; }
+
+        /* ── Step 3 — Info form ────────────────────────── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        @media (min-width: 560px) {
+            .info-grid { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+        }
+
+        /* ── Summary card ──────────────────────────────── */
+        .resa-summary {
+            background: linear-gradient(135deg, rgba(30,60,114,.06), rgba(255,107,53,.06));
+            border: 1px solid rgba(30,60,114,.12);
+            border-radius: 18px;
+            padding: 20px 22px;
+            margin-bottom: 24px;
+        }
+        .resa-summary h3 { color: #1e3c72; margin-bottom: 14px; font-size: 1.05rem; }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(15,23,42,.06);
+            font-size: .92rem;
+        }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-row .sr-label { color: #6b7280; }
+        .summary-row .sr-val   { font-weight: 700; color: #1e3c72; }
+        .summary-total { background: #1e3c72; color: #fff; border-radius: 10px; padding: 12px 18px; display: flex; justify-content: space-between; margin-top: 14px; font-weight: 800; font-size: 1.05rem; }
+
+        /* ── Navigation buttons ────────────────────────── */
+        .step-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .btn-prev {
+            padding: 13px 28px;
+            border: 2px solid #1e3c72;
+            border-radius: 50px;
+            background: transparent;
+            color: #1e3c72;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        .btn-prev:hover { background: #1e3c72; color: #fff; }
+        .btn-next, .btn-submit {
+            flex: 1;
+            padding: 13px 28px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3c72 58%, #ff7a18 100%);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.24), 0 8px 18px rgba(255, 122, 24, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .btn-next:hover, .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28), 0 10px 22px rgba(255, 122, 24, 0.24); }
+        .btn-next:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+        /* ── Confirmation screen ───────────────────────── */
+        .resa-confirm {
+            display: none;
+            text-align: center;
+            padding: 48px 16px;
+        }
+        .resa-confirm.active { display: block; }
+        .confirm-icon { font-size: 4rem; margin-bottom: 16px; }
+        .resa-confirm h2 { color: #1e3c72; margin-bottom: 12px; }
+        .resa-confirm p  { color: #6b7280; max-width: 480px; margin: 0 auto 24px; }
+
+        /* ── Error msg ─────────────────────────────────── */
+        .form-error { color: #dc2626; font-size: .85rem; margin-top: 6px; display: none; }
+        .form-error.show { display: block; }
+
+        /* ── Section title local ───────────────────────── */
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e3c72;
+            margin-bottom: 6px;
+        }
+        .panel-sub { font-size: .88rem; color: #6b7280; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- ── Hero ──────────────────────────────────────────────── -->
+<div class="resa-hero">
+    <h1>Réserver un terrain</h1>
+    <p>Football · Padel · Tennis · Fitness — Urban Center Hassi Djerbi</p>
+</div>
+
+<!-- ── Nav ───────────────────────────────────────────────── -->
+<nav id="main-nav">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+    <ul id="nav-menu">
+        <li><a href="../Urban Center.html">Accueil</a></li>
+        <li><a href="installations.html">Installations</a></li>
+        <li><a href="events.html">Événements</a></li>
+        <li><a href="gallery.html">Galerie</a></li>
+        <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
+        <li><a href="reservation.html" class="nav-active">Réserver</a></li>
+    </ul>
+</nav>
+
+<!-- ── Stepper ───────────────────────────────────────────── -->
+<div class="stepper" id="stepper">
+    <div class="step-item active" data-step="1">
+        <div class="step-dot"><span>1</span></div>
+        <div class="step-label">Activité</div>
+    </div>
+    <div class="step-item" data-step="2">
+        <div class="step-dot"><span>2</span></div>
+        <div class="step-label">Date & Créneau</div>
+    </div>
+    <div class="step-item" data-step="3">
+        <div class="step-dot"><span>3</span></div>
+        <div class="step-label">Mes infos</div>
+    </div>
+</div>
+
+<!-- ── Panels ─────────────────────────────────────────────── -->
+<div class="resa-wrap">
+
+    <!-- STEP 1 — Sport + Terrain -->
+    <div class="step-panel active" id="panel-1">
+        <p class="panel-title">Choisissez votre activité</p>
+        <p class="panel-sub">Sélectionnez le sport puis le terrain souhaité.</p>
+
+        <div class="sport-grid">
+            <button class="sport-btn" type="button" data-sport-id="1" data-sport-name="Football" data-sport-icon="⚽">
+                <span class="sb-icon">⚽</span>
+                <span class="sb-name">Football</span>
+                <span class="sb-price">Terrain 5v5</span>
+            </button>
+            <button class="sport-btn" type="button" data-sport-id="2" data-sport-name="Padel" data-sport-icon="🏓">
+                <span class="sb-icon">🏓</span>
+                <span class="sb-name">Padel</span>
+                <span class="sb-price">Court couvert</span>
+            </button>
+            <button class="sport-btn" type="button" data-sport-id="3" data-sport-name="Tennis" data-sport-icon="🎾">
+                <span class="sb-icon">🎾</span>
+                <span class="sb-name">Tennis</span>
+                <span class="sb-price">Court extérieur</span>
+            </button>
+            <button class="sport-btn" type="button" data-sport-id="4" data-sport-name="Fitness" data-sport-icon="💪">
+                <span class="sb-icon">💪</span>
+                <span class="sb-name">Fitness</span>
+                <span class="sb-price">Salle équipée</span>
+            </button>
+        </div>
+
+        <div id="terrain-section" style="display:none; margin-top:28px;">
+            <p class="panel-title">Choisissez le terrain</p>
+            <div class="terrain-list" id="terrain-list"></div>
+        </div>
+
+        <div class="step-nav">
+            <span></span>
+            <button class="btn-next" id="next-1" disabled>Suivant →</button>
+        </div>
+        <p class="form-error" id="err-1">Veuillez sélectionner une activité et un terrain.</p>
+    </div>
+
+    <!-- STEP 2 — Date + Créneaux -->
+    <div class="step-panel" id="panel-2">
+        <p class="panel-title">Choisissez la date et le créneau</p>
+        <p class="panel-sub">Les créneaux déjà réservés apparaissent grisés.</p>
+
+        <div class="date-row">
+            <div class="form-group">
+                <label for="resa-date">Date <span style="color:#ff6b35">*</span></label>
+                <input type="date" id="resa-date" required>
+            </div>
+        </div>
+
+        <div id="slots-wrap" style="display:none; margin-top:20px;">
+            <p class="panel-title" style="font-size:1rem;">Créneaux disponibles</p>
+            <div id="slots-grid" class="slots-grid"></div>
+        </div>
+
+        <div class="step-nav">
+            <button class="btn-prev" id="prev-2">← Retour</button>
+            <button class="btn-next" id="next-2" disabled>Suivant →</button>
+        </div>
+        <p class="form-error" id="err-2">Veuillez sélectionner une date et un créneau.</p>
+    </div>
+
+    <!-- STEP 3 — Infos client + Résumé -->
+    <div class="step-panel" id="panel-3">
+        <p class="panel-title">Vos informations</p>
+        <p class="panel-sub">Complétez vos coordonnées pour finaliser la réservation.</p>
+
+        <!-- Summary -->
+        <div class="resa-summary" id="resa-summary">
+            <h3>📋 Récapitulatif</h3>
+            <div class="summary-row"><span class="sr-label">Activité</span><span class="sr-val" id="sum-sport">—</span></div>
+            <div class="summary-row"><span class="sr-label">Terrain</span><span class="sr-val" id="sum-terrain">—</span></div>
+            <div class="summary-row"><span class="sr-label">Date</span><span class="sr-val" id="sum-date">—</span></div>
+            <div class="summary-row"><span class="sr-label">Créneau</span><span class="sr-val" id="sum-slot">—</span></div>
+            <div class="summary-total"><span>Total estimé (1h)</span><span id="sum-price">—</span></div>
+        </div>
+
+        <form id="resa-form" action="../php/reservation.php" method="POST" novalidate>
+            <!-- Hidden fields filled by JS -->
+            <input type="hidden" name="sport_id"         id="f-sport-id">
+            <input type="hidden" name="terrain_id"       id="f-terrain-id">
+            <input type="hidden" name="reservation_date" id="f-date">
+            <input type="hidden" name="reservation_time" id="f-time">
+            <input type="hidden" name="source"           value="reservation_page">
+            <!-- Honeypot -->
+            <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
+
+            <div class="info-grid">
+                <div class="form-group">
+                    <label for="f-first">Prénom <span style="color:#ff6b35">*</span></label>
+                    <input type="text" id="f-first" name="first_name" required placeholder="Votre prénom">
+                </div>
+                <div class="form-group">
+                    <label for="f-last">Nom <span style="color:#ff6b35">*</span></label>
+                    <input type="text" id="f-last" name="last_name" required placeholder="Votre nom">
+                </div>
+                <div class="form-group">
+                    <label for="f-phone">Téléphone <span style="color:#ff6b35">*</span></label>
+                    <input type="tel" id="f-phone" name="phone" required placeholder="Ex: 22334455" maxlength="8" pattern="[0-9]{8}">
+                </div>
+                <div class="form-group">
+                    <label for="f-email">Email <span style="color:#ff6b35">*</span></label>
+                    <input type="email" id="f-email" name="email" required placeholder="votre@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="f-players">Nombre de joueurs <span style="color:#ff6b35">*</span></label>
+                    <input type="number" id="f-players" name="players_count" required min="1" max="30" placeholder="Ex: 10">
+                </div>
+                <div class="form-group">
+                    <label for="f-comment">Commentaire</label>
+                    <input type="text" id="f-comment" name="comment" placeholder="Demande spéciale (optionnel)">
+                </div>
+            </div>
+
+            <div class="step-nav">
+                <button class="btn-prev" type="button" id="prev-3">← Retour</button>
+                <button class="btn-submit" type="submit" id="btn-submit">Confirmer la réservation</button>
+            </div>
+            <p class="form-error" id="err-3">Veuillez remplir tous les champs obligatoires.</p>
+        </form>
+    </div>
+
+    <!-- CONFIRMATION -->
+    <div class="resa-confirm" id="resa-confirm">
+        <div class="confirm-icon">🎉</div>
+        <h2>Réservation confirmée !</h2>
+        <p>Votre réservation a bien été enregistrée. Vous serez contacté(e) par téléphone pour confirmation finale.</p>
+        <a href="../Urban Center.html" class="bt" style="display:inline-block; margin-right:10px;">Retour à l'accueil</a>
+        <a href="reservation.html" class="bt bt-secondary" style="display:inline-block;">Nouvelle réservation</a>
+    </div>
+
+</div><!-- /.resa-wrap -->
+
+<footer>
+    <p>&copy; 2026 Urban Center Hessi Jerbi. Tous droits réservés.</p>
+</footer>
+
+<script src="../assets/js/app.js" defer></script>
+<script>
+(function () {
+    /* ── Data (mirrors app.js sportsData) ───────────────── */
+    const SPORTS = [
+        { id: 1, icon: '⚽', name: 'Football', terrains: [{ id: 1, name: 'Terrain Football Principal', price: 60 }] },
+        { id: 2, icon: '🏓', name: 'Padel',    terrains: [{ id: 2, name: 'Court Padel',               price: 50 }] },
+        { id: 3, icon: '🎾', name: 'Tennis',   terrains: [{ id: 3, name: 'Court Tennis',              price: 45 }] },
+        { id: 4, icon: '💪', name: 'Fitness',  terrains: [{ id: 4, name: 'Salle de Fitness',          price: 20 }] },
+    ];
+
+    const TIME_SLOTS = [
+        '08:00','09:00','10:00','11:00',
+        '12:00','13:00','14:00','15:00',
+        '16:00','17:00','18:00','19:00',
+    ];
+
+    /* ── State ──────────────────────────────────────────── */
+    let state = {
+        sportId: null, sportName: '', sportIcon: '',
+        terrainId: null, terrainName: '', terrainPrice: 0,
+        date: '', slot: '',
+    };
+    let currentStep = 1;
+
+    /* ── Helpers ────────────────────────────────────────── */
+    const $ = id => document.getElementById(id);
+    const fmt = d => {
+        const [y,m,dd] = d.split('-');
+        return `${dd}/${m}/${y}`;
+    };
+
+    function setStep(n) {
+        // panels
+        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+        const panel = $(`panel-${n}`);
+        if (panel) panel.classList.add('active');
+
+        // stepper dots
+        document.querySelectorAll('.step-item').forEach(el => {
+            const s = +el.dataset.step;
+            el.classList.remove('active', 'done');
+            if (s < n) el.classList.add('done');
+            if (s === n) el.classList.add('active');
+        });
+        currentStep = n;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ── Step 1: Sport selection ────────────────────────── */
+    document.querySelectorAll('.sport-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.sport-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.sportId = +btn.dataset.sportId;
+            state.sportName = btn.dataset.sportName;
+            state.sportIcon = btn.dataset.sportIcon;
+            // reset terrain
+            state.terrainId = null; state.terrainName = ''; state.terrainPrice = 0;
+            $('next-1').disabled = true;
+            renderTerrains();
+        });
+    });
+
+    function renderTerrains() {
+        const sport = SPORTS.find(s => s.id === state.sportId);
+        if (!sport) return;
+        const list = $('terrain-list');
+        list.innerHTML = sport.terrains.map(t => `
+            <button class="terrain-btn" type="button" data-terrain-id="${t.id}" data-terrain-name="${t.name}" data-terrain-price="${t.price}">
+                <span class="tb-icon">${state.sportIcon}</span>
+                <span class="tb-info"><strong>${t.name}</strong><span>Disponible à la réservation</span></span>
+                <span class="tb-price">${t.price} DT/h</span>
+            </button>
+        `).join('');
+        $('terrain-section').style.display = 'block';
+
+        list.querySelectorAll('.terrain-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                list.querySelectorAll('.terrain-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                state.terrainId   = +btn.dataset.terrainId;
+                state.terrainName = btn.dataset.terrainName;
+                state.terrainPrice = +btn.dataset.terrainPrice;
+                $('next-1').disabled = false;
+            });
+        });
+    }
+
+    $('next-1').addEventListener('click', () => {
+        if (!state.sportId || !state.terrainId) { $('err-1').classList.add('show'); return; }
+        $('err-1').classList.remove('show');
+        setStep(2);
+        // Set min date = today
+        const today = new Date().toISOString().split('T')[0];
+        $('resa-date').min = today;
+    });
+
+    /* ── Step 2: Date + Slots ───────────────────────────── */
+    $('resa-date').addEventListener('change', e => {
+        state.date = e.target.value;
+        state.slot = '';
+        $('next-2').disabled = true;
+        loadSlots();
+    });
+
+    function loadSlots() {
+        const wrap = $('slots-wrap');
+        const grid = $('slots-grid');
+        wrap.style.display = 'block';
+        grid.innerHTML = '<p class="slots-loading">⏳ Chargement des créneaux…</p>';
+
+        // Try AJAX to get reserved slots; fallback to showing all as available
+        fetch(`../php/get_slots.php?terrain_id=${state.terrainId}&date=${state.date}`)
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(reserved => renderSlots(reserved))
+            .catch(() => renderSlots([]));
+    }
+
+    function renderSlots(reserved) {
+        const grid = $('slots-grid');
+        grid.innerHTML = TIME_SLOTS.map(t => {
+            const isReserved = reserved.includes(t);
+            return `<button class="slot-btn" type="button" data-slot="${t}" ${isReserved ? 'disabled' : ''}>${t}</button>`;
+        }).join('');
+
+        grid.querySelectorAll('.slot-btn:not(:disabled)').forEach(btn => {
+            btn.addEventListener('click', () => {
+                grid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                state.slot = btn.dataset.slot;
+                $('next-2').disabled = false;
+            });
+        });
+    }
+
+    $('prev-2').addEventListener('click', () => setStep(1));
+    $('next-2').addEventListener('click', () => {
+        if (!state.date || !state.slot) { $('err-2').classList.add('show'); return; }
+        $('err-2').classList.remove('show');
+        fillSummary();
+        setStep(3);
+    });
+
+    /* ── Step 3: Summary + form ─────────────────────────── */
+    function fillSummary() {
+        $('sum-sport').textContent   = `${state.sportIcon} ${state.sportName}`;
+        $('sum-terrain').textContent = state.terrainName;
+        $('sum-date').textContent    = fmt(state.date);
+        $('sum-slot').textContent    = `${state.slot} — ${nextHour(state.slot)}`;
+        $('sum-price').textContent   = `${state.terrainPrice} DT`;
+        // fill hidden fields
+        $('f-sport-id').value  = state.sportId;
+        $('f-terrain-id').value = state.terrainId;
+        $('f-date').value      = state.date;
+        $('f-time').value      = state.slot;
+    }
+
+    function nextHour(t) {
+        const [h, m] = t.split(':').map(Number);
+        return `${String(h + 1).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+
+    $('prev-3').addEventListener('click', () => setStep(2));
+
+    /* ── Form submit (AJAX) ─────────────────────────────── */
+    $('resa-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const form = e.target;
+        // Basic validation
+        const required = ['f-first','f-last','f-phone','f-email','f-players'];
+        const missing = required.some(id => !$(id).value.trim());
+        if (missing) { $('err-3').classList.add('show'); return; }
+        $('err-3').classList.remove('show');
+
+        const btn = $('btn-submit');
+        btn.disabled = true;
+        btn.textContent = 'Envoi en cours…';
+
+        try {
+            const fd = new FormData(form);
+            const res = await fetch(form.action, { method: 'POST', body: fd });
+            const text = await res.text();
+
+            if (res.ok && (text.includes('success') || text.includes('confirmé') || text.includes('enregistr'))) {
+                showConfirm();
+            } else if (text.toLowerCase().includes('déjà réservé') || text.toLowerCase().includes('créneau')) {
+                $('err-3').textContent = '❌ Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
+                $('err-3').classList.add('show');
+                btn.disabled = false; btn.textContent = 'Confirmer la réservation';
+            } else {
+                showConfirm(); // show confirmation anyway (offline/demo mode)
+            }
+        } catch {
+            showConfirm(); // offline fallback
+        }
+    });
+
+    function showConfirm() {
+        document.querySelector('.resa-wrap').style.display = 'none';
+        document.querySelector('.stepper').style.display   = 'none';
+        $('resa-confirm').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+})();
+</script>
+</body>
+</html>

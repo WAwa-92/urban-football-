@@ -53,7 +53,10 @@ $reservations = $pdo->query('SELECT r.id, r.first_name, r.last_name, r.phone, r.
                     <p><?php echo htmlspecialchars($message); ?></p>
                 <?php endif; ?>
             </div>
-            <a class="bt" href="dashboard.php">Retour dashboard</a>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a class="bt" href="dashboard.php">Retour dashboard</a>
+                <a class="bt" href="events.php">Gérer les événements</a>
+            </div>
         </div>
 
         <div class="contact-form" style="max-width: 100%;">

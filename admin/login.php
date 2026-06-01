@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container" style="max-width: 520px; margin-top: 80px;">
         <div class="contact-form" style="max-width: 100%;">
             <h1 class="section-title" style="font-size: 2rem; margin-bottom: 20px;">Back Office</h1>
-            <p style="margin-bottom: 20px; color: #666;">Connectez-vous pour gérer les réservations.</p>
+            <p style="margin-bottom: 20px; color: #666;">Connectez-vous pour gérer les réservations et les événements.</p>
             <?php if ($error !== ''): ?>
                 <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>

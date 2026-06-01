@@ -3,12 +3,14 @@ require __DIR__ . '/config.php';
 requireAdmin();
 
 $pdo = getPDO();
+ensureSiteEventsTable($pdo);
 
 $totalReservations = (int) $pdo->query('SELECT COUNT(*) FROM reservations')->fetchColumn();
 $confirmedReservations = (int) $pdo->query("SELECT COUNT(*) FROM reservations WHERE status = 'confirmed'")->fetchColumn();
 $pendingReservations = (int) $pdo->query("SELECT COUNT(*) FROM reservations WHERE status = 'pending'")->fetchColumn();
 $clientsCount = (int) $pdo->query('SELECT COUNT(DISTINCT phone) FROM reservations')->fetchColumn();
 $revenue = (float) $pdo->query("SELECT COALESCE(SUM(t.price_per_hour), 0) FROM reservations r INNER JOIN terrains t ON t.id = r.terrain_id WHERE r.status = 'confirmed'")->fetchColumn();
+$publishedEvents = (int) $pdo->query('SELECT COUNT(*) FROM site_events WHERE is_published = 1')->fetchColumn();
 
 $recentStmt = $pdo->query('SELECT r.id, r.first_name, r.last_name, r.phone, r.email, r.status, r.created_at, s.name AS sport_name, t.name AS terrain_name, ts.label AS slot_label, rs.reservation_date FROM reservations r INNER JOIN sports s ON s.id = r.sport_id INNER JOIN terrains t ON t.id = r.terrain_id INNER JOIN reservation_slots rs ON rs.id = r.reservation_slot_id INNER JOIN time_slots ts ON ts.id = rs.time_slot_id ORDER BY r.created_at DESC LIMIT 8');
 $recentReservations = $recentStmt->fetchAll();
@@ -28,7 +30,10 @@ $recentReservations = $recentStmt->fetchAll();
                 <h1 class="section-title" style="margin-bottom:10px; text-align:left;">Tableau de bord</h1>
                 <p>Bienvenue, <?php echo htmlspecialchars($_SESSION['admin_user']['full_name']); ?></p>
             </div>
-            <a class="bt" href="reservations.php">Gérer les réservations</a>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a class="bt" href="reservations.php">Gérer les réservations</a>
+                <a class="bt" href="events.php">Gérer les événements</a>
+            </div>
         </div>
 
         <div class="stats">
@@ -36,6 +41,7 @@ $recentReservations = $recentStmt->fetchAll();
             <div class="stat-box"><span class="stat-number"><?php echo $confirmedReservations; ?></span><span class="stat-label">Confirmées</span></div>
             <div class="stat-box"><span class="stat-number"><?php echo $pendingReservations; ?></span><span class="stat-label">En attente</span></div>
             <div class="stat-box"><span class="stat-number"><?php echo $clientsCount; ?></span><span class="stat-label">Clients</span></div>
+            <div class="stat-box"><span class="stat-number"><?php echo $publishedEvents; ?></span><span class="stat-label">Événements publiés</span></div>
         </div>
 
         <div class="stat-box" style="margin: 30px 0; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">

@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS terrains;
 DROP TABLE IF EXISTS sports;
 DROP TABLE IF EXISTS time_slots;
 DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS site_events;
 DROP TABLE IF EXISTS contact_messages;
 DROP TABLE IF EXISTS gym_subscriptions;
 DROP TABLE IF EXISTS stadium_reservations;
@@ -98,6 +99,29 @@ CREATE TABLE admin_users (
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE site_events (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(180) NOT NULL,
+	sport_type ENUM('football', 'padel', 'fitness', 'tennis', 'multi', 'other') NOT NULL DEFAULT 'multi',
+	date_label VARCHAR(120) NOT NULL,
+	event_date DATE NULL,
+	event_time VARCHAR(50) NULL,
+	location VARCHAR(180) NULL,
+	participants_info VARCHAR(180) NULL,
+	description TEXT NOT NULL,
+	detail_1 VARCHAR(180) NULL,
+	detail_2 VARCHAR(180) NULL,
+	detail_3 VARCHAR(180) NULL,
+	cta_label VARCHAR(80) NOT NULL DEFAULT 'S''inscrire',
+	is_published TINYINT(1) NOT NULL DEFAULT 1,
+	display_order INT NOT NULL DEFAULT 0,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	INDEX idx_site_events_published (is_published),
+	INDEX idx_site_events_order (display_order),
+	INDEX idx_site_events_sport (sport_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 INSERT INTO sports (name, slug, description) VALUES
 ('Football', 'football', 'Réservation de terrains de football.'),
 ('Tennis', 'tennis', 'Réservation de terrains de tennis.'),
@@ -129,6 +153,12 @@ INSERT INTO time_slots (start_time, end_time, label) VALUES
 ('18:00:00', '19:00:00', '18h00 - 19h00'),
 ('19:00:00', '20:00:00', '19h00 - 20h00')
 ON DUPLICATE KEY UPDATE label = VALUES(label);
+
+INSERT INTO site_events (title, sport_type, date_label, event_date, event_time, location, participants_info, description, detail_1, detail_2, detail_3, cta_label, is_published, display_order) VALUES
+('Tournoi Hebdomadaire 5v5', 'football', 'Chaque vendredi', NULL, '19h00', 'Terrain de football Urban Center', '4 équipes · 5 joueurs/équipe', 'Compétition de football en salle pour équipes locales avec trophée mensuel pour les finalistes.', '📅 Tous les vendredis à 19h00', '👥 4 équipes · 5 joueurs/équipe', '📍 Terrain de football Urban Center', 'S''inscrire', 1, 1),
+('Soirée Padel Open', 'padel', 'Samedis', NULL, '18h00', 'Court de Padel Urban Center', 'Duos · 2v2', 'Matchs et inscriptions pour joueurs de padel de tous niveaux en format double élimination.', '📅 Chaque samedi à 18h00', '👥 Duos · 2v2', '📍 Court de Padel Urban Center', 'S''inscrire', 1, 2),
+('Fitness Challenge Mensuel', 'fitness', '1er dimanche / mois', NULL, '10h00', 'Salle de Fitness Urban Center', 'Ouvert à tous les abonnés', 'Session d''entraînement collectif et défi sportif animé par le coach avec classement mensuel.', '📅 1er dimanche du mois à 10h00', '👥 Ouvert à tous les abonnés', '📍 Salle de Fitness Urban Center', 'S''inscrire', 1, 3),
+('Tournoi Tennis Amateur', 'tennis', 'Mensuel', NULL, NULL, 'Court de Tennis Urban Center', 'Individuel · Tous niveaux', 'Compétition amicale en simple pour les membres et visiteurs du complexe avec tirage au sort.', '📅 Dernier dimanche du mois', '👥 Individuel · Tous niveaux', '📍 Court de Tennis Urban Center', 'S''inscrire', 1, 4);
 
 CREATE TABLE stadium_reservations (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
