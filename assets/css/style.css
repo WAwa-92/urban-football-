@@ -1361,3 +1361,64 @@ textarea::placeholder {
 #home {
     scroll-margin-top: 80px;
 }
+
+/* ===== Final UI consistency overrides ===== */
+nav {
+    gap: 10px;
+}
+
+nav ul {
+    align-items: center;
+}
+
+nav li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav li a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    line-height: 1;
+}
+
+nav a.nav-action,
+nav a.nav-action-secondary,
+nav a.nav-action-reserve {
+    padding: 10px 16px;
+}
+
+nav a.nav-action {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav a.nav-action-secondary {
+    border: 1px solid rgba(255,255,255,0.22);
+}
+
+.bt,
+.submit-btn,
+.contact-form-btn {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3c72 58%, #ff7a18 100%) !important;
+    color: #fff !important;
+    border: none;
+}
+
+.submit-btn,
+.contact-form-btn {
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+@media (min-width: 900px) {
+    nav ul {
+        gap: 6px;
+    }
+
+    nav li a {
+        min-height: 38px;
+    }
+}
