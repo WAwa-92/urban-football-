@@ -147,12 +147,90 @@ function ensureCoreTables(PDO $pdo): void
             full_name VARCHAR(120) NOT NULL,
             email VARCHAR(150) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
+            role ENUM('user', 'coach') NOT NULL DEFAULT 'user',
             status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
             last_login_at TIMESTAMP NULL DEFAULT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
+
+    if (!tableHasColumn($pdo, 'users', 'role')) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN role ENUM('user', 'coach') NOT NULL DEFAULT 'user' AFTER password_hash");
+    }
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS coaches (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            specialty VARCHAR(120) NULL,
+            bio TEXT NULL,
+            years_experience TINYINT UNSIGNED NULL,
+            is_active TINYINT(1) NOT NULL DEFAULT 1,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            CONSTRAINT fk_coaches_user FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+            UNIQUE KEY uniq_coach_user (user_id),
+            INDEX idx_coaches_specialty (specialty),
+            INDEX idx_coaches_active (is_active)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS stadium_reservations (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            team_name VARCHAR(100) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            reservation_date DATE NOT NULL,
+            reservation_time TIME NOT NULL,
+            message TEXT NULL,
+            status ENUM('en_attente', 'confirmee', 'annulee') NOT NULL DEFAULT 'en_attente',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_reservation_date (reservation_date),
+            INDEX idx_reservation_phone (phone)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS gym_subscriptions (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            full_name VARCHAR(100) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            subscription_type ENUM('mensuel', 'trimestriel', 'annuel') NOT NULL,
+            message TEXT NULL,
+            status ENUM('en_attente', 'acceptee', 'refusee') NOT NULL DEFAULT 'en_attente',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_subscription_phone (phone),
+            INDEX idx_subscription_type (subscription_type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS contact_messages (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            email VARCHAR(150) NOT NULL,
+            message TEXT NOT NULL,
+            status ENUM('nouveau', 'lu', 'traite') NOT NULL DEFAULT 'nouveau',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_contact_email (email)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+}
+
+function tableHasColumn(PDO $pdo, string $tableName, string $columnName): bool
+{
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table_name AND COLUMN_NAME = :column_name');
+    $stmt->execute([
+        ':table_name' => $tableName,
+        ':column_name' => $columnName,
+    ]);
+
+    return (int) $stmt->fetchColumn() > 0;
 }
 
 function ensureCoreSeeds(PDO $pdo): void

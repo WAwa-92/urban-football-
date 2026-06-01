@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS terrains;
 DROP TABLE IF EXISTS sports;
 DROP TABLE IF EXISTS time_slots;
 DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS coaches;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS site_events;
 DROP TABLE IF EXISTS contact_messages;
@@ -105,10 +106,28 @@ CREATE TABLE users (
 	full_name VARCHAR(120) NOT NULL,
 	email VARCHAR(150) NOT NULL UNIQUE,
 	password_hash VARCHAR(255) NOT NULL,
+	role ENUM('user', 'coach') NOT NULL DEFAULT 'user',
 	status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
 	last_login_at TIMESTAMP NULL DEFAULT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	INDEX idx_users_role (role),
+	INDEX idx_users_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE coaches (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	user_id INT UNSIGNED NOT NULL,
+	specialty VARCHAR(120) NULL,
+	bio TEXT NULL,
+	years_experience TINYINT UNSIGNED NULL,
+	is_active TINYINT(1) NOT NULL DEFAULT 1,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT fk_coaches_user FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE KEY uniq_coach_user (user_id),
+	INDEX idx_coaches_specialty (specialty),
+	INDEX idx_coaches_active (is_active)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE site_events (
@@ -147,9 +166,6 @@ INSERT INTO terrains (sport_id, name, description, price_per_hour) VALUES
 (3, 'Court Padel', 'Terrain de padel moderne', 50.00),
 (4, 'Salle Fitness', 'Accès salle fitness', 30.00)
 ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description), price_per_hour = VALUES(price_per_hour);
-
-UPDATE terrains SET name = 'Terrain Football', description = 'Terrain 5v5 principal', price_per_hour = 60.00 WHERE id = 1;
-DELETE FROM terrains WHERE id = 5;
 
 INSERT INTO time_slots (start_time, end_time, label) VALUES
 ('08:00:00', '09:00:00', '08h00 - 09h00'),

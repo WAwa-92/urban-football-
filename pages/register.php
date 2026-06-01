@@ -5,16 +5,33 @@ session_start();
 
 $pdo = getPDO();
 $error = '';
-$success = '';
+
+function redirectAfterSignup(string $accountType): never
+{
+    if ($accountType === 'coach') {
+        header('Location: coach-dashboard.php');
+        exit;
+    }
+
+    header('Location: ../Urban Center.html');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fullName = trim($_POST['full_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $fullName = preg_replace('/\s+/', ' ', trim($_POST['full_name'] ?? ''));
+    $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
     $passwordConfirm = $_POST['password_confirm'] ?? '';
+    $accountType = $_POST['account_type'] ?? 'user';
+    $specialty = trim($_POST['specialty'] ?? '');
+    $experience = (int) ($_POST['years_experience'] ?? 0);
+    $bio = trim($_POST['bio'] ?? '');
+    $allowedTypes = ['user', 'coach'];
 
     if ($fullName === '' || $email === '' || $password === '' || $passwordConfirm === '') {
         $error = 'Veuillez remplir tous les champs.';
+    } elseif (!in_array($accountType, $allowedTypes, true)) {
+        $error = 'Type de compte invalide.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Email invalide.';
     } elseif (strlen($password) < 6) {
@@ -28,23 +45,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check->fetchColumn()) {
             $error = 'Cet email est déjà utilisé.';
         } else {
-            $insert = $pdo->prepare('INSERT INTO users (full_name, email, password_hash, status) VALUES (:full_name, :email, :password_hash, :status)');
-            $insert->execute([
-                ':full_name' => $fullName,
-                ':email' => $email,
-                ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
-                ':status' => 'active',
-            ]);
+            try {
+                $pdo->beginTransaction();
 
-            $userId = (int) $pdo->lastInsertId();
-            $_SESSION['site_user'] = [
-                'id' => $userId,
-                'full_name' => $fullName,
-                'email' => $email,
-            ];
+                $insert = $pdo->prepare('INSERT INTO users (full_name, email, password_hash, role, status) VALUES (:full_name, :email, :password_hash, :role, :status)');
+                $insert->execute([
+                    ':full_name' => $fullName,
+                    ':email' => $email,
+                    ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                    ':role' => $accountType,
+                    ':status' => 'active',
+                ]);
 
-            $success = 'Inscription réussie. Redirection...';
-            header('Refresh: 1; url=../Urban Center.html');
+                $userId = (int) $pdo->lastInsertId();
+
+                if ($accountType === 'coach') {
+                    $coachInsert = $pdo->prepare('INSERT INTO coaches (user_id, specialty, bio, years_experience, is_active) VALUES (:user_id, :specialty, :bio, :years_experience, :is_active)');
+                    $coachInsert->execute([
+                        ':user_id' => $userId,
+                        ':specialty' => $specialty !== '' ? $specialty : null,
+                        ':bio' => $bio !== '' ? $bio : null,
+                        ':years_experience' => $experience > 0 ? $experience : null,
+                        ':is_active' => 1,
+                    ]);
+                }
+
+                $pdo->commit();
+
+                session_regenerate_id(true);
+                $_SESSION['site_user'] = [
+                    'id' => $userId,
+                    'full_name' => $fullName,
+                    'email' => $email,
+                    'role' => $accountType,
+                ];
+
+                redirectAfterSignup($accountType);
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                $error = 'Impossible de finaliser l\'inscription pour le moment.';
+            }
         }
     }
 }
@@ -66,11 +108,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($error !== ''): ?>
                 <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
-            <?php if ($success !== ''): ?>
-                <p style="color: #166534; margin-bottom: 15px;"><?php echo htmlspecialchars($success); ?></p>
-            <?php endif; ?>
-
             <form method="POST">
+                <div class="form-group">
+                    <label>Type de compte</label>
+                    <select name="account_type" id="account_type" required>
+                        <option value="user" <?php echo (($_POST['account_type'] ?? 'user') === 'user') ? 'selected' : ''; ?>>Utilisateur</option>
+                        <option value="coach" <?php echo (($_POST['account_type'] ?? '') === 'coach') ? 'selected' : ''; ?>>Coach</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Nom complet</label>
                     <input type="text" name="full_name" required value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>">
@@ -87,6 +132,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Confirmer mot de passe</label>
                     <input type="password" name="password_confirm" required>
                 </div>
+
+                <div id="coach-extra-fields" style="display:<?php echo (($_POST['account_type'] ?? '') === 'coach') ? 'block' : 'none'; ?>;">
+                    <div class="form-group">
+                        <label>Spécialité (coach)</label>
+                        <input type="text" name="specialty" value="<?php echo htmlspecialchars($_POST['specialty'] ?? ''); ?>" placeholder="Ex: Préparation physique">
+                    </div>
+                    <div class="form-group">
+                        <label>Années d'expérience</label>
+                        <input type="number" min="0" max="60" name="years_experience" value="<?php echo htmlspecialchars($_POST['years_experience'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio (optionnel)</label>
+                        <textarea name="bio" rows="3" placeholder="Présentation rapide"><?php echo htmlspecialchars($_POST['bio'] ?? ''); ?></textarea>
+                    </div>
+                </div>
+
                 <button type="submit" class="submit-btn">S'inscrire</button>
             </form>
 
@@ -94,7 +155,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Déjà un compte ?
                 <a href="login.php" style="color:#1e3c72; font-weight:700;">Se connecter</a>
             </p>
+            <p style="margin-top: 8px;">
+                <a href="../admin/login.php" style="color:#1e3c72; font-weight:700;">Connexion administrateur</a>
+            </p>
         </div>
     </div>
+    <script>
+        (function () {
+            const typeSelect = document.getElementById('account_type');
+            const coachFields = document.getElementById('coach-extra-fields');
+
+            if (!typeSelect || !coachFields) {
+                return;
+            }
+
+            function toggleCoachFields() {
+                coachFields.style.display = typeSelect.value === 'coach' ? 'block' : 'none';
+            }
+
+            typeSelect.addEventListener('change', toggleCoachFields);
+            toggleCoachFields();
+        })();
+    </script>
 </body>
 </html>

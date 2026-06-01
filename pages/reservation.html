@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/pages.css">
     <style>
-        /* ── Reservation page specific ─────────────────── */
+        /* Page réservation */
         .resa-hero {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: #fff;
@@ -19,7 +19,7 @@
         .resa-hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 10px; }
         .resa-hero p  { font-size: 1.05rem; opacity: .85; }
 
-        /* ── Stepper ───────────────────────────────────── */
+        /* Étapes */
         .stepper {
             display: flex;
             justify-content: center;
@@ -78,7 +78,6 @@
         .step-item.active .step-label { color: #ff6b35; font-weight: 700; }
         .step-item.done   .step-label { color: #1e3c72; }
 
-        /* ── Step panels ───────────────────────────────── */
         .resa-wrap {
             max-width: 720px;
             margin: 32px auto 60px;
@@ -91,7 +90,6 @@
         .step-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ── Sport selector grid ───────────────────────── */
         .sport-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -116,7 +114,6 @@
         .sport-btn .sb-name { font-weight: 700; color: #1e3c72; font-size: .95rem; }
         .sport-btn .sb-price { font-size: .78rem; color: #6b7280; margin-top: 4px; }
 
-        /* ── Terrain selector ──────────────────────────── */
         .terrain-list {
             display: flex;
             flex-direction: column;
@@ -142,7 +139,6 @@
         .terrain-btn .tb-info span   { font-size: .82rem; color: #6b7280; }
         .terrain-btn .tb-price { margin-left: auto; font-weight: 800; color: #ff6b35; white-space: nowrap; }
 
-        /* ── Date & slots ──────────────────────────────── */
         .date-row {
             display: flex;
             flex-direction: column;
@@ -178,7 +174,6 @@
         .slot-btn:disabled { background: #f3f4f6; color: #c0c0c0; cursor: not-allowed; border-color: #e5e7eb; text-decoration: line-through; }
         .slots-loading { text-align: center; padding: 20px; color: #6b7280; font-size: .9rem; }
 
-        /* ── Step 3 — Info form ────────────────────────── */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -188,7 +183,6 @@
             .info-grid { grid-template-columns: 1fr 1fr; column-gap: 20px; }
         }
 
-        /* ── Summary card ──────────────────────────────── */
         .resa-summary {
             background: linear-gradient(135deg, rgba(30,60,114,.06), rgba(255,107,53,.06));
             border: 1px solid rgba(30,60,114,.12);
@@ -210,7 +204,6 @@
         .summary-row .sr-val   { font-weight: 700; color: #1e3c72; }
         .summary-total { background: #1e3c72; color: #fff; border-radius: 10px; padding: 12px 18px; display: flex; justify-content: space-between; margin-top: 14px; font-weight: 800; font-size: 1.05rem; }
 
-        /* ── Navigation buttons ────────────────────────── */
         .step-nav {
             display: flex;
             justify-content: space-between;
@@ -245,7 +238,6 @@
         .btn-next:hover, .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28), 0 10px 22px rgba(255, 122, 24, 0.24); }
         .btn-next:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 
-        /* ── Confirmation screen ───────────────────────── */
         .resa-confirm {
             display: none;
             text-align: center;
@@ -256,11 +248,9 @@
         .resa-confirm h2 { color: #1e3c72; margin-bottom: 12px; }
         .resa-confirm p  { color: #6b7280; max-width: 480px; margin: 0 auto 24px; }
 
-        /* ── Error msg ─────────────────────────────────── */
         .form-error { color: #dc2626; font-size: .85rem; margin-top: 6px; display: none; }
         .form-error.show { display: block; }
 
-        /* ── Section title local ───────────────────────── */
         .panel-title {
             font-size: 1.2rem;
             font-weight: 800;
@@ -272,13 +262,11 @@
 </head>
 <body>
 
-<!-- ── Hero ──────────────────────────────────────────────── -->
 <div class="resa-hero">
     <h1>Réserver un terrain</h1>
     <p>Football · Padel · Tennis · Fitness — Urban Center Hassi Djerbi</p>
 </div>
 
-<!-- ── Nav ───────────────────────────────────────────────── -->
 <nav id="main-nav">
     <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -295,7 +283,6 @@
     </ul>
 </nav>
 
-<!-- ── Stepper ───────────────────────────────────────────── -->
 <div class="stepper" id="stepper">
     <div class="step-item active" data-step="1">
         <div class="step-dot"><span>1</span></div>
@@ -311,10 +298,8 @@
     </div>
 </div>
 
-<!-- ── Panels ─────────────────────────────────────────────── -->
 <div class="resa-wrap">
 
-    <!-- STEP 1 — Sport + Terrain -->
     <div class="step-panel active" id="panel-1">
         <p class="panel-title">Choisissez votre activité</p>
         <p class="panel-sub">Sélectionnez le sport puis le terrain souhaité.</p>
@@ -354,7 +339,6 @@
         <p class="form-error" id="err-1">Veuillez sélectionner une activité et un terrain.</p>
     </div>
 
-    <!-- STEP 2 — Date + Créneaux -->
     <div class="step-panel" id="panel-2">
         <p class="panel-title">Choisissez la date et le créneau</p>
         <p class="panel-sub">Les créneaux déjà réservés apparaissent grisés.</p>
@@ -378,12 +362,10 @@
         <p class="form-error" id="err-2">Veuillez sélectionner une date et un créneau.</p>
     </div>
 
-    <!-- STEP 3 — Infos client + Résumé -->
     <div class="step-panel" id="panel-3">
         <p class="panel-title">Vos informations</p>
         <p class="panel-sub">Complétez vos coordonnées pour finaliser la réservation.</p>
 
-        <!-- Summary -->
         <div class="resa-summary" id="resa-summary">
             <h3>📋 Récapitulatif</h3>
             <div class="summary-row"><span class="sr-label">Activité</span><span class="sr-val" id="sum-sport">—</span></div>
@@ -394,13 +376,12 @@
         </div>
 
         <form id="resa-form" action="../php/reservation.php" method="POST" novalidate>
-            <!-- Hidden fields filled by JS -->
             <input type="hidden" name="sport_id"         id="f-sport-id">
             <input type="hidden" name="terrain_id"       id="f-terrain-id">
             <input type="hidden" name="reservation_date" id="f-date">
             <input type="hidden" name="reservation_time" id="f-time">
             <input type="hidden" name="source"           value="reservation_page">
-            <!-- Honeypot -->
+            <!-- anti-spam -->
             <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
 
             <div class="info-grid">
@@ -438,7 +419,6 @@
         </form>
     </div>
 
-    <!-- CONFIRMATION -->
     <div class="resa-confirm" id="resa-confirm">
         <div class="confirm-icon">🎉</div>
         <h2>Réservation confirmée !</h2>
@@ -447,7 +427,7 @@
         <a href="reservation.html" class="bt bt-secondary" style="display:inline-block;">Nouvelle réservation</a>
     </div>
 
-</div><!-- /.resa-wrap -->
+</div>
 
 <footer>
     <p>&copy; 2026 Urban Center Hessi Jerbi. Tous droits réservés.</p>
@@ -456,207 +436,310 @@
 <script src="../assets/js/app.js" defer></script>
 <script>
 (function () {
-    /* ── Data (mirrors app.js sportsData) ───────────────── */
-    const SPORTS = [
-        { id: 1, icon: '⚽', name: 'Football', terrains: [{ id: 1, name: 'Terrain Football Principal', price: 60 }] },
-        { id: 2, icon: '🏓', name: 'Padel',    terrains: [{ id: 2, name: 'Court Padel',               price: 50 }] },
-        { id: 3, icon: '🎾', name: 'Tennis',   terrains: [{ id: 3, name: 'Court Tennis',              price: 45 }] },
-        { id: 4, icon: '💪', name: 'Fitness',  terrains: [{ id: 4, name: 'Salle de Fitness',          price: 20 }] },
+    const sports = [
+        {
+            id: 1,
+            icon: '⚽',
+            name: 'Football',
+            terrains: [{ id: 1, name: 'Terrain Football Principal', price: 60 }],
+        },
+        {
+            id: 2,
+            icon: '🏓',
+            name: 'Padel',
+            terrains: [{ id: 2, name: 'Court Padel', price: 50 }],
+        },
+        {
+            id: 3,
+            icon: '🎾',
+            name: 'Tennis',
+            terrains: [{ id: 3, name: 'Court Tennis', price: 45 }],
+        },
+        {
+            id: 4,
+            icon: '💪',
+            name: 'Fitness',
+            terrains: [{ id: 4, name: 'Salle de Fitness', price: 20 }],
+        },
     ];
 
-    const TIME_SLOTS = [
-        '08:00','09:00','10:00','11:00',
-        '12:00','13:00','14:00','15:00',
-        '16:00','17:00','18:00','19:00',
+    const timeSlots = [
+        '08:00', '09:00', '10:00', '11:00',
+        '12:00', '13:00', '14:00', '15:00',
+        '16:00', '17:00', '18:00', '19:00',
     ];
 
-    /* ── State ──────────────────────────────────────────── */
-    let state = {
-        sportId: null, sportName: '', sportIcon: '',
-        terrainId: null, terrainName: '', terrainPrice: 0,
-        date: '', slot: '',
-    };
-    let currentStep = 1;
-
-    /* ── Helpers ────────────────────────────────────────── */
-    const $ = id => document.getElementById(id);
-    const fmt = d => {
-        const [y,m,dd] = d.split('-');
-        return `${dd}/${m}/${y}`;
+    const booking = {
+        sportId: null,
+        sportName: '',
+        sportIcon: '',
+        terrainId: null,
+        terrainName: '',
+        terrainPrice: 0,
+        date: '',
+        slot: '',
     };
 
-    function setStep(n) {
-        // panels
-        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-        const panel = $(`panel-${n}`);
-        if (panel) panel.classList.add('active');
+    function getEl(id) {
+        return document.getElementById(id);
+    }
 
-        // stepper dots
-        document.querySelectorAll('.step-item').forEach(el => {
-            const s = +el.dataset.step;
-            el.classList.remove('active', 'done');
-            if (s < n) el.classList.add('done');
-            if (s === n) el.classList.add('active');
+    function formatDate(dateValue) {
+        const [year, month, day] = dateValue.split('-');
+        return `${day}/${month}/${year}`;
+    }
+
+    function goToStep(step) {
+        document.querySelectorAll('.step-panel').forEach((panel) => {
+            panel.classList.remove('active');
         });
-        currentStep = n;
+
+        const currentPanel = getEl(`panel-${step}`);
+        if (currentPanel) {
+            currentPanel.classList.add('active');
+        }
+
+        document.querySelectorAll('.step-item').forEach((item) => {
+            const itemStep = Number(item.dataset.step);
+            item.classList.remove('active', 'done');
+
+            if (itemStep < step) {
+                item.classList.add('done');
+            }
+
+            if (itemStep === step) {
+                item.classList.add('active');
+            }
+        });
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ── Step 1: Sport selection ────────────────────────── */
-    document.querySelectorAll('.sport-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.sport-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            state.sportId = +btn.dataset.sportId;
-            state.sportName = btn.dataset.sportName;
-            state.sportIcon = btn.dataset.sportIcon;
-            // reset terrain
-            state.terrainId = null; state.terrainName = ''; state.terrainPrice = 0;
-            $('next-1').disabled = true;
-            renderTerrains();
+    function resetSportSelection() {
+        document.querySelectorAll('.sport-btn').forEach((button) => {
+            button.classList.remove('selected');
         });
-    });
+    }
 
-    function renderTerrains() {
-        const sport = SPORTS.find(s => s.id === state.sportId);
-        if (!sport) return;
-        const list = $('terrain-list');
-        list.innerHTML = sport.terrains.map(t => `
-            <button class="terrain-btn" type="button" data-terrain-id="${t.id}" data-terrain-name="${t.name}" data-terrain-price="${t.price}">
-                <span class="tb-icon">${state.sportIcon}</span>
-                <span class="tb-info"><strong>${t.name}</strong><span>Disponible à la réservation</span></span>
-                <span class="tb-price">${t.price} DT/h</span>
-            </button>
-        `).join('');
-        $('terrain-section').style.display = 'block';
+    function resetTerrainSelection() {
+        booking.terrainId = null;
+        booking.terrainName = '';
+        booking.terrainPrice = 0;
+        getEl('next-1').disabled = true;
+    }
 
-        list.querySelectorAll('.terrain-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                list.querySelectorAll('.terrain-btn').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                state.terrainId   = +btn.dataset.terrainId;
-                state.terrainName = btn.dataset.terrainName;
-                state.terrainPrice = +btn.dataset.terrainPrice;
-                $('next-1').disabled = false;
+    function renderTerrainsForSport() {
+        const selectedSport = sports.find((sport) => sport.id === booking.sportId);
+        if (!selectedSport) {
+            return;
+        }
+
+        const terrainList = getEl('terrain-list');
+        terrainList.innerHTML = selectedSport.terrains
+            .map((terrain) => {
+                return `
+                    <button class="terrain-btn" type="button" data-terrain-id="${terrain.id}" data-terrain-name="${terrain.name}" data-terrain-price="${terrain.price}">
+                        <span class="tb-icon">${booking.sportIcon}</span>
+                        <span class="tb-info">
+                            <strong>${terrain.name}</strong>
+                            <span>Disponible à la réservation</span>
+                        </span>
+                        <span class="tb-price">${terrain.price} DT/h</span>
+                    </button>
+                `;
+            })
+            .join('');
+
+        getEl('terrain-section').style.display = 'block';
+
+        terrainList.querySelectorAll('.terrain-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                terrainList.querySelectorAll('.terrain-btn').forEach((btn) => {
+                    btn.classList.remove('selected');
+                });
+
+                button.classList.add('selected');
+                booking.terrainId = Number(button.dataset.terrainId);
+                booking.terrainName = button.dataset.terrainName || '';
+                booking.terrainPrice = Number(button.dataset.terrainPrice || 0);
+                getEl('next-1').disabled = false;
             });
         });
     }
 
-    $('next-1').addEventListener('click', () => {
-        if (!state.sportId || !state.terrainId) { $('err-1').classList.add('show'); return; }
-        $('err-1').classList.remove('show');
-        setStep(2);
-        // Set min date = today
-        const today = new Date().toISOString().split('T')[0];
-        $('resa-date').min = today;
+    function loadSlots() {
+        const slotsWrap = getEl('slots-wrap');
+        const slotsGrid = getEl('slots-grid');
+        slotsWrap.style.display = 'block';
+        slotsGrid.innerHTML = '<p class="slots-loading">⏳ Chargement des créneaux…</p>';
+
+        fetch(`../php/get_slots.php?terrain_id=${booking.terrainId}&date=${booking.date}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Request failed');
+                }
+                return response.json();
+            })
+            .then((reservedSlots) => {
+                renderSlots(reservedSlots);
+            })
+            .catch(() => {
+                renderSlots([]);
+            });
+    }
+
+    function renderSlots(reservedSlots) {
+        const slotsGrid = getEl('slots-grid');
+        slotsGrid.innerHTML = timeSlots
+            .map((time) => {
+                const isReserved = reservedSlots.includes(time);
+                return `<button class="slot-btn" type="button" data-slot="${time}" ${isReserved ? 'disabled' : ''}>${time}</button>`;
+            })
+            .join('');
+
+        slotsGrid.querySelectorAll('.slot-btn:not(:disabled)').forEach((button) => {
+            button.addEventListener('click', () => {
+                slotsGrid.querySelectorAll('.slot-btn').forEach((btn) => {
+                    btn.classList.remove('selected');
+                });
+
+                button.classList.add('selected');
+                booking.slot = button.dataset.slot || '';
+                getEl('next-2').disabled = false;
+            });
+        });
+    }
+
+    function addOneHour(time) {
+        const [hour, minute] = time.split(':').map(Number);
+        return `${String(hour + 1).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+    }
+
+    function updateSummary() {
+        getEl('sum-sport').textContent = `${booking.sportIcon} ${booking.sportName}`;
+        getEl('sum-terrain').textContent = booking.terrainName;
+        getEl('sum-date').textContent = formatDate(booking.date);
+        getEl('sum-slot').textContent = `${booking.slot} — ${addOneHour(booking.slot)}`;
+        getEl('sum-price').textContent = `${booking.terrainPrice} DT`;
+
+        getEl('f-sport-id').value = String(booking.sportId);
+        getEl('f-terrain-id').value = String(booking.terrainId);
+        getEl('f-date').value = booking.date;
+        getEl('f-time').value = booking.slot;
+    }
+
+    function showConfirmation() {
+        const wrap = document.querySelector('.resa-wrap');
+        const stepper = document.querySelector('.stepper');
+        if (wrap) wrap.style.display = 'none';
+        if (stepper) stepper.style.display = 'none';
+
+        getEl('resa-confirm').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.sport-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            resetSportSelection();
+            button.classList.add('selected');
+
+            booking.sportId = Number(button.dataset.sportId);
+            booking.sportName = button.dataset.sportName || '';
+            booking.sportIcon = button.dataset.sportIcon || '';
+
+            resetTerrainSelection();
+            renderTerrainsForSport();
+        });
     });
 
-    /* ── Step 2: Date + Slots ───────────────────────────── */
-    $('resa-date').addEventListener('change', e => {
-        state.date = e.target.value;
-        state.slot = '';
-        $('next-2').disabled = true;
+    getEl('next-1').addEventListener('click', () => {
+        if (!booking.sportId || !booking.terrainId) {
+            getEl('err-1').classList.add('show');
+            return;
+        }
+
+        getEl('err-1').classList.remove('show');
+        getEl('resa-date').min = new Date().toISOString().split('T')[0];
+        goToStep(2);
+    });
+
+    getEl('resa-date').addEventListener('change', (event) => {
+        booking.date = event.target.value;
+        booking.slot = '';
+        getEl('next-2').disabled = true;
         loadSlots();
     });
 
-    function loadSlots() {
-        const wrap = $('slots-wrap');
-        const grid = $('slots-grid');
-        wrap.style.display = 'block';
-        grid.innerHTML = '<p class="slots-loading">⏳ Chargement des créneaux…</p>';
-
-        // Try AJAX to get reserved slots; fallback to showing all as available
-        fetch(`../php/get_slots.php?terrain_id=${state.terrainId}&date=${state.date}`)
-            .then(r => r.ok ? r.json() : Promise.reject())
-            .then(reserved => renderSlots(reserved))
-            .catch(() => renderSlots([]));
-    }
-
-    function renderSlots(reserved) {
-        const grid = $('slots-grid');
-        grid.innerHTML = TIME_SLOTS.map(t => {
-            const isReserved = reserved.includes(t);
-            return `<button class="slot-btn" type="button" data-slot="${t}" ${isReserved ? 'disabled' : ''}>${t}</button>`;
-        }).join('');
-
-        grid.querySelectorAll('.slot-btn:not(:disabled)').forEach(btn => {
-            btn.addEventListener('click', () => {
-                grid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                state.slot = btn.dataset.slot;
-                $('next-2').disabled = false;
-            });
-        });
-    }
-
-    $('prev-2').addEventListener('click', () => setStep(1));
-    $('next-2').addEventListener('click', () => {
-        if (!state.date || !state.slot) { $('err-2').classList.add('show'); return; }
-        $('err-2').classList.remove('show');
-        fillSummary();
-        setStep(3);
+    getEl('prev-2').addEventListener('click', () => {
+        goToStep(1);
     });
 
-    /* ── Step 3: Summary + form ─────────────────────────── */
-    function fillSummary() {
-        $('sum-sport').textContent   = `${state.sportIcon} ${state.sportName}`;
-        $('sum-terrain').textContent = state.terrainName;
-        $('sum-date').textContent    = fmt(state.date);
-        $('sum-slot').textContent    = `${state.slot} — ${nextHour(state.slot)}`;
-        $('sum-price').textContent   = `${state.terrainPrice} DT`;
-        // fill hidden fields
-        $('f-sport-id').value  = state.sportId;
-        $('f-terrain-id').value = state.terrainId;
-        $('f-date').value      = state.date;
-        $('f-time').value      = state.slot;
-    }
+    getEl('next-2').addEventListener('click', () => {
+        if (!booking.date || !booking.slot) {
+            getEl('err-2').classList.add('show');
+            return;
+        }
 
-    function nextHour(t) {
-        const [h, m] = t.split(':').map(Number);
-        return `${String(h + 1).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-    }
+        getEl('err-2').classList.remove('show');
+        updateSummary();
+        goToStep(3);
+    });
 
-    $('prev-3').addEventListener('click', () => setStep(2));
+    getEl('prev-3').addEventListener('click', () => {
+        goToStep(2);
+    });
 
-    /* ── Form submit (AJAX) ─────────────────────────────── */
-    $('resa-form').addEventListener('submit', async e => {
-        e.preventDefault();
-        const form = e.target;
-        // Basic validation
-        const required = ['f-first','f-last','f-phone','f-email','f-players'];
-        const missing = required.some(id => !$(id).value.trim());
-        if (missing) { $('err-3').classList.add('show'); return; }
-        $('err-3').classList.remove('show');
+    getEl('resa-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-        const btn = $('btn-submit');
-        btn.disabled = true;
-        btn.textContent = 'Envoi en cours…';
+        const requiredFields = ['f-first', 'f-last', 'f-phone', 'f-email', 'f-players'];
+        const hasMissingField = requiredFields.some((id) => !getEl(id).value.trim());
+
+        if (hasMissingField) {
+            getEl('err-3').classList.add('show');
+            return;
+        }
+
+        getEl('err-3').classList.remove('show');
+
+        const form = event.target;
+        const submitBtn = getEl('btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi en cours…';
 
         try {
-            const fd = new FormData(form);
-            const res = await fetch(form.action, { method: 'POST', body: fd });
-            const text = await res.text();
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+            });
+            const text = await response.text();
 
-            if (res.ok && (text.includes('success') || text.includes('confirmé') || text.includes('enregistr'))) {
-                showConfirm();
-            } else if (text.toLowerCase().includes('déjà réservé') || text.toLowerCase().includes('créneau')) {
-                $('err-3').textContent = '❌ Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
-                $('err-3').classList.add('show');
-                btn.disabled = false; btn.textContent = 'Confirmer la réservation';
-            } else {
-                showConfirm(); // show confirmation anyway (offline/demo mode)
+            const isSuccess = response.ok && (
+                text.includes('success') ||
+                text.includes('confirmé') ||
+                text.includes('enregistr')
+            );
+
+            if (isSuccess) {
+                showConfirmation();
+                return;
             }
-        } catch {
-            showConfirm(); // offline fallback
+
+            const lowerText = text.toLowerCase();
+            if (lowerText.includes('déjà réservé') || lowerText.includes('créneau')) {
+                getEl('err-3').textContent = '❌ Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
+                getEl('err-3').classList.add('show');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirmer la réservation';
+                return;
+            }
+
+            showConfirmation();
+        } catch (error) {
+            showConfirmation();
         }
     });
-
-    function showConfirm() {
-        document.querySelector('.resa-wrap').style.display = 'none';
-        document.querySelector('.stepper').style.display   = 'none';
-        $('resa-confirm').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
 })();
 </script>
