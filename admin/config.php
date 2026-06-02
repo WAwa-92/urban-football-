@@ -6,6 +6,7 @@ session_start();
 function ensureDefaultAdmin(PDO $pdo): void
 {
     ensureSiteEventsTable($pdo);
+    ensureNewsTable($pdo);
 
     $defaultEmail = 'admin@urbancenter.com';
 

@@ -386,3 +386,21 @@ function ensureSiteEventsTable(PDO $pdo): void
         $stmt->execute($event);
     }
 }
+
+function ensureNewsTable(PDO $pdo): void
+{
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS news (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(180) NOT NULL,
+            content TEXT NOT NULL,
+            image_url VARCHAR(255) NULL,
+            published_at DATETIME NULL,
+            is_published TINYINT(1) NOT NULL DEFAULT 1,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_news_published (is_published),
+            INDEX idx_news_published_at (published_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+}

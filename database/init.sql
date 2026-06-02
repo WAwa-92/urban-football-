@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS admin_users;
 DROP TABLE IF EXISTS coaches;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS site_events;
+DROP TABLE IF EXISTS news;
 DROP TABLE IF EXISTS contact_messages;
 DROP TABLE IF EXISTS gym_subscriptions;
 DROP TABLE IF EXISTS stadium_reservations;
@@ -151,6 +152,19 @@ CREATE TABLE site_events (
 	INDEX idx_site_events_published (is_published),
 	INDEX idx_site_events_order (display_order),
 	INDEX idx_site_events_sport (sport_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE news (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(180) NOT NULL,
+	content TEXT NOT NULL,
+	image_url VARCHAR(255) NULL,
+	published_at DATETIME NULL,
+	is_published TINYINT(1) NOT NULL DEFAULT 1,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	INDEX idx_news_published (is_published),
+	INDEX idx_news_published_at (published_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO sports (name, slug, description) VALUES

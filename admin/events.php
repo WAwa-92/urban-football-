@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/config.php';
+require __DIR__ . '/../php/csrf.php';
 requireAdmin();
 
 $pdo = getPDO();
@@ -29,6 +30,9 @@ $emptyEvent = [
 $currentEvent = $emptyEvent;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'Session expirée. Merci de réessayer.';
+    } else {
     $action = $_POST['action'] ?? 'save';
 
     if ($action === 'delete') {
@@ -153,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $editId = 0;
         }
     }
+    }
 }
 
 if ($error === '' && $editId > 0) {
@@ -202,6 +207,7 @@ function adminEventBadge(string $sportType): string
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
                 <a class="bt" href="dashboard.php">Dashboard</a>
                 <a class="bt" href="reservations.php">Réservations</a>
+                <a class="bt" href="news.php">Actualités</a>
             </div>
         </div>
 
@@ -220,6 +226,7 @@ function adminEventBadge(string $sportType): string
                 <p style="color:#b91c1c; margin-bottom:15px; font-weight:700;"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="event_id" value="<?php echo (int) $currentEvent['id']; ?>">
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
@@ -331,11 +338,13 @@ function adminEventBadge(string $sportType): string
                                     <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                         <a class="bt" href="events.php?edit=<?php echo (int) $event['id']; ?>" style="padding:10px 14px; font-size:0.9rem;">Modifier</a>
                                         <form method="POST" style="display:inline-flex;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="action" value="toggle">
                                             <input type="hidden" name="event_id" value="<?php echo (int) $event['id']; ?>">
                                             <button type="submit" class="submit-btn" style="width:auto; padding:10px 14px;"><?php echo (int) $event['is_published'] === 1 ? 'Dépublier' : 'Publier'; ?></button>
                                         </form>
                                         <form method="POST" onsubmit="return confirm('Supprimer cet événement ?');" style="display:inline-flex;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="event_id" value="<?php echo (int) $event['id']; ?>">
                                             <button type="submit" style="padding:10px 14px; border:none; border-radius:999px; background:#b91c1c; color:#fff; font-weight:700; cursor:pointer;">Supprimer</button>
