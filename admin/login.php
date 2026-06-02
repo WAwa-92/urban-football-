@@ -1,11 +1,15 @@
 <?php
 require __DIR__ . '/config.php';
+require __DIR__ . '/../php/csrf.php';
 
 $pdo = getPDO();
 ensureDefaultAdmin($pdo);
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'Session expirée. Merci de réessayer.';
+    } else {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -29,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $error = 'Identifiants invalides.';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -48,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" name="email" required>

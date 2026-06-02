@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require __DIR__ . '/db.php';
 require __DIR__ . '/send_email.php';
+require __DIR__ . '/csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -12,6 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 if (!empty($_POST['website'] ?? '')) {
     http_response_code(400);
     exit(json_encode(['success' => false, 'message' => 'Spam détecté.']));
+}
+
+if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
+    http_response_code(419);
+    exit(json_encode(['success' => false, 'message' => 'Session expirée. Merci de recharger la page.']));
 }
 
 $firstName = trim($_POST['first_name'] ?? '');

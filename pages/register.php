@@ -1,7 +1,10 @@
 <?php
 require __DIR__ . '/../php/db.php';
+require __DIR__ . '/../php/csrf.php';
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 $pdo = getPDO();
 $error = '';
@@ -18,6 +21,9 @@ function redirectAfterSignup(string $accountType): never
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'Session expirée. Merci de réessayer.';
+    } else {
     $fullName = preg_replace('/\s+/', ' ', trim($_POST['full_name'] ?? ''));
     $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
@@ -89,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -109,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label>Type de compte</label>
                     <select name="account_type" id="account_type" required>

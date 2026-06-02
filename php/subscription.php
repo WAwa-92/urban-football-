@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/db.php';
+require __DIR__ . '/csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../Urban Center.html#abonnements');
@@ -8,6 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 if (!empty($_POST['website'] ?? '')) {
     exit('Spam détecté.');
+}
+
+if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
+    exit('Session expirée. Merci de recharger la page.');
 }
 
 $fullName = trim($_POST['full_name'] ?? '');
