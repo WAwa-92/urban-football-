@@ -710,31 +710,30 @@
                 method: 'POST',
                 body: formData,
             });
-            const text = await response.text();
 
-            const isSuccess = response.ok && (
-                text.includes('success') ||
-                text.includes('confirmé') ||
-                text.includes('enregistr')
-            );
+            const data = await response.json();
 
-            if (isSuccess) {
+            if (response.ok && data.success) {
                 showConfirmation();
                 return;
             }
 
-            const lowerText = text.toLowerCase();
-            if (lowerText.includes('déjà réservé') || lowerText.includes('créneau')) {
+            const errorMessage = data.message || 'Une erreur est survenue.';
+            if (errorMessage.toLowerCase().includes('réservé') || errorMessage.toLowerCase().includes('créneau')) {
                 getEl('err-3').textContent = '❌ Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
-                getEl('err-3').classList.add('show');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Confirmer la réservation';
-                return;
+            } else {
+                getEl('err-3').textContent = `❌ ${errorMessage}`;
             }
 
-            showConfirmation();
+            getEl('err-3').classList.add('show');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Confirmer la réservation';
+
         } catch (error) {
-            showConfirmation();
+            getEl('err-3').textContent = '❌ Erreur réseau. Veuillez réessayer.';
+            getEl('err-3').classList.add('show');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Confirmer la réservation';
         }
     });
 

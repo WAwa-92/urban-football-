@@ -1,13 +1,17 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+
 require __DIR__ . '/db.php';
+require __DIR__ . '/send_email.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../Urban Center.html#abonnements');
-    exit;
+    http_response_code(405);
+    exit(json_encode(['success' => false, 'message' => 'Méthode non autorisée.']));
 }
 
 if (!empty($_POST['website'] ?? '')) {
-    exit('Spam détecté.');
+    http_response_code(400);
+    exit(json_encode(['success' => false, 'message' => 'Spam détecté.']));
 }
 
 $firstName = trim($_POST['first_name'] ?? '');
@@ -22,10 +26,12 @@ $playersCount = (int) ($_POST['players_count'] ?? 0);
 $comment = trim($_POST['comment'] ?? '');
 
 if ($firstName === '' || $lastName === '' || $phone === '' || $email === '' || $sportId <= 0 || $terrainId <= 0 || $reservationDate === '' || $reservationTime === '' || $playersCount <= 0) {
-    exit('Veuillez remplir tous les champs obligatoires.');
+    http_response_code(400);
+    exit(json_encode(['success' => false, 'message' => 'Veuillez remplir tous les champs obligatoires.']));
 }
 
 $pdo = getPDO();
+$reservationId = null;
 
 try {
     $pdo->beginTransaction();
@@ -77,31 +83,43 @@ try {
         ':comment' => $comment !== '' ? $comment : null,
     ]);
 
+    $reservationId = (int) $pdo->lastInsertId();
+
     $updateSlot = $pdo->prepare('UPDATE reservation_slots SET status = "reserved" WHERE id = :id');
     $updateSlot->execute([':id' => $slotId]);
 
+    $terrainStmt = $pdo->prepare('SELECT t.name, t.price_per_hour, s.name as sport_name FROM terrains t JOIN sports s ON s.id = t.sport_id WHERE t.id = :id');
+    $terrainStmt->execute([':id' => $terrainId]);
+    $terrainData = $terrainStmt->fetch(PDO::FETCH_ASSOC);
+
     $pdo->commit();
+
+    if ($terrainData) {
+        sendConfirmationEmail(
+            $email,
+            $firstName,
+            $lastName,
+            $terrainData['sport_name'],
+            $terrainData['name'],
+            $reservationDate,
+            $reservationTime,
+            $terrainData['price_per_hour'],
+            $playersCount,
+            $reservationId
+        );
+    }
+
+    http_response_code(201);
+    exit(json_encode([
+        'success' => true,
+        'message' => 'Réservation confirmée avec succès.',
+        'reservation_id' => $reservationId,
+    ]));
+
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    exit($e->getMessage());
+    http_response_code(400);
+    exit(json_encode(['success' => false, 'message' => $e->getMessage()]));
 }
-
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation enregistrée</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
-    <div class="container" style="padding: 60px 20px; text-align: center;">
-        <h1>Réservation enregistrée</h1>
-        <p>Merci, votre réservation a bien été confirmée.</p>
-        <p><a href="../Urban Center.html#abonnements">Retour au site</a></p>
-    </div>
-</body>
-</html>
