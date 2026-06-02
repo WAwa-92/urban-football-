@@ -1,18 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.getElementById('nav-toggle');
   const navMenu = document.getElementById('nav-menu');
+  const mainNav = document.getElementById('main-nav');
   if (navToggle && navMenu) {
+    const closeNav = () => {
+      navMenu.classList.remove('nav-open');
+      navToggle.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+
+    const openNav = () => {
+      navMenu.classList.add('nav-open');
+      navToggle.classList.add('open');
+      navToggle.setAttribute('aria-expanded', 'true');
+      if (window.innerWidth < 900) {
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
     navToggle.addEventListener('click', () => {
-      const isOpen = navMenu.classList.toggle('nav-open');
-      navToggle.classList.toggle('open', isOpen);
-      navToggle.setAttribute('aria-expanded', String(isOpen));
+      const isOpen = navMenu.classList.contains('nav-open');
+      if (isOpen) closeNav();
+      else openNav();
     });
+
     navMenu.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
-        navMenu.classList.remove('nav-open');
-        navToggle.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
+        closeNav();
       });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!navMenu.classList.contains('nav-open')) return;
+      if (!mainNav) return;
+      if (mainNav.contains(event.target)) return;
+      closeNav();
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeNav();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 900) {
+        closeNav();
+      }
     });
   }
   const subToggle = document.getElementById('sub-toggle');
@@ -23,6 +56,79 @@ document.addEventListener('DOMContentLoaded', () => {
       subToggle.classList.toggle('is-open', isOpen);
       subToggle.setAttribute('aria-expanded', String(isOpen));
     });
+  }
+
+  const csrfInputs = Array.from(document.querySelectorAll('input[data-csrf-token]'));
+  if (csrfInputs.length > 0) {
+    const csrfEndpoint = window.location.pathname.includes('/pages/')
+      ? '../php/csrf-token.php'
+      : 'php/csrf-token.php';
+
+    fetch(csrfEndpoint)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Impossible de récupérer le token CSRF');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (!data || !data.token) {
+          return;
+        }
+        csrfInputs.forEach((input) => {
+          input.value = data.token;
+        });
+      })
+      .catch(() => {
+        // En cas d'erreur, la validation serveur bloquera le POST.
+      });
+  }
+
+  if (navMenu) {
+    const isPagesRoute = window.location.pathname.includes('/pages/');
+    const authEndpoint = isPagesRoute ? '../php/auth-status.php' : 'php/auth-status.php';
+
+    fetch(authEndpoint)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Impossible de vérifier la session utilisateur');
+        }
+        return response.json();
+      })
+      .then((auth) => {
+        if (!auth || auth.logged_in !== true) {
+          return;
+        }
+
+        navMenu.querySelectorAll('a').forEach((link) => {
+          const href = (link.getAttribute('href') || '').trim();
+          const isRegisterLink = /(^|\/)register\.php$/i.test(href);
+          const isLoginLink = /(^|\/)login\.php$/i.test(href);
+
+          if (isRegisterLink || isLoginLink) {
+            link.closest('li')?.remove();
+          }
+        });
+
+        const accountHref = auth.role === 'coach'
+          ? (isPagesRoute ? 'coach-dashboard.php' : 'pages/coach-dashboard.php')
+          : (isPagesRoute ? 'my-reservations.html' : 'pages/my-reservations.html');
+
+        const accountLabel = auth.role === 'coach' ? 'Espace Coach' : 'Mes réservations';
+        const logoutHref = isPagesRoute ? 'logout.php' : 'pages/logout.php';
+
+        const accountItem = document.createElement('li');
+        accountItem.innerHTML = `<a href="${accountHref}" class="nav-action-secondary">${accountLabel}</a>`;
+
+        const logoutItem = document.createElement('li');
+        logoutItem.innerHTML = `<a href="${logoutHref}" class="nav-action">Déconnexion</a>`;
+
+        navMenu.appendChild(accountItem);
+        navMenu.appendChild(logoutItem);
+      })
+      .catch(() => {
+        // En cas d'erreur réseau, on garde simplement la nav par défaut.
+      });
   }
 
   const sportsData = [
@@ -71,8 +177,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = Array.from(document.querySelectorAll('nav a[href^="#"]'));
   const sections = Array.from(document.querySelectorAll('section[id]'));
   const galleryImages = Array.from(document.querySelectorAll('.gallery-item img'));
+  const galleryFilterButtons = Array.from(document.querySelectorAll('.filter-btn[data-filter]'));
+  const galleryFilterItems = Array.from(document.querySelectorAll('.gallery-item[data-category]'));
   const stats = Array.from(document.querySelectorAll('.stat-number'));
   const monthBadges = Array.from(document.querySelectorAll('.month-badge'));
+
+  if (galleryFilterButtons.length > 0 && galleryFilterItems.length > 0) {
+    galleryFilterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        galleryFilterButtons.forEach((b) => b.classList.remove('active'));
+        button.classList.add('active');
+
+        const filter = button.dataset.filter || 'all';
+        galleryFilterItems.forEach((item) => {
+          const matches = filter === 'all' || item.dataset.category === filter;
+          item.style.display = matches ? '' : 'none';
+        });
+      });
+    });
+  }
 
   if (reservationDate) {
     const today = new Date();
@@ -195,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
   stats.forEach((stat) => statsObserver.observe(stat));
 
   const revealTargets = document.querySelectorAll(
-    '.container, .gallery-section, .horaire, .activity-card, .testimonial-card, .partner-pill, .card, .contact-form, .stat-box, .process-step, .spotlight-card'
+    '.activity-card, .testimonial-card, .partner-pill, .card, .stat-box, .process-step, .spotlight-card, .install-card, .value-card, .team-card, .news-card, .event-card, .gallery-item'
   );
   revealTargets.forEach((el) => el.classList.add('reveal'));
 

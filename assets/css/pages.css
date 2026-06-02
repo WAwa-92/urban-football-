@@ -10,12 +10,6 @@
     order: 1;
     flex-shrink: 0;
 }
-.nav-cta {
-    padding: 8px 18px !important;
-    font-size: 0.9rem !important;
-    border-radius: 50px;
-    margin-top: 4px;
-}
 
 /* Hero des pages */
 .page-hero {
@@ -394,19 +388,3 @@
 }
 .gallery-grid--lg .gallery-item:hover img { transform: scale(1.06); }
 @media(min-width:768px){ .gallery-grid--lg .gallery-item img { height: 260px; } }
-
-/* Bouton lightbox */
-.lightbox-close {
-    position: absolute;
-    top: 16px; right: 20px;
-    background: rgba(255,255,255,0.14);
-    border: none;
-    color: #fff;
-    font-size: 1.4rem;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
-}
-.lightbox-close:hover { background: rgba(255,255,255,0.25); }

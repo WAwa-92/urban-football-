@@ -3,10 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urban Center Hessi Jerbi </title>
+    <title>Urban Center Hessi Djerbi</title>
     <meta name="description" content="Urban Center Hessi Djerbi : football, tennis, padel, fitness, réservations en ligne et événements sportifs.">
     <meta name="keywords" content="Urban Center, Hessi Djerbi, réservation terrain, football, tennis, padel, fitness">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Urban Center Hassi Djerbi — Complexe sportif">
+    <meta property="og:description" content="Football, padel, tennis, fitness. Réservez votre terrain en ligne à Urban Center Hassi Djerbi.">
+    <meta property="og:image" content="https://urbancenter.tn/assets/img/urban.jpg">
+    <meta property="og:url" content="https://urbancenter.tn/">
+    <meta property="og:locale" content="fr_TN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Urban Center Hassi Djerbi — Complexe sportif">
+    <meta name="twitter:description" content="Football, padel, tennis, fitness. Réservez votre terrain en ligne.">
+    <meta name="twitter:image" content="https://urbancenter.tn/assets/img/urban.jpg">
     <link rel="shortcut icon" href="assets/img/logo.jpg" type="image/x-icon">
+        <link rel="canonical" href="https://urbancenter.tn/">
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsActivityLocation",
+            "name": "Urban Center Hessi Djerbi",
+            "url": "https://urbancenter.tn/",
+            "image": "https://urbancenter.tn/assets/img/urban.jpg",
+            "description": "Complexe sportif moderne avec football, padel, tennis et fitness.",
+            "sameAs": [
+                "https://www.facebook.com/urbancenterhjb",
+                "https://www.instagram.com/urbancenterhjb",
+                "https://www.tiktok.com/@urbancenterhjb"
+            ]
+        }
+        </script>
     <link rel="stylesheet" href="assets/css/style.css">
     
 </head>
@@ -28,6 +54,7 @@
     </div>
 
     <nav id="main-nav">
+        <a href="Urban Center.html" class="nav-brand"><img src="assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
@@ -126,7 +153,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=80" alt="Équipement de padel">
+                    <img src="assets/img/stade.jpg" alt="Stade Urban Center">
                     <span class="month-badge" id="month2">Janvier 2026</span>
                 </div>
                 
@@ -208,8 +235,8 @@
         </div>
     </section>
 
-    <section id="avis" class="container">
-        <h2 class="section-title">Avis clients</h2>
+    <section id="temoignages" class="container">
+        <h2 class="section-title">Témoignages clients</h2>
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <p>“Terrain propre, accueil rapide et réservation facile.”</p>
@@ -310,6 +337,7 @@
                 </div>
 
                 <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
+                <input type="hidden" name="csrf_token" value="" data-csrf-token>
 
                 <button type="submit" class="submit-btn">Demande d'Abonnement</button>
             </form>
@@ -366,6 +394,7 @@
             required
           ></textarea>
                         <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
+                                                <input type="hidden" name="csrf_token" value="" data-csrf-token>
           <input
             type="submit"
             value="Envoyer"
@@ -381,8 +410,23 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Urban Center Hessi Jerbi. Tous droits réservés.</p>
-        <p>Contact : info@urbancenterhjb.com | Téléphone : +XXX XXX XXX XXX</p>
+        <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
+        <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
+            Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
+            &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
+        </p>
+        <p style="margin-top:10px;opacity:0.7;font-size:0.9rem;">
+            <a href="pages/about.html" style="color:#ff7a18;text-decoration:none;">À propos</a> &nbsp;·&nbsp;
+            <a href="pages/installations.html" style="color:#ff7a18;text-decoration:none;">Installations</a> &nbsp;·&nbsp;
+            <a href="pages/events.html" style="color:#ff7a18;text-decoration:none;">Événements</a> &nbsp;·&nbsp;
+            <a href="pages/gallery.html" style="color:#ff7a18;text-decoration:none;">Galerie</a> &nbsp;·&nbsp;
+            <a href="pages/news.html" style="color:#ff7a18;text-decoration:none;">Actualités</a>
+        </p>
+        <p style="margin-top:10px;font-size:0.9rem;">
+            <a href="https://www.facebook.com/urbancenterhjb" target="_blank" rel="noopener" style="color:#4267B2;text-decoration:none;margin-right:12px;">📘 Facebook</a>
+            <a href="https://www.instagram.com/urbancenterhjb" target="_blank" rel="noopener" style="color:#E1306C;text-decoration:none;margin-right:12px;">📸 Instagram</a>
+            <a href="https://www.tiktok.com/@urbancenterhjb" target="_blank" rel="noopener" style="color:#fff;text-decoration:none;">🎵 TikTok</a>
+        </p>
     </footer>
 
     <script src="assets/js/app.js" defer></script>
