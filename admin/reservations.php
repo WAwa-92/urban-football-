@@ -6,37 +6,120 @@ requireAdmin();
 $pdo = getPDO();
 $message = '';
 
-// --- Mise à jour du statut ---
+// --- Mise à jour réservation (statut + jour + heure) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
         $message = 'Session expirée. Merci de réessayer.';
     } else {
-    $reservationId = (int) ($_POST['reservation_id'] ?? 0);
-    $newStatus = $_POST['status'] ?? '';
-    $allowedStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
+        $reservationId = (int) ($_POST['reservation_id'] ?? 0);
+        $newStatus = $_POST['status'] ?? '';
+        $newDate = trim((string) ($_POST['reservation_date'] ?? ''));
+        $newTimeSlotId = (int) ($_POST['time_slot_id'] ?? 0);
+        $allowedStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
 
-    if ($reservationId > 0 && in_array($newStatus, $allowedStatuses, true)) {
-        $pdo->beginTransaction();
+        if (
+            $reservationId > 0
+            && in_array($newStatus, $allowedStatuses, true)
+            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $newDate) === 1
+            && $newTimeSlotId > 0
+        ) {
+            try {
+                $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare('SELECT reservation_slot_id FROM reservations WHERE id = :id LIMIT 1');
-        $stmt->execute([':id' => $reservationId]);
-        $slotId = (int) ($stmt->fetchColumn() ?: 0);
+                $reservationStmt = $pdo->prepare(
+                    'SELECT id, terrain_id, reservation_slot_id
+                     FROM reservations
+                     WHERE id = :id
+                     LIMIT 1
+                     FOR UPDATE'
+                );
+                $reservationStmt->execute([':id' => $reservationId]);
+                $reservation = $reservationStmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($slotId > 0) {
-            $updateReservation = $pdo->prepare('UPDATE reservations SET status = :status WHERE id = :id');
-            $updateReservation->execute([':status' => $newStatus, ':id' => $reservationId]);
+                if (!$reservation) {
+                    throw new RuntimeException('Réservation introuvable.');
+                }
 
-            $slotStatus = ($newStatus === 'confirmed') ? 'reserved' : 'available';
-            $updateSlot = $pdo->prepare('UPDATE reservation_slots SET status = :slot_status WHERE id = :id');
-            $updateSlot->execute([':slot_status' => $slotStatus, ':id' => $slotId]);
+                $terrainId = (int) $reservation['terrain_id'];
+                $oldSlotId = (int) $reservation['reservation_slot_id'];
 
-            $pdo->commit();
-            $message = 'Réservation mise à jour.';
+                $timeSlotCheck = $pdo->prepare('SELECT id FROM time_slots WHERE id = :id LIMIT 1');
+                $timeSlotCheck->execute([':id' => $newTimeSlotId]);
+                if (!(int) $timeSlotCheck->fetchColumn()) {
+                    throw new RuntimeException('Créneau invalide.');
+                }
+
+                $slotStmt = $pdo->prepare(
+                    'SELECT id, status
+                     FROM reservation_slots
+                     WHERE terrain_id = :terrain_id
+                       AND reservation_date = :reservation_date
+                       AND time_slot_id = :time_slot_id
+                     LIMIT 1
+                     FOR UPDATE'
+                );
+                $slotStmt->execute([
+                    ':terrain_id' => $terrainId,
+                    ':reservation_date' => $newDate,
+                    ':time_slot_id' => $newTimeSlotId,
+                ]);
+                $targetSlot = $slotStmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$targetSlot) {
+                    $createSlot = $pdo->prepare(
+                        'INSERT INTO reservation_slots (terrain_id, reservation_date, time_slot_id, status)
+                         VALUES (:terrain_id, :reservation_date, :time_slot_id, "available")'
+                    );
+                    $createSlot->execute([
+                        ':terrain_id' => $terrainId,
+                        ':reservation_date' => $newDate,
+                        ':time_slot_id' => $newTimeSlotId,
+                    ]);
+                    $targetSlotId = (int) $pdo->lastInsertId();
+                } else {
+                    $targetSlotId = (int) $targetSlot['id'];
+                    $targetStatus = (string) $targetSlot['status'];
+
+                    if ($targetSlotId !== $oldSlotId && $targetStatus !== 'available') {
+                        throw new RuntimeException('Ce créneau est déjà réservé.');
+                    }
+                }
+
+                $updateReservation = $pdo->prepare(
+                    'UPDATE reservations
+                     SET status = :status,
+                         reservation_slot_id = :reservation_slot_id
+                     WHERE id = :id'
+                );
+                $updateReservation->execute([
+                    ':status' => $newStatus,
+                    ':reservation_slot_id' => $targetSlotId,
+                    ':id' => $reservationId,
+                ]);
+
+                $newSlotStatus = ($newStatus === 'confirmed') ? 'reserved' : 'available';
+                $updateTargetSlot = $pdo->prepare('UPDATE reservation_slots SET status = :status WHERE id = :id');
+                $updateTargetSlot->execute([
+                    ':status' => $newSlotStatus,
+                    ':id' => $targetSlotId,
+                ]);
+
+                if ($oldSlotId > 0 && $oldSlotId !== $targetSlotId) {
+                    $releaseOldSlot = $pdo->prepare('UPDATE reservation_slots SET status = "available" WHERE id = :id');
+                    $releaseOldSlot->execute([':id' => $oldSlotId]);
+                }
+
+                $pdo->commit();
+                $message = 'Réservation modifiée (statut, jour et heure).';
+            } catch (Throwable $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                $message = $e->getMessage() !== '' ? $e->getMessage() : 'Erreur lors de la mise à jour de la réservation.';
+            }
         } else {
-            $pdo->rollBack();
-            $message = 'Réservation introuvable.';
+            $message = 'Données invalides pour la mise à jour.';
         }
-    }
     }
 }
 
@@ -58,8 +141,12 @@ if ($filterSport !== '') {
     $params[':sport'] = $filterSport;
 }
 if ($filterSearch !== '') {
-    $where[]  = '(r.first_name LIKE :search OR r.last_name LIKE :search OR r.email LIKE :search OR r.phone LIKE :search)';
-    $params[':search'] = '%' . $filterSearch . '%';
+    $where[]  = '(r.first_name LIKE :search_first OR r.last_name LIKE :search_last OR r.email LIKE :search_email OR r.phone LIKE :search_phone)';
+    $searchValue = '%' . $filterSearch . '%';
+    $params[':search_first'] = $searchValue;
+    $params[':search_last'] = $searchValue;
+    $params[':search_email'] = $searchValue;
+    $params[':search_phone'] = $searchValue;
 }
 
 $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -79,7 +166,7 @@ $offset      = ($currentPage - 1) * $perPage;
 $sql = "SELECT r.id, r.first_name, r.last_name, r.phone, r.email, r.players_count, r.comment,
                r.status, r.created_at,
                s.name AS sport_name, t.name AS terrain_name,
-               rs.reservation_date, ts.label AS slot_label
+           rs.reservation_date, ts.id AS time_slot_id, ts.label AS slot_label
         FROM reservations r
         INNER JOIN sports s ON s.id = r.sport_id
         INNER JOIN terrains t ON t.id = r.terrain_id
@@ -100,6 +187,9 @@ $reservations = $stmt->fetchAll();
 
 // Liste des sports pour le filtre
 $sports = $pdo->query('SELECT name FROM sports ORDER BY name')->fetchAll(PDO::FETCH_COLUMN);
+
+// Liste des créneaux pour édition admin
+$timeSlots = $pdo->query('SELECT id, label FROM time_slots ORDER BY start_time ASC')->fetchAll(PDO::FETCH_ASSOC);
 
 // Couleurs des badges de statut
 $badgeStyle = [
@@ -138,6 +228,7 @@ $badgeLabel = [
                 <a class="bt" href="dashboard.php">Retour dashboard</a>
                 <a class="bt" href="events.php">Gérer les événements</a>
                 <a class="bt" href="news.php">Gérer les actualités</a>
+                <a class="bt" href="../Urban Center.html">Voir le site</a>
                 <a class="bt" href="export-reservations.php?<?= http_build_query(array_filter([
                     'status' => $filterStatus,
                     'sport' => $filterSport,
@@ -228,13 +319,23 @@ $badgeLabel = [
                                     <form method="POST" style="display:flex; gap:8px; flex-wrap:wrap;">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
                                         <input type="hidden" name="reservation_id" value="<?= (int) $row['id'] ?>">
+                                        <input type="date" name="reservation_date" value="<?= htmlspecialchars($row['reservation_date']) ?>" required
+                                               style="padding:6px 10px; border-radius:6px; border:1px solid #333; background:#1a1a2e; color:#fff; font-size:0.85rem;">
+                                        <select name="time_slot_id" required
+                                                style="padding:6px 10px; border-radius:6px; border:1px solid #333; background:#1a1a2e; color:#fff; font-size:0.85rem;">
+                                            <?php foreach ($timeSlots as $slot): ?>
+                                                <option value="<?= (int) $slot['id'] ?>" <?= (int) $row['time_slot_id'] === (int) $slot['id'] ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($slot['label']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                         <select name="status" style="padding:6px 10px; border-radius:6px; border:1px solid #333; background:#1a1a2e; color:#fff; font-size:0.85rem;">
                                             <option value="pending"   <?= $row['status'] === 'pending'   ? 'selected' : '' ?>>En attente</option>
                                             <option value="confirmed" <?= $row['status'] === 'confirmed' ? 'selected' : '' ?>>Confirmée</option>
                                             <option value="rejected"  <?= $row['status'] === 'rejected'  ? 'selected' : '' ?>>Refusée</option>
                                             <option value="cancelled" <?= $row['status'] === 'cancelled' ? 'selected' : '' ?>>Annulée</option>
                                         </select>
-                                        <button type="submit" class="submit-btn" style="width:auto; padding:8px 14px; font-size:0.85rem;">Valider</button>
+                                        <button type="submit" class="submit-btn" style="width:auto; padding:8px 14px; font-size:0.85rem;">Enregistrer</button>
                                     </form>
                                 </td>
                             </tr>
@@ -276,6 +377,11 @@ $badgeLabel = [
                 </p>
             <?php endif; ?>
         </div>
+
+        <p style="margin-top:20px; display:flex; gap:14px; flex-wrap:wrap;">
+            <a href="../Urban Center.html">Retour au site public</a>
+            <a href="logout.php">Se déconnecter</a>
+        </p>
     </div>
 </body>
 </html>

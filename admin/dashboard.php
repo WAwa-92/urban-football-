@@ -49,6 +49,7 @@ $recentReservations = $recentStmt->fetchAll();
                 <a class="bt" href="events.php">Gérer les événements</a>
                 <a class="bt" href="news.php">Gérer les actualités</a>
                 <a class="bt" href="export-reservations.php">Exporter CSV</a>
+                <a class="bt" href="../Urban Center.html">Voir le site</a>
             </div>
         </div>
 
@@ -122,7 +123,10 @@ $recentReservations = $recentStmt->fetchAll();
             </div>
         </div>
 
-        <p style="margin-top:20px;"><a href="logout.php">Se déconnecter</a></p>
+        <p style="margin-top:20px; display:flex; gap:14px; flex-wrap:wrap;">
+            <a href="../Urban Center.html">Retour au site public</a>
+            <a href="logout.php">Se déconnecter</a>
+        </p>
     </div>
 </body>
 </html>

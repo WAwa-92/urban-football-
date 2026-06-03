@@ -137,6 +137,7 @@ foreach ($newsList as $newsItem) {
                 <a class="bt" href="dashboard.php">Dashboard</a>
                 <a class="bt" href="reservations.php">Réservations</a>
                 <a class="bt" href="events.php">Événements</a>
+                <a class="bt" href="../Urban Center.html">Voir le site</a>
             </div>
         </div>
 
@@ -252,6 +253,11 @@ foreach ($newsList as $newsItem) {
                 </table>
             </div>
         </div>
+
+        <p style="margin-top:20px; display:flex; gap:14px; flex-wrap:wrap;">
+            <a href="../Urban Center.html">Retour au site public</a>
+            <a href="logout.php">Se déconnecter</a>
+        </p>
     </div>
 </body>
 </html>

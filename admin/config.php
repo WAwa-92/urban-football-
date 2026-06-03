@@ -1,7 +1,9 @@
 <?php
-require __DIR__ . '/../php/db.php';
+require_once __DIR__ . '/../php/db.php';
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 function ensureDefaultAdmin(PDO $pdo): void
 {
@@ -36,7 +38,7 @@ function ensureDefaultAdmin(PDO $pdo): void
 function requireAdmin(): void
 {
     if (empty($_SESSION['admin_user'])) {
-        header('Location: login.php');
+        header('Location: ../pages/login.php');
         exit;
     }
 }

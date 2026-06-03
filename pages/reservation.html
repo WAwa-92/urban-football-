@@ -277,8 +277,8 @@
         <li><a href="events.html">Événements</a></li>
         <li><a href="gallery.html">Galerie</a></li>
         <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
-        <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
         <li><a href="login.php" class="nav-action">Se connecter</a></li>
+        <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
         <li><a href="reservation.html" class="nav-action nav-action-reserve nav-active">Réserver</a></li>
     </ul>
 </nav>
@@ -422,7 +422,7 @@
     <div class="resa-confirm" id="resa-confirm">
         <div class="confirm-icon">🎉</div>
         <h2>Réservation confirmée !</h2>
-        <p>Votre réservation a bien été enregistrée. Vous serez contacté(e) par téléphone pour confirmation finale.</p>
+        <p id="confirm-text">Votre réservation a bien été enregistrée. Vous serez contacté(e) par téléphone pour confirmation finale.</p>
         <a href="../Urban Center.html" class="bt" style="display:inline-block; margin-right:10px;">Retour à l'accueil</a>
         <a href="reservation.html" class="bt bt-secondary" style="display:inline-block;">Nouvelle réservation</a>
     </div>
@@ -431,16 +431,9 @@
 
 <footer>
     <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
-    <p style="margin-top:8px;opacity:0.7;font-size:0.9rem;">
-        <a href="../Urban Center.html" style="color:#ff7a18;text-decoration:none;">Accueil</a> &nbsp;·&nbsp;
-        <a href="installations.html" style="color:#ff7a18;text-decoration:none;">Installations</a> &nbsp;·&nbsp;
-        <a href="gallery.html" style="color:#ff7a18;text-decoration:none;">Galerie</a> &nbsp;·&nbsp;
-        <a href="../Urban Center.html#contactez-nous" style="color:#ff7a18;text-decoration:none;">Contact</a>
-    </p>
-    <p style="margin-top:10px;font-size:0.9rem;">
-        <a href="https://www.facebook.com/urbancenterhjb" target="_blank" rel="noopener" style="color:#4267B2;text-decoration:none;margin-right:12px;">📘 Facebook</a>
-        <a href="https://www.instagram.com/urbancenterhjb" target="_blank" rel="noopener" style="color:#E1306C;text-decoration:none;margin-right:12px;">📸 Instagram</a>
-        <a href="https://www.tiktok.com/@urbancenterhjb" target="_blank" rel="noopener" style="color:#fff;text-decoration:none;">🎵 TikTok</a>
+    <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
+        Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
+        &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
     </p>
 </footer>
 
@@ -639,12 +632,16 @@
         getEl('f-time').value = booking.slot;
     }
 
-    function showConfirmation() {
-        const wrap = document.querySelector('.resa-wrap');
+    function showConfirmation(message) {
         const stepper = document.querySelector('.stepper');
-        if (wrap) wrap.style.display = 'none';
+        document.querySelectorAll('.step-panel').forEach((panel) => {
+            panel.style.display = 'none';
+        });
         if (stepper) stepper.style.display = 'none';
 
+        if (message && getEl('confirm-text')) {
+            getEl('confirm-text').textContent = message;
+        }
         getEl('resa-confirm').classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -728,7 +725,8 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                showConfirmation();
+                const confirmationMessage = data.message || 'Votre réservation a bien été enregistrée.';
+                showConfirmation(confirmationMessage);
                 return;
             }
 

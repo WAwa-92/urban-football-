@@ -1,12 +1,18 @@
 <?php
+// Redirection vers la page de connexion unifiée
+header('Location: ../pages/login.php', true, 301);
+exit;
+
+// ---- Code conservé ci-dessous pour référence (plus utilisé) ----
 require __DIR__ . '/config.php';
 require __DIR__ . '/../php/csrf.php';
 
 $pdo = getPDO();
 ensureDefaultAdmin($pdo);
 $error = '';
+$isAdminLoggedIn = isset($_SESSION['admin_user']) && is_array($_SESSION['admin_user']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdminLoggedIn) {
     if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
         $error = 'Session expirée. Merci de réessayer.';
     } else {
@@ -48,24 +54,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container" style="max-width: 520px; margin-top: 80px;">
         <div class="contact-form" style="max-width: 100%;">
             <h1 class="section-title" style="font-size: 2rem; margin-bottom: 20px;">Back Office</h1>
-            <p style="margin-bottom: 20px; color: #666;">Connectez-vous pour gérer les réservations et les événements.</p>
-            <?php if ($error !== ''): ?>
-                <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
+            <?php if ($isAdminLoggedIn): ?>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Vous êtes déjà connecté en tant que <?php echo htmlspecialchars((string) ($_SESSION['admin_user']['full_name'] ?? 'Administrateur')); ?>.
+                </p>
+                <p style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 16px;">
+                    <a class="bt" href="dashboard.php">Aller au dashboard</a>
+                    <a class="bt" href="logout.php">Se déconnecter</a>
+                </p>
+            <?php else: ?>
+                <p style="margin-bottom: 20px; color: #666;">Connectez-vous pour gérer les réservations et les événements.</p>
+                <?php if ($error !== ''): ?>
+                    <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
+                <?php endif; ?>
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Se connecter</button>
+                </form>
+                <p style="margin-top: 18px; color: #666; font-size: 0.95rem;">
+                    Compte initial : admin@urbancenter.com / Admin123!
+                </p>
             <?php endif; ?>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" name="password" required>
-                </div>
-                <button type="submit" class="submit-btn">Se connecter</button>
-            </form>
-            <p style="margin-top: 18px; color: #666; font-size: 0.95rem;">
-                Compte initial : admin@urbancenter.com / Admin123!
+            <p style="margin-top: 10px;">
+                <a href="../Urban Center.html" style="color:#1e3c72; font-weight:700;">Retour au site</a>
+                &nbsp;·&nbsp;
+                <a href="../pages/login.php" style="color:#1e3c72; font-weight:700;">Connexion utilisateur / coach</a>
+                &nbsp;·&nbsp;
+                <a href="../pages/register.php" style="color:#1e3c72; font-weight:700;">Inscription utilisateur / coach</a>
             </p>
         </div>
     </div>

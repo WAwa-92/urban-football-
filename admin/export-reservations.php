@@ -21,8 +21,12 @@ if ($filterSport !== '') {
     $params[':sport'] = $filterSport;
 }
 if ($filterSearch !== '') {
-    $where[] = '(r.first_name LIKE :search OR r.last_name LIKE :search OR r.email LIKE :search OR r.phone LIKE :search)';
-    $params[':search'] = '%' . $filterSearch . '%';
+    $where[] = '(r.first_name LIKE :search_first OR r.last_name LIKE :search_last OR r.email LIKE :search_email OR r.phone LIKE :search_phone)';
+    $searchValue = '%' . $filterSearch . '%';
+    $params[':search_first'] = $searchValue;
+    $params[':search_last'] = $searchValue;
+    $params[':search_email'] = $searchValue;
+    $params[':search_phone'] = $searchValue;
 }
 
 $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';

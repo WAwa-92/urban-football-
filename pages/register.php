@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="login.php" style="color:#1e3c72; font-weight:700;">Se connecter</a>
             </p>
             <p style="margin-top: 8px;">
-                <a href="../admin/login.php" style="color:#1e3c72; font-weight:700;">Connexion administrateur</a>
+                <a href="login.php" style="color:#1e3c72; font-weight:700;">Se connecter</a>
             </p>
         </div>
     </div>

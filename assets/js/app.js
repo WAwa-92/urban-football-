@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     navToggle.addEventListener('click', () => {
-      const isOpen = navMenu.classList.contains('nav-open');
+      const isOpen = navMenu.classList.contains('nav-open'); 
       if (isOpen) closeNav();
       else openNav();
     });
