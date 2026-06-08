@@ -30,7 +30,6 @@ cmsRenderHeader('Tableau de bord', 'Vue d’ensemble du contenu à préparer et 
                 <div class="cms-hero">
                     <span class="cms-chip info">Plan de travail</span>
                     <h3>Ce qui est déjà prêt</h3>
-                    <p>La base technique est posée : auth, BDD, bibliothèque média et calendrier éditorial peuvent maintenant être alimentés progressivement sans donner un rendu trop “généré”.</p>
                 </div>
                 <div class="cms-actions" style="margin-top:18px;">
                     <a class="cms-button" href="/Urban-Center-main/social-cms/pages/media-library.php">Ajouter un média</a>
