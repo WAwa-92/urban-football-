@@ -1,9 +1,14 @@
+//ce fichier 
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>http://localhost:8888/Urban-Center-main/Urban%20Center.html</loc></url>
-  <url><loc>http://localhost:8888/Urban-Center-main/pages/about.html</loc></url>
-  <url><loc>http://localhost:8888/Urban-Center-main/pages/installations.html</loc></url>
-  <url><loc>http://localhost:8888/Urban-Center-main/pages/events.html</loc></url>
-  <url><loc>http://localhost:8888/Urban-Center-main/pages/gallery.html</loc></url>
-  <url><loc>http://localhost:8888/Urban-Center-main/pages/news.html</loc></url>
+  <url><loc>https://urbancenter.tn/</loc></url>
+  <url><loc>https://urbancenter.tn/pages/about.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/installations.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/events.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/gallery.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/news.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/reservation.html</loc></url>
+  <url><loc>https://urbancenter.tn/pages/login.php</loc></url>
+  <url><loc>https://urbancenter.tn/pages/register.php</loc></url>
 </urlset>

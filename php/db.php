@@ -133,13 +133,17 @@ function ensureCoreTables(PDO $pdo): void
             full_name VARCHAR(120) NOT NULL,
             email VARCHAR(150) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
-            role ENUM('admin', 'manager', 'super_admin') NOT NULL DEFAULT 'admin',
+            role ENUM('admin', 'manager', 'content_manager', 'super_admin') NOT NULL DEFAULT 'admin',
             status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
             last_login_at TIMESTAMP NULL DEFAULT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
+
+    if (adminUsersRoleNeedsUpdate($pdo)) {
+        $pdo->exec("ALTER TABLE admin_users MODIFY role ENUM('admin', 'manager', 'content_manager', 'super_admin') NOT NULL DEFAULT 'admin'");
+    }
 
     $pdo->exec(
         "CREATE TABLE IF NOT EXISTS users (
@@ -220,6 +224,8 @@ function ensureCoreTables(PDO $pdo): void
             INDEX idx_contact_email (email)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
+
+    ensureSocialCmsTables($pdo);
 }
 
 function tableHasColumn(PDO $pdo, string $tableName, string $columnName): bool
@@ -403,4 +409,141 @@ function ensureNewsTable(PDO $pdo): void
             INDEX idx_news_published_at (published_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
+}
+
+function adminUsersRoleNeedsUpdate(PDO $pdo): bool
+{
+    $stmt = $pdo->prepare('SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table_name AND COLUMN_NAME = :column_name LIMIT 1');
+    $stmt->execute([
+        ':table_name' => 'admin_users',
+        ':column_name' => 'role',
+    ]);
+
+    $columnType = (string) $stmt->fetchColumn();
+
+    return $columnType !== '' && stripos($columnType, 'content_manager') === false;
+}
+
+function ensureSocialCmsTables(PDO $pdo): void
+{
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_media_library (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(180) NOT NULL,
+            original_name VARCHAR(255) NOT NULL,
+            file_name VARCHAR(255) NOT NULL,
+            file_path VARCHAR(255) NOT NULL,
+            file_type ENUM('image', 'video', 'document', 'other') NOT NULL DEFAULT 'image',
+            category VARCHAR(80) NOT NULL DEFAULT 'Général',
+            file_size INT UNSIGNED NOT NULL DEFAULT 0,
+            uploaded_by VARCHAR(120) NULL,
+            uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_cms_media_type (file_type),
+            INDEX idx_cms_media_category (category),
+            INDEX idx_cms_media_uploaded_at (uploaded_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_editorial_calendar (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(180) NOT NULL,
+            content TEXT NOT NULL,
+            platform VARCHAR(120) NOT NULL,
+            activity VARCHAR(120) NOT NULL,
+            audience VARCHAR(120) NOT NULL,
+            scheduled_date DATE NOT NULL,
+            scheduled_time TIME NULL,
+            status ENUM('draft', 'scheduled', 'published') NOT NULL DEFAULT 'draft',
+            created_by VARCHAR(120) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_cms_calendar_status (status),
+            INDEX idx_cms_calendar_date (scheduled_date),
+            INDEX idx_cms_calendar_platform (platform)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_social_posts (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            post_title VARCHAR(180) NOT NULL,
+            content TEXT NOT NULL,
+            hashtags VARCHAR(255) NOT NULL,
+            platform VARCHAR(120) NOT NULL,
+            activity VARCHAR(120) NOT NULL,
+            audience VARCHAR(120) NOT NULL,
+            source ENUM('manual', 'generated', 'ai') NOT NULL DEFAULT 'manual',
+            created_by VARCHAR(120) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_cms_posts_platform (platform),
+            INDEX idx_cms_posts_source (source),
+            INDEX idx_cms_posts_created_at (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_content_templates (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            platform VARCHAR(120) NOT NULL,
+            template_text TEXT NOT NULL,
+            is_default TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uniq_template_name (name),
+            INDEX idx_cms_templates_platform (platform)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_analytics (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            post_id INT UNSIGNED NULL,
+            metric_date DATE NOT NULL,
+            likes_count INT UNSIGNED NOT NULL DEFAULT 0,
+            shares_count INT UNSIGNED NOT NULL DEFAULT 0,
+            comments_count INT UNSIGNED NOT NULL DEFAULT 0,
+            reach_count INT UNSIGNED NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_cms_analytics_date (metric_date),
+            INDEX idx_cms_analytics_post (post_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS cms_notifications (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(180) NOT NULL,
+            message TEXT NOT NULL,
+            type ENUM('info', 'success', 'warning') NOT NULL DEFAULT 'info',
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_cms_notifications_read (is_read),
+            INDEX idx_cms_notifications_type (type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $templateCount = (int) $pdo->query('SELECT COUNT(*) FROM cms_content_templates')->fetchColumn();
+    if ($templateCount === 0) {
+        $stmt = $pdo->prepare('INSERT INTO cms_content_templates (name, platform, template_text, is_default) VALUES (:name, :platform, :template_text, :is_default)');
+        $defaults = [
+            ['Visite Facebook', 'Facebook', "📣 Découvrez notre activité du jour chez Urban Center. Ambiance sportive, bonne humeur et esprit d'équipe au rendez-vous.", 1],
+            ['Story Instagram', 'Instagram', "Une belle énergie aujourd'hui sur le terrain ! Réservez votre créneau et venez vivre l'expérience Urban Center.", 1],
+            ['Annonce LinkedIn', 'LinkedIn', "Urban Center met en avant ses activités sportives et ses événements pour renforcer sa communication digitale.", 0],
+        ];
+
+        foreach ($defaults as $template) {
+            $stmt->execute([
+                ':name' => $template[0],
+                ':platform' => $template[1],
+                ':template_text' => $template[2],
+                ':is_default' => $template[3],
+            ]);
+        }
+    }
 }

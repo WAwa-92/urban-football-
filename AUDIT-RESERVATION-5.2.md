@@ -1,5 +1,16 @@
 # ✅ AUDIT SYSTÈME DE RÉSERVATION EN LIGNE - 5.2
 
+> ## ✅ MISE À JOUR DE RÉFÉRENCE — 3 juin 2026
+>
+> **Conformité 5.2**: **100% fonctionnelle**.  
+> **Parcours**: sélection sport/terrain/date/créneau + informations client + envoi sécurisé.  
+> **Concurrence réservations**: lock transactionnel (`FOR UPDATE`) + rollback si conflit.  
+> **Admin**: modification statut/jour/heure + filtres/recherche/pagination + export.  
+> **Retour utilisateur**: confirmation affichée correctement après réservation (UI validée).  
+> **Sécurité**: CSRF + validations serveur + anti-spam honeypot.
+>
+> ⚠️ Le contenu détaillé ci-dessous est conservé comme historique technique.
+
 ## Vue d'ensemble
 Le système de réservation en ligne a été complètement audité et amélioré pour garantir la conformité avec le cahier des charges 5.2 (Réservation en ligne).
 

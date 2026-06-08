@@ -1,5 +1,20 @@
 # 📋 AUDIT COMPLET CAHIER DES CHARGES
 
+> ## ✅ MISE À JOUR DE RÉFÉRENCE — 3 juin 2026
+>
+> **État global du projet**: **~93-95% conforme** (prêt démo / soutenance).  
+> **Back-office**: dashboard + réservations (filtres/recherche/pagination/édition) + événements + actualités + export CSV.  
+> **Réservation**: complète et conforme 5.2 (créneaux, blocage auto, confirmation, historique).  
+> **Authentification**: connexion unifiée (joueur/coach/admin) avec redirection par rôle.  
+> **UX/UI**: navigation harmonisée + footer simplifié + confirmation visible après réservation.  
+> **Sécurité**: CSRF actif + transactions SQL + corrections de session/includes.
+>
+> ### Reste à faire (non bloquant soutenance)
+> - Durcissement production (monitoring, backups, rate-limit, infra).
+> - SEO avancé (Analytics/Search Console, optimisation continue).
+>
+> ⚠️ Le contenu ci-dessous est un historique d’audit partiel antérieur et peut contenir des statuts dépassés.
+
 **Date**: 2 juin 2026  
 **Projet**: Urban Center - Complexe sportif moderne  
 **État**: En cours d'implémentation  
@@ -51,7 +66,6 @@ Le projet est **~85% conforme** au cahier des charges. Les éléments essentiels
 
 **CDC**: Joueurs football/tennis, équipes, entreprises, parents
 
-**Status**: ✅ CONFORME
 
 **Pages ciblées**:
 1. **Joueurs individuels**:
@@ -66,7 +80,6 @@ Le projet est **~85% conforme** au cahier des charges. Les éléments essentiels
    - Réservation → Choix nombre joueurs
 
 3. **Entreprises événements**:
-   - Page about → "Événements sportifs"
    - Page events → Listing tournois/challenges
    - Abonnement section → Options flexibles
 
@@ -81,37 +94,25 @@ Le projet est **~85% conforme** au cahier des charges. Les éléments essentiels
    - Témoignages (valeurs section)
 
 **Notes**:
-- Chaque public a accès à ce qui le concerne
 - Pas de surcharge d'info
-- CTA clairs vers réservation
-
----
-
 ### 3️⃣ OBJECTIFS DU SITE
 
 #### 3A. Objectifs Marketing
 
 **CDC**: Visibilité, réservations, valorisation, événements
 
-**Status**: ⚠️ PARTIELLEMENT CONFORME (75%)
-
 | Objectif | Status | Détail |
 |----------|--------|--------|
-| Augmenter visibilité | ⚠️ LIMITÉ | SEO basique (voir section 8) |
 | Générer réservations | ✅ OUI | Page réservation + email confirmé |
 | Valoriser infrast. | ✅ OUI | Page installations avec photos |
 | Présenter événements | ✅ OUI | Page events + gestion admin |
-
 **Manques**:
-- ⚠️ Pas de Google Analytics intégré (à ajouter)
 - ⚠️ Pas de newsletter/mailing list
 - ⚠️ Pas de page "témoignages" dédiée (juste section about)
 - ⚠️ Pas de partenaires visibles (section "partenaires" CDC mentionnée)
 
-#### 3B. Objectifs Fonctionnels
 
 **CDC**: Réservation simple, consultation dispos, gestion demandes, admin centralisée
-
 **Status**: ✅ CONFORME (90%)
 
 | Objectif | Status | Détail |
@@ -119,18 +120,9 @@ Le projet est **~85% conforme** au cahier des charges. Les éléments essentiels
 | Réservation simple | ✅ OUI | 3-étapes, AJAX, validation |
 | Consultation dispos | ✅ OUI | Créneaux bloqués automatiquement |
 | Gestion demandes | ✅ OUI | Contact form + historique réservations |
-| Admin centralisée | ⚠️ BASIQUE | Dashboard OK, mais peu de filtres/search |
 
 **Manques**:
-- ⚠️ Admin: pas de pagination sur réservations si >50
-- ⚠️ Admin: pas de filtrage/recherche avancée
-- ⚠️ Admin: pas de statistiques détaillées (revenu par sport, etc.)
 
----
-
-### 4️⃣ ARBORESCENCE DU SITE
-
-**CDC**: Structure complète avec pages spécifiques
 
 **Status**: ✅ CONFORME (90%)
 
