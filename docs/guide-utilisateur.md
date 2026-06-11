@@ -24,73 +24,116 @@
 
 ---
 
-## Espace Social CMS (Content Manager)
+## Espace Social CMS (Pour les Community Managers)
 
-### Accès
-1. Accéder à `/social-cms/pages/login.php`
-2. Se connecter avec compte `content_manager`
-3. Redirection vers dashboard CMS
+### Comment se connecter
+Rendez-vous sur `/social-cms/pages/login.php` avec votre login de content manager. Une fois connecté, vous arrivez sur le dashboard avec tous les outils pour gérer les réseaux sociaux de Urban Center.
 
-### Modules disponibles
-- **Bibliothèque multimédia** : upload & gestion des images/vidéos/PDFs
-- **Calendrier éditorial** : planification des publications
-- **Générateur de contenu** : création intelligente de posts
-- **Analytics** : suivi des publications
+### Les 4 outils à connaître
 
-### 1) Utiliser la Bibliothèque multimédia
-1. Cliquer sur **Bibliothèque Multimédia**.
-2. Drag-drop ou sélectionner des fichiers (JPEG, PNG, MP4, PDF max 50MB).
-3. Renseigner catégorie (Photos, Vidéos, Flyers, Logos, Affiches).
-4. Attendre confirmation d'upload.
-5. Retrouver le média en grille (filtrer par catégorie, chercher par titre).
-6. Supprimer si besoin avec le bouton trash.
+**Bibliothèque Multimédia** — C'est votre classeur photo/vidéo. Vous y mettez tous les visuels (photos des terrains, vidéos de tournois, logos, affiches).
 
-### 2) Générer du contenu (avec IA)
-1. Cliquer sur **Générateur de contenu**.
-2. Renseigner le formulaire :
-   - **Activité** : Foot, Tennis, Padel, Yoga, Fitness, etc.
-   - **Date** : date de publication prévue
-   - **Public visé** : Tous publics, Enfants, Adultes, Confirmés
-   - **Plateforme** : cocher Facebook / Instagram / TikTok / LinkedIn
-3. Cliquer **Générer**.
-4. Vérifier le résultat :
-   - **Titre** : accroche courte
-   - **Contenu** : texte adapté à la plateforme
-   - **Hashtags** : mots-clés pertinents (6-12)
-   - **Source** : `ai` (OpenAI) ou `generated` (local)
-5. Copier ou modifier avant de programmer.
+**Générateur de Contenu** — L'outil malin qui crée automatiquement les posts pour vous. Vous dites "foot ce samedi" et il génère un texte prêt à poster sur Insta, Facebook, etc.
 
-**Note** : Chaque plateforme a un ton/style différent :
-- **Instagram** : focus sur le visuel, CTA engagement, emojis sport
-- **Facebook** : format événement, détails pratiques
-- **TikTok** : hook accrocheur, trend-focused, jeunesse
-- **LinkedIn** : ton corporate, professionnalisme
+**Calendrier Éditorial** — Vous programmez vos publications ici. Les posts en brouillon, ceux à venir, ceux déjà publiés. Tout au même endroit.
 
-### 3) Planifier une publication
-1. Cliquer sur **Calendrier Éditorial**.
-2. Créer nouveau post :
-   - Titre et contenu (copier-coller du générateur)
-   - Plateforme(s) cibles
-   - Date et heure prévues
-   - Statut : `draft` (brouillon) ou `scheduled` (programmé)
-3. Sauvegarder.
-4. Voir en calendrier mensuel ou liste.
-5. Avant publication, passer status à `scheduled` ou `published`.
+**Analytics** — Pour voir si ça marche. Combien de posts créés cette semaine, quelle plateforme cartonne le plus, etc.
 
-### 4) Consulter les statistiques
-1. Cliquer sur **Analytics**.
-2. Voir graphiques :
-   - Nombre total de posts
-   - Répartition par plateforme (Facebook/IG/TikTok/LinkedIn)
-   - Répartition par activité (Foot/Tennis/Padel/etc.)
-3. Tableaux d'engagement (si API synchronisation active).
+---
 
-### Vérifier que la génération fonctionne (pour Admin)
-- Ouvrir les outils navigateur (F12) puis l'onglet **Network**.
-- Relancer une génération.
-- Vérifier la requête vers `/api/generate-content.php`.
-- Contrôler la réponse JSON : `title`, `content`, `hashtags`, `source`.
+### Stocker vos médias (images, vidéos)
 
-**Interprétation du champ `source`** :
-- `ai` = génération via OpenAI (IA activée, plus créative).
-- `generated` = fallback local (IA indisponible, générateur templé).
+La première chose : avoir de beaux visuels. C'est simple.
+
+1. Allez dans **Bibliothèque Multimédia**
+2. Glissez-déposez vos fichiers (ou cliquez pour sélectionner)
+3. Sélectionnez la catégorie : Photos, Vidéos, Flyers, etc.
+4. C'est uploadé ! Le fichier apparaît en grille avec les autres
+
+Vous pouvez ensuite filtrer par catégorie pour retrouver vos images rapidement, ou chercher par titre si vous avez nommé vos fichiers intelligemment (ex: "Tournoi foot juin", "Logo Urban").
+
+**Points importants** :
+- Taille max : 50MB (normalement c'est large pour vos fichiers)
+- Formats supportés : JPEG, PNG, MP4 (vidéo), PDF
+- Si vous envoyez un fichier .exe ou un truc bizarrre, ça sera rejeté pour des raisons de sécu
+
+---
+
+### Générer du contenu pour vos réseaux
+
+C'est le cœur du système. Vous décrivez ce que vous voulez, et l'IA génère un post adapté à chaque plateforme.
+
+**Le workflow** :
+1. Cliquez sur **Générateur de contenu**
+2. Remplissez rapidement :
+   - **Activité** : Foot, Tennis, Padel, Yoga, Fitness (ce que vous proposez)
+   - **Date** : quand ça a lieu ou quand vous voulez publier
+   - **Public** : Tous, Enfants, Adultes, ou Confirmés
+   - **Plateforme(s)** : cochez Facebook, Instagram, TikTok, LinkedIn (ou plusieurs)
+3. Tapez **Générer**
+4. Hop ! Un post s'affiche avec :
+   - Un titre accrocheur
+   - Un texte adapté à la plateforme
+   - Des hashtags pertinents (6-12 selon le réseau)
+   - La source : "ai" si OpenAI a généré, "generated" si c'est le fallback
+
+**Exemple concret** :
+- Vous générez pour Instagram → ton fun, emojis, call-to-action "Venez tenter !"
+- Vous générez pour Facebook → plus formel, détails d'horaires, infos pratiques
+- Vous générez pour TikTok → hook accrocheur "Vous pensez faire 5-0 au padel ?", ton jeunesse
+- Vous générez pour LinkedIn → ton professionnel "Rejoignez notre communauté d'athlètes"
+
+Chaque plateforme a sa personnalité. Le système le sait et adapte.
+
+**Astuce** : Vous pouvez copier le résultat et le modifier avant de programmer. C'est jamais 100% parfait, mais c'est un super point de départ pour gagner du temps.
+
+---
+
+### Programmer vos publications
+
+Une fois que vous avez un texte qui vous plaît, vous le mettez en calendrier.
+
+1. Allez dans **Calendrier Éditorial**
+2. Créez un nouveau post :
+   - Collez votre texte
+   - Choisissez la/les plateforme(s)
+   - Dites quelle date/heure
+   - Statut : "draft" (brouillon) si vous êtes pas encore sûr, "scheduled" sinon
+3. Sauvegardez
+4. Voir votre post au calendrier (vue mensuelle ou liste)
+5. Avant de publier, vérifiez que c'est bon, puis changez le statut à "published"
+
+Vous pouvez aussi modifier un post déjà programmé si vous changez d'avis.
+
+---
+
+### Regarder les stats
+
+Pour savoir si ça marche ou pas.
+
+1. Allez dans **Analytics**
+2. Vous verrez des graphiques :
+   - Combien de posts créés
+   - Quelle plateforme revient le plus souvent
+   - Quel type d'activité (foot, tennis, etc.) est le plus publié
+
+C'est simple mais utile pour repérer les tendances et voir si vous communiquez équilibré sur toutes les activités.
+
+---
+
+### Déboguer la génération (si quelque chose cloche)
+
+Si la génération ne marche pas comme prévu, voici comment regarder ce qui se passe sous le capot.
+
+1. Ouvrez les outils du navigateur avec F12
+2. Allez dans l'onglet **Network**
+3. Lancez une génération
+4. Cherchez la requête `POST /social-cms/api/generate-content.php`
+5. Regardez la réponse. Ça devrait montrer :
+   - `title` : le titre généré
+   - `content` : le texte
+   - `hashtags` : les mots-clés
+   - `source` : "ai" ou "generated"
+
+**Si source = "ai"** : L'API OpenAI a marché, c'est du vrai contenu IA.
+**Si source = "generated"** : L'API OpenAI n'était pas dispo (ou clé manquante), donc le système utilise des templates prédéfinis. C'est moins créatif mais ça marche.

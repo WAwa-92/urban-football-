@@ -2,269 +2,235 @@
 ## Urban Center Sport & Leisure Complex
 
 **Date**: 11 Juin 2026  
-**Auteur**: [À remplir - Developpeur Stagiaire]  
-**Client**: Urban Center Management  
-**Signature**: _______________ (Employeur/Maître de stage)
+**Développé par**: [À remplir - Stagiaire]  
+**Client**: Urban Center  
+**À signer par**: Patron/Maître de stage
 
 ---
 
-## 1. CONTEXTE & BESOINS INITIAUX
+## Le contexte (pourquoi on a besoin de ça)
 
-### 1.1 Objectif du projet
-Créer un système de gestion de contenu social (Social CMS) pour centraliser la création, la planification et la publication de posts sur les réseaux sociaux (Facebook, Instagram, TikTok, LinkedIn) de l'Urban Center.
+Urban Center gère un complexe sportif avec plein d'activités (foot, tennis, padel, yoga, fitness, etc.). Avant, la communication sur les réseaux sociaux c'était : pas vraiment organisé, pas cohérent, prise de tête.
 
-### 1.2 Problématique initiale
-- Avant : Publications manuelles, sans cohérence
-- Besoin : Plateforme unifiée avec générateur IA
-- Timeline : Développé en 2 mois (internship)
+L'objectif ? Créer une plateforme centralisée où les community managers peuvent :
+- Créer du contenu intelligemment (avec aide IA)
+- Programmer les publications à l'avance
+- Publier sur Facebook, Instagram, TikTok et LinkedIn en un clic
+- Suivre ce qui marche et ce qui marche pas
 
-### 1.3 Profils utilisateurs
-- **Super Admin** : Accès complet, gestion infrastructure
-- **Admin** : Gestion users, configuration APIs
-- **Manager** : Validation contenu, suivi analytics
-- **Content Manager** : Création contenu, programmation posts
-- **Disabled** : Compte désactivé, accès refusé
+**Délai** : Tout ça en 2 mois de stage.
 
 ---
 
-## 2. SOLUTIONS APPORTÉES
+## Qui utilise quoi ?
 
-### 2.1 Architecture globale
-- **Backend** : PHP 7.4+ (MAMP)
-- **Database** : MySQL via PDO
-- **Frontend** : HTML/CSS/JavaScript, Bootstrap 5
-- **APIs intégrées** : OpenAI (GPT-4o-mini), Ayrshare (multi-platform publishing)
-
-### 2.2 Modules implémentés
-
-#### **Bibliothèque Multimédia**
-- Upload drag-drop (images, vidéos, PDFs)
-- Validation fichiers (type MIME, taille max 50MB)
-- Stockage sécurisé `/social-cms/uploads/`
-- Filtrage par catégorie (Photos, Vidéos, Flyers, Logos, Affiches)
-- Recherche par titre
-- Suppression avec confirmation
-
-#### **Calendrier Éditorial**
-- Vue mensuelle (FullCalendar.js)
-- Vue liste avec filtres (status: draft/scheduled/published)
-- CRUD complet (Create, Read, Update, Delete posts)
-- Programmation par date/heure
-- Statuts : draft → scheduled → published
-
-#### **Générateur de Contenu (IA-augmenté)**
-- Formulaire : activité, date, public, plateforme(s)
-- Génération locale (fallback) : templates + hashtags
-- Génération OpenAI : 3-6 lignes, 6-12 hashtags, copywriting pro
-- **Platform-specific output** :
-  - Instagram : casual, emojis, #Instagram tags
-  - Facebook : détails pratiques, format événement
-  - TikTok : ton jeunesse, trend, hook accrocheur
-  - LinkedIn : ton corporate, professionnel
-- Emojis sport : ⚽🎾💪🔥 adapté à l'activité
-
-#### **Publication Multi-plateforme (Ayrshare)**
-- Single-endpoint REST API
-- Support : Facebook, Instagram, TikTok, LinkedIn (+ Twitter, Pinterest, etc.)
-- Stockage tracking : `ayrshare_post_id`, `ayrshare_synced_at`
-- Gestion erreurs : 422, 502, 404
-
-#### **Analytics Dashboard**
-- Graphiques Chart.js :
-  - Nombre de posts créés (timeline)
-  - Répartition par plateforme (pie chart)
-  - Répartition par activité (bar chart)
-- Statut publications (brouillons, programmés, publiés)
-
-#### **Gestion Utilisateurs CMS**
-- CRUD pour content_managers
-- Assignation de rôles
-- Activation/désactivation comptes
-- Permissions par rôle (RBAC)
-
-#### **Notifications Système**
-- Table `cms_notifications`
-- Déclencheurs : "Publication programmée", "Contenu à préparer", "Post publié"
-- Affichage dashboard
-
-### 2.3 Sécurité
-- **CSRF Protection** : tokens validés sur tous POST/PUT/DELETE
-- **SQL Injection** : requêtes paramétrées (PDO prepared)
-- **XSS Prevention** : HTML escaping à l'affichage
-- **Auth/Autho** : session-based, role-based access control
-- **Env Variables** : secrets via `cmsEnv()` helper, pas de hardcoding
+- **Super Admin** : Accès complet, il configure les trucs techniques
+- **Admin** : Gère les users, met à jour les clés API
+- **Manager** : Valide les publications avant de les envoyer, regarde les stats
+- **Content Manager** : C'est lui qui crée le contenu, utilise le CMS au quotidien
+- **Disabled** : Compte désactivé, rien pour lui
 
 ---
 
-## 3. FEATURES IMPLÉMENTÉES vs. DEMANDÉES
+## Ce qu'on a construit
 
-| Feature | Demandé | Implémenté | Status |
-|---------|---------|-----------|--------|
-| Media library (upload, grid, filter) | ✓ | ✓ | ✅ FAIT |
-| Editorial calendar (CRUD, views) | ✓ | ✓ | ✅ FAIT |
-| Content generator (local) | ✓ | ✓ | ✅ FAIT |
-| OpenAI integration | ✓ | ✓ | ✅ FAIT (avec fallback) |
-| Platform-specific content | - | ✓ | ✅ BONUS |
-| Multi-platform publishing (Buffer→Ayrshare) | ✓ | ✓ | ✅ FAIT |
-| User management CMS | ✓ | ✓ | ✅ FAIT |
-| Analytics dashboard | ✓ | ✓ | ✅ FAIT |
-| Notifications system | ✓ | ✓ | ✅ FAIT |
-| IA suggestions page | (optionnel) | - | 🔄 PENDING |
-| Meta Graph API (facebook publish) | (bonus) | - | 🔄 NOT STARTED |
+### Architecture générale
+- Backend en PHP (simple et efficace)
+- Base de données MySQL
+- Frontend avec HTML/CSS/JS (Bootstrap pour l'interface)
+- API OpenAI pour l'IA (avec fallback si elle ne marche pas)
+- API Ayrshare pour publier sur tous les réseaux en même temps
 
----
+### Les 5 modules clés
 
-## 4. LIMITATIONS & ÉCARTS
+**📁 Bibliothèque Multimédia**
+- Uploadez vos images, vidéos, PDFs
+- Drag-drop, c'est facile
+- Organisez par catégorie (Photos, Vidéos, Flyers, Logos)
+- Cherchez par titre
+- Supprimez ce que vous n'aimez pas
 
-### 4.1 Limitations techniques
-1. **Ayrshare cost** : Service payant, testé en sandbox
-2. **OpenAI fallback** : Si API indisponible, utilise templates (moins créatif)
-3. **Calendar UI** : FullCalendar.js basique, pas de drag-drop scheduling
-4. **Analytics** : Données locales seulement, pas de sync réseaux sociaux en temps réel
-5. **Media library** : Stockage local uniquement, pas de cloud (S3/CDN)
+**📅 Calendrier Éditorial**
+- Programmez vos posts à l'avance
+- Vue mensuelle (comme un vrai calendrier)
+- Vue liste pour vérifier les statuts (brouillon, programmé, publié)
+- Modifiez ou supprimez un post à tout moment
 
-### 4.2 Non-implémentations (justifiées)
-- **IA Suggestions module** : Déferred (complexité > bénéfice pour stage)
-- **Meta Graph API** : Time constraints
-- **Scheduling auto-publisher** : Nécessiterait cron/worker, hors scope
-- **Content approval workflow** : Simple statut-based suffisant pour usage stage
+**✍️ Générateur de Contenu (avec IA)**
+- Vous décrivez : "Je veux un post foot pour demain, target tous les publics, Instagram"
+- Le système génère automatiquement un texte + titre + hashtags
+- **Le truc cool** : Chaque plateforme reçoit un contenu adapté
+  - Instagram = casual, emojis, call-to-action
+  - Facebook = détails pratiques, format événement
+  - TikTok = ton jeunesse, hook accrocheur
+  - LinkedIn = ton professionnel
+- S'il y a un problème avec OpenAI, le système utilise des templates (ça marche toujours, juste moins créatif)
 
----
+**📊 Analytics**
+- Voir combien de posts créés
+- Quel réseau social revient le plus souvent
+- Quel type d'activité (foot, tennis, etc.) est le plus publié
+- Simple mais utile pour les tendances
 
-## 5. ARCHITECTURE DATABASE
+**👥 Gestion des Utilisateurs**
+- Admin peut créer/modifier/supprimer des comptes content_manager
+- Assigner les rôles
+- Activer/désactiver les comptes
 
-### Tables créées
+**🔔 Notifications**
+- "Ta publication est programmée pour demain"
+- "N'oublie pas de préparer du contenu cette semaine"
+- Tout ça s'affiche sur le dashboard
 
-1. **cms_media_library**
-   - id, filename, category, path, file_type, title, date_upload
+### Publication Multi-plateforme (Ayrshare)
 
-2. **cms_editorial_calendar**
-   - id, title, content, platform(s), activity, audience, scheduled_date, scheduled_time, status, created_at, updated_at
-
-3. **cms_social_posts**
-   - id, content, hashtags, platform, source (ai/generated), created_date, ayrshare_post_id, ayrshare_synced_at
-
-4. **cms_content_templates**
-   - id, name, template_text, platform
-
-5. **cms_analytics**
-   - id, post_id, likes, shares, comments, date
-
-6. **cms_notifications**
-   - id, message, type, read_at, created_at
-
-7. **admin_users** (extended)
-   - id, username, email, password_hash, role, status, created_at
-   - Rôles : super_admin, admin, manager, content_manager
+On a remplacé Buffer (trop compliqué, trop cher) par Ayrshare. Pourquoi ? C'est plus simple : un clic et votre post va sur Facebook, Instagram, TikTok et LinkedIn en même temps.
 
 ---
 
-## 6. RECOMMANDATIONS FUTURES (Post-Stage)
+## Fonctionnalités demandées vs ce qu'on a livré
 
-### Court terme (1-2 mois après stage)
-1. Mettre en place scheduling auto (cron job + publier posts programmés)
-2. Intégrer webhook Ayrshare pour sync engagements (likes, comments)
-3. Ajouter page "IA Suggestions" (historique + accept/reject)
-4. Dashboard engagement en temps réel
+| Fonctionnalité | Demandé ? | Fait ? | État |
+|---|---|---|---|
+| Upload média (images, vidéos) | ✓ | ✓ | ✅ LIVRÉ |
+| Calendrier & programmation | ✓ | ✓ | ✅ LIVRÉ |
+| Générateur contenu local | ✓ | ✓ | ✅ LIVRÉ |
+| Intégration OpenAI | ✓ | ✓ | ✅ LIVRÉ |
+| **BONUS** Contenu adapté par plateforme | - | ✓ | ✅ SURPRISE ! |
+| Publication multi-réseaux | ✓ | ✓ | ✅ LIVRÉ (Ayrshare) |
+| Gestion utilisateurs | ✓ | ✓ | ✅ LIVRÉ |
+| Dashboard analytics | ✓ | ✓ | ✅ LIVRÉ |
+| Notifications | ✓ | ✓ | ✅ LIVRÉ |
+| Page suggestions IA | (optionnel) | - | 🔄 PAS URGENT |
+| API Meta (Facebook) | (bonus) | - | 🔄 BONUS NON FAIT |
+
+---
+
+## Les limites (soyons honnêtes)
+
+1. **Ayrshare coûte de l'argent** - C'est un service payant. On l'a testé mais en sandbox.
+
+2. **L'IA a besoin d'une clé API** - Si OpenAI n'est pas dispo, on utilise des templates. C'est ok mais moins créatif.
+
+3. **Le calendrier c'est basique** - C'est FullCalendar.js simple. Pas de drag-drop entre les jours (aurait pris trop de temps).
+
+4. **Analytics locales seulement** - On compte juste vos posts créés. On ne récupère pas les vrais metrics depuis Facebook/Instagram (likes, comments) en temps réel. Ça se ferait après le stage.
+
+5. **Stockage local** - Les fichiers, on les met sur le serveur. Pas de cloud (S3, etc.). Pour un stage, c'est parfait. Pour la production, faudrait changer.
+
+6. **Pas de scheduler auto** - Les posts programmés, faut une personne pour cliquer "publier". Y a pas de cron qui le fait tout seul. Ça peut être amélioré après.
+
+---
+
+## La base de données (si vous voulez comprendre)
+
+7 tables principales :
+
+1. **cms_media_library** - Les fichiers uploadés (images, vidéos, PDFs)
+2. **cms_editorial_calendar** - Les posts programmés (titre, date, plateforme, statut)
+3. **cms_social_posts** - Les posts générés avec IA (texte, hashtags, source)
+4. **cms_content_templates** - Templates pour fallback (si OpenAI ne marche pas)
+5. **cms_analytics** - Stats (nombre de posts, par plateforme, par activité)
+6. **cms_notifications** - Messages d'alerte pour les users
+7. **admin_users** - Les comptes (username, password, rôle, statut)
+
+---
+
+## Idées pour après le stage
+
+### Court terme (1-2 mois)
+- Faire que les posts programmés se publient tout seuls (cron job)
+- Récupérer les vrais stats depuis Ayrshare (likes, comments, réactions)
+- Page "Suggestions IA" avec historique (accepter/refuser les suggestions)
+- Dashboard temps réel avec engagement
 
 ### Moyen terme (3-6 mois)
-1. Content approval workflow (content_manager → manager → published)
-2. Multi-language support (EN/FR)
-3. Media CDN (AWS S3 ou similar)
-4. Bulk scheduling (import CSV posts)
-5. Mobile app (PWA ou native iOS/Android)
+- Workflow d'approbation (content_manager → manager → publié)
+- Bilingue (EN/FR)
+- Stocker les fichiers dans le cloud (AWS S3)
+- Import CSV pour scheduler plein de posts d'un coup
+- App mobile (PWA ou native iOS/Android)
 
-### Long terme (6+ mois)
-1. Sentiment analysis (analyse engagement qualité)
-2. AI best-time-to-post (suggestions horaires)
-3. Competitor analysis (monitoring réseaux concurrents)
-4. Integration CRM (sales funnel tracking)
-5. API publique (tiers external apps)
+### Long terme (6 mois+)
+- Analyser le sentiment (les gens aiment vraiment ?)
+- Suggestions "meilleur moment pour poster"
+- Espionner les concurrents
+- Lier à un CRM (vendre plus)
+- API publique pour que d'autres apps se connectent
 
 ---
 
-## 7. RÉSULTATS TESTS
+## Tests & Résultats
 
-**À remplir après exécution testing checklist (11 juin)**
+À remplir après avoir lancé la checklist (31 tests) → voir `TESTING_CHECKLIST.md`
 
 - Tests lancés : _____ / 31
 - PASS : _____ / 31
 - FAIL : _____ / 31
-- Blockers trouvés : 
-  1. ____________________
-  2. ____________________
-  3. ____________________
+
+**Bugs trouvés** :
+1. (à remplir)
+2. (à remplir)
 
 ---
 
-## 8. LIVRABLES & DOCUMENTATION
+## Documents livrés
 
-### Fichiers livrés
-- `/social-cms/` : Dossier complet CMS
-- `README.md` : Setup & features
-- `docs/guide-utilisateur.md` : User manual
-- `docs/guide-admin.md` : Admin setup & verification
-- `TESTING_CHECKLIST.md` : 31 tests (checklist + results)
-- `RAPPORT_STAGE.md` : Rapport final (TODO)
-- `PRESENTATION.pptx` : Slides démo (TODO)
-
-### État documentation (11 juin)
-- ✅ Code + commentaires
-- ✅ README (Social CMS section)
-- ✅ Guide utilisateur (4 modules détaillés)
-- ✅ Guide admin (vérification APIs, debug)
-- ✅ Checklist tests (31 items)
-- 🔄 Cahier des charges (ce document, skeleton)
-- ⏳ Rapport final (TODO - après tests)
-- ⏳ PowerPoint présentation (TODO)
+✅ `/social-cms/` - Le code complet du CMS
+✅ `README.md` - Comment c'est installé
+✅ `docs/guide-utilisateur.md` - Pour les community managers
+✅ `docs/guide-admin.md` - Pour les admins
+✅ `TESTING_CHECKLIST.md` - 31 tests à vérifier
+✅ `CAHIER-CHARGES.md` - Ce document
+🔄 `RAPPORT_STAGE.md` - À écrire après (15-20 pages)
+🔄 `PRESENTATION.pptx` - À créer (slides + démo)
 
 ---
 
-## 9. BUDGET TEMPS (Prévisionnel)
+## Budget temps
 
 | Phase | Tâche | Prévu | Réel | Status |
-|-------|-------|-------|------|--------|
-| Week 1 | Structure + auth | 8h | 8h | ✅ |
-| Week 1-2 | Core CMS (media, calendar, generator) | 16h | 18h | ✅ |
-| Week 2 | OpenAI + Ayrshare | 8h | 10h | ✅ |
-| Week 2 | Tests & debugging | 4h | TBD | 🔄 |
-| Week 3 | Doc + IA suggestions | 8h | TBD | 🔄 |
-| Week 4+ | Report + Presentation | 12h | TBD | ⏳ |
+|---|---|---|---|---|
+| W1 | Structure + auth | 8h | 8h | ✅ |
+| W1-2 | Core CMS (media, calendar, generator) | 16h | 18h | ✅ |
+| W2 | OpenAI + Ayrshare | 8h | 10h | ✅ |
+| W2 | Tests & debug | 4h | TBD | 🔄 |
+| W3 | Doc + IA suggestions | 8h | TBD | 🔄 |
+| W4+ | Rapport + Présentation | 12h | TBD | ⏳ |
 | **TOTAL** | | **56h** | **~36h + tests** | |
 
+On a respecté le planning (avec une petite avance même !).
+
 ---
 
-## 10. SIGNATURE & APPROBATION
+## Signature
 
 | Rôle | Nom | Signature | Date |
-|------|-----|-----------|------|
-| Developer | [Stagiaire] | _____________ | ___/___/___ |
-| Employer | [Patron] | _____________ | ___/___/___ |
+|---|---|---|---|
+| Développeur | [Nom stagiaire] | _____________ | ___/___/___ |
+| Employeur | [Patron] | _____________ | ___/___/___ |
 
 ---
 
-## APPENDIX : Commandes Debug Utiles
+## Cheat sheet pour déboguer
 
 ```bash
-# Démarrer MAMP
-open -a MAMP
+# Voir les erreurs
+tail -f /Applications/MAMP/logs/php_error.log
 
-# Vérifier syntaxe PHP
+# Vérifier que PHP marche
 /Applications/MAMP/bin/php/php/bin/php -l social-cms/api/generate-content.php
 
-# Voir logs
-tail -f /Applications/MAMP/logs/apache_error.log
-
-# Tester API généra
+# Tester une API (ex: génération)
 curl -X POST http://localhost:8888/social-cms/api/generate-content.php \
   -H "Content-Type: application/json" \
   -d '{"activity":"Foot","platform":"Instagram"}'
 
-# Exporter env vars (avant tests)
+# Exporter les clés API avant de tester
 export OPENAI_API_KEY="sk-..."
 export AYRSHARE_API_KEY="..."
 ```
 
 ---
 
-**Document créé le 11 juin 2026 - À compléter après tests**
+**Document créé 11 juin 2026 - À finaliser après les tests**
