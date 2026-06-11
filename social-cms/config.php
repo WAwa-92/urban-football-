@@ -66,3 +66,31 @@ function cmsFormatBytes(int $bytes): string
 
     return $bytes . ' o';
 }
+
+function cmsEnv(string $key, ?string $default = null): ?string
+{
+    $value = getenv($key);
+
+    if ($value === false || $value === '') {
+        return $default;
+    }
+
+    return $value;
+}
+
+function cmsBufferConfig(): array
+{
+    return [
+        'token' => cmsEnv('BUFFER_API_TOKEN'),
+        'organization_id' => cmsEnv('BUFFER_ORGANIZATION_ID'),
+        'graphql_endpoint' => cmsEnv('BUFFER_GRAPHQL_ENDPOINT', 'https://api.buffer.com/graphql'),
+    ];
+}
+
+function cmsAyrshareConfig(): array
+{
+    return [
+        'api_key' => cmsEnv('AYRSHARE_API_KEY'),
+        'api_base' => rtrim((string) cmsEnv('AYRSHARE_API_BASE', 'https://app.ayrshare.com/api'), '/'),
+    ];
+}
