@@ -20,7 +20,7 @@ function uploadMediaRespond(bool $wantsJson, int $statusCode, array $payload): v
         exit;
     }
 
-    $redirect = trim($_POST['redirect_to'] ?? '/Urban-Center-main/social-cms/pages/media-library.php');
+    $redirect = trim($_POST['redirect_to'] ?? '../pages/media-library.php');
     $separator = str_contains($redirect, '?') ? '&' : '?';
 
     if (($payload['success'] ?? false) === true) {

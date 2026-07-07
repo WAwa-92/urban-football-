@@ -11,7 +11,7 @@ function cmsRenderHeader(string $title, string $subtitle = '', string $activePag
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?> – Social CMS</title>
-    <link rel="stylesheet" href="/Urban-Center-main/social-cms/style.css">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/style.css'), ENT_QUOTES, 'UTF-8'); ?>">
 </head>
 <body>
 <div class="cms-shell">
@@ -23,18 +23,18 @@ function cmsRenderHeader(string $title, string $subtitle = '', string $activePag
         </div>
 
         <nav class="cms-nav">
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'dashboard'); ?>" href="/Urban-Center-main/social-cms/dashboard.php">Tableau de bord</a>
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'media'); ?>" href="/Urban-Center-main/social-cms/pages/media-library.php">Bibliothèque multimédia</a>
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'calendar'); ?>" href="/Urban-Center-main/social-cms/pages/editorial-calendar.php">Calendrier éditorial</a>
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'generator'); ?>" href="/Urban-Center-main/social-cms/pages/content-generator.php">Générateur de contenu</a>
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'analytics'); ?>" href="/Urban-Center-main/social-cms/pages/analytics.php">Analytics</a>
-            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'users'); ?>" href="/Urban-Center-main/social-cms/admin/users.php">Utilisateurs</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'dashboard'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/dashboard.php'), ENT_QUOTES, 'UTF-8'); ?>">Tableau de bord</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'media'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/media-library.php'), ENT_QUOTES, 'UTF-8'); ?>">Bibliothèque multimédia</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'calendar'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/editorial-calendar.php'), ENT_QUOTES, 'UTF-8'); ?>">Calendrier éditorial</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'generator'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/content-generator.php'), ENT_QUOTES, 'UTF-8'); ?>">Générateur de contenu</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'analytics'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/analytics.php'), ENT_QUOTES, 'UTF-8'); ?>">Analytics</a>
+            <a class="cms-nav-link<?php echo cmsActiveClass($activePage, 'users'); ?>" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/admin/users.php'), ENT_QUOTES, 'UTF-8'); ?>">Utilisateurs</a>
         </nav>
 
         <div class="cms-sidebar-footer">
             <p><?php echo htmlspecialchars($currentUser, ENT_QUOTES, 'UTF-8'); ?></p>
             <small><?php echo htmlspecialchars(strtoupper($currentRole), ENT_QUOTES, 'UTF-8'); ?></small>
-            <a class="cms-logout" href="/Urban-Center-main/pages/logout.php">Retour au site</a>
+            <a class="cms-logout" href="<?php echo htmlspecialchars(cmsUrl('/Urban Center.html'), ENT_QUOTES, 'UTF-8'); ?>">Retour au site public</a>
         </div>
     </aside>
 
@@ -46,7 +46,7 @@ function cmsRenderHeader(string $title, string $subtitle = '', string $activePag
                     <p><?php echo htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8'); ?></p>
                 <?php endif; ?>
             </div>
-            <a class="cms-button cms-button-ghost" href="/Urban-Center-main/admin/dashboard.php">Admin Urban Center</a>
+            <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/admin/logout.php'), ENT_QUOTES, 'UTF-8'); ?>">Déconnexion</a>
         </header>
     <?php
 }

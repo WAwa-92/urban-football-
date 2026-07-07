@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail événement – Urban Center</title>
+    <meta name="description" content="Détails d'un événement Urban Center et lien d'inscription.">
+    <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages.css">
+</head>
+<body>
+    <nav id="main-nav">
+        <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" class="nav-brand-logo">Urban Center</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="nav-menu">
+            <li><a href="../Urban Center.html">Accueil</a></li>
+            <li><a href="installations.html">Installations</a></li>
+            <li><a href="events.html" class="nav-active">Événements</a></li>
+            <li><a href="gallery.html">Galerie</a></li>
+            <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
+            <li><a href="login.php" class="nav-action">Se connecter</a></li>
+            <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <h1 id="ev-title">Détail événement</h1>
+        <p id="ev-date">Urban Center</p>
+    </div>
+
+    <section class="container">
+        <div class="event-form-wrap reveal is-visible">
+            <h2 class="section-title" id="ev-subtitle">Informations</h2>
+            <p id="ev-description" class="inline-muted-note">Les informations de l'événement seront affichées ici.</p>
+            <ul class="event-details" id="ev-details"></ul>
+            <div class="women-event-actions">
+                <a href="events.html" class="bt bt-secondary">Retour aux événements</a>
+                <a id="ev-register" href="event-registration.php" class="bt">S'inscrire</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
+        <p class="page-footer-note">
+            Contact : <a href="mailto:info@urbancenterhjb.com" class="footer-contact">info@urbancenterhjb.com</a>
+        </p>
+    </footer>
+
+    <script src="../assets/js/app.js" defer></script>
+    <script>
+        (() => {
+            const params = new URLSearchParams(window.location.search);
+            const title = params.get('title') || 'Événement Urban Center';
+            const date = params.get('date') || 'Date à confirmer';
+            const description = params.get('description') || 'Les informations détaillées seront communiquées prochainement.';
+            const d1 = params.get('detail1') || '';
+            const d2 = params.get('detail2') || '';
+            const d3 = params.get('detail3') || '';
+
+            document.getElementById('ev-title').textContent = title;
+            document.getElementById('ev-subtitle').textContent = title;
+            document.getElementById('ev-date').textContent = date;
+            document.getElementById('ev-description').textContent = description;
+
+            const details = [d1, d2, d3].filter(Boolean);
+            const detailsList = document.getElementById('ev-details');
+            detailsList.innerHTML = '';
+
+            if (details.length) {
+                details.forEach((item) => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    detailsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Détails supplémentaires à venir.';
+                detailsList.appendChild(li);
+            }
+
+            const registerUrl = `event-registration.php?event=${encodeURIComponent(title)}`;
+            document.getElementById('ev-register').setAttribute('href', registerUrl);
+        })();
+    </script>
+</body>
+</html>

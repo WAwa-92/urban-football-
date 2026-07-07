@@ -32,8 +32,8 @@ cmsRenderHeader('Tableau de bord', 'Vue d’ensemble du contenu à préparer et 
                     <h3>Ce qui est déjà prêt</h3>
                 </div>
                 <div class="cms-actions" style="margin-top:18px;">
-                    <a class="cms-button" href="/Urban-Center-main/social-cms/pages/media-library.php">Ajouter un média</a>
-                    <a class="cms-button cms-button-ghost" href="/Urban-Center-main/social-cms/pages/content-generator.php">Générer un texte</a>
+                    <a class="cms-button" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/media-library.php'), ENT_QUOTES, 'UTF-8'); ?>">Ajouter un média</a>
+                    <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/content-generator.php'), ENT_QUOTES, 'UTF-8'); ?>">Générer un texte</a>
                 </div>
             </article>
 

@@ -6,13 +6,13 @@
     <title>Événements & Tournois – Urban Center Hessi Djerbi</title>
     <meta name="description" content="Tournois de football, soirées padel, défis fitness et événements sportifs à Urban Center Hessi Djerbi.">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Événements & Tournois — Urban Center Hassi Djerbi">
+    <meta property="og:title" content="Événements & Tournois — Urban Center Hessi Djerbi">
     <meta property="og:description" content="Tournois football, soirées padel, défis fitness. Inscrivez-vous aux événements sportifs d'Urban Center.">
     <meta property="og:image" content="https://urbancenter.tn/assets/img/urban.jpg">
     <meta property="og:url" content="https://urbancenter.tn/pages/events.html">
     <meta property="og:locale" content="fr_TN">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Événements & Tournois — Urban Center Hassi Djerbi">
+    <meta name="twitter:title" content="Événements & Tournois — Urban Center Hessi Djerbi">
     <meta name="twitter:description" content="Tournois, soirées sportives et challenges pour tous les niveaux.">
     <meta name="twitter:image" content="https://urbancenter.tn/assets/img/urban.jpg">
     <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
@@ -31,7 +31,7 @@
 </head>
 <body>
     <nav id="main-nav">
-        <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
+        <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" class="nav-brand-logo">Urban Center</a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
@@ -43,7 +43,6 @@
             <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
             <li><a href="login.php" class="nav-action">Se connecter</a></li>
             <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
-            <li><a href="reservation.html" class="nav-action nav-action-reserve">Réserver</a></li>
         </ul>
     </nav>
 
@@ -64,57 +63,27 @@
         </div>
     </section>
 
-    <section id="inscription" class="container" style="padding-top:0">
-        <h2 class="section-title reveal">S'inscrire à un événement</h2>
-        <div class="event-form-wrap reveal">
-            <form class="event-form" action="../php/contact.php" method="POST">
-                <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
-                <input type="hidden" name="csrf_token" value="" data-csrf-token>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="ev-name">Nom complet *</label>
-                        <input type="text" id="ev-name" name="name" placeholder="Votre nom" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ev-phone">Téléphone *</label>
-                        <input type="tel" id="ev-phone" name="phone" placeholder="Numéro de téléphone" pattern="[0-9]{8}" maxlength="8" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="ev-event">Événement souhaité *</label>
-                    <select id="ev-event" name="message" required>
-                        <option value="">Chargement des événements...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="ev-email">Email *</label>
-                    <input type="email" id="ev-email" name="email" placeholder="votre@email.com" required>
-                </div>
-                <button type="submit" class="submit-btn">Envoyer ma demande d'inscription</button>
-                <p id="my-form-status" class="contact-form-response"></p>
-            </form>
-        </div>
-    </section>
-
-    <section class="container" style="padding-top:0">
-        <div class="cta-band reveal">
-            <h2>Vous voulez organiser un événement privé ?</h2>
-            <p>Anniversaires, team-building, tournois d'entreprise — Urban Center est disponible pour vos événements privés.</p>
-            <a href="../Urban Center.html#contactez-nous" class="bt">Nous contacter</a>
-        </div>
-    </section>
-
     <footer>
         <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
-        <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
-            Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
-            &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
+        <p class="page-footer-note">
+            Contact : <a href="mailto:info@urbancenterhjb.com" class="footer-contact">info@urbancenterhjb.com</a>
         </p>
     </footer>
     <script src="../assets/js/app.js" defer></script>
     <script>
         (() => {
             const defaultEvents = [
+                {
+                    title: 'Urban Beach Fitness Women',
+                    sport_type: 'women',
+                    date_label: 'Chaque dimanche',
+                    description: 'Événement fitness en bord de plage exclusivement réservé aux femmes, avec séance encadrée et ambiance conviviale.',
+                    detail_1: '📅 Dimanche à 08h00',
+                    detail_2: '👩 Réservé aux femmes',
+                    detail_3: '📍 Zone plage Urban Beach Fitness',
+                    detail_url: 'beach-fitness-femmes.html',
+                    cta_label: "S'inscrire"
+                },
                 {
                     title: 'Tournoi Hebdomadaire 5v5',
                     sport_type: 'football',
@@ -146,13 +115,13 @@
                     cta_label: "S'inscrire"
                 },
                 {
-                    title: 'Tournoi Tennis Amateur',
-                    sport_type: 'tennis',
+                    title: 'Bootcamp Fitness',
+                    sport_type: 'fitness',
                     date_label: 'Mensuel',
-                    description: 'Compétition amicale en simple pour les membres et visiteurs du complexe avec tirage au sort.',
+                    description: 'Session encadrée pour améliorer endurance, force et mobilité dans une ambiance motivante.',
                     detail_1: '📅 Dernier dimanche du mois',
-                    detail_2: '👥 Individuel · Tous niveaux',
-                    detail_3: '📍 Court de Tennis Urban Center',
+                    detail_2: '👥 Groupes · Tous niveaux',
+                    detail_3: '📍 Salle de Fitness Urban Center',
                     cta_label: "S'inscrire"
                 }
             ];
@@ -161,14 +130,12 @@
                 football: { label: '⚽ Football', className: 'event-header--football' },
                 padel: { label: '🏓 Padel', className: 'event-header--padel' },
                 fitness: { label: '💪 Fitness', className: 'event-header--fitness' },
-                tennis: { label: '🎾 Tennis', className: 'event-header--tennis' },
+                women: { label: '👩 Women Only', className: 'event-header--women' },
                 multi: { label: '🏟 Multi-sport', className: 'event-header--football' },
-                other: { label: '📣 Annonce', className: 'event-header--tennis' }
+                other: { label: '📣 Annonce', className: 'event-header--football' }
             };
 
             const grid = document.getElementById('events-grid');
-            const select = document.getElementById('ev-event');
-
             const escapeHtml = (value) => String(value ?? '')
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
@@ -177,16 +144,36 @@
                 .replace(/'/g, '&#039;');
 
             const render = (events) => {
+                const womenEvent = defaultEvents[0];
+
+                events = Array.isArray(events)
+                    ? events.filter((event) => String(event?.sport_type || '').toLowerCase() !== 'tennis')
+                    : events;
+
                 if (!Array.isArray(events) || events.length === 0) {
                     events = defaultEvents;
+                } else {
+                    const hasWomenEvent = events.some((event) => String(event?.title || '').toLowerCase().includes('urban beach fitness women'));
+                    if (!hasWomenEvent) {
+                        events = [womenEvent, ...events];
+                    }
                 }
 
                 grid.innerHTML = events.map((event) => {
-                    const sport = sportMap[event.sport_type] || sportMap.other;
+                    const isWomenEvent = /women|femme/i.test(String(event.title || '')) || /women|femme/i.test(String(event.description || ''));
+                    const resolvedSportType = isWomenEvent ? 'women' : (event.sport_type || 'other');
+                    const sport = sportMap[resolvedSportType] || sportMap.other;
+                    const headerInlineStyle = resolvedSportType === 'women'
+                        ? 'style="background: linear-gradient(135deg,#9d174d,#db2777); color:#fff;"'
+                        : '';
                     const details = [event.detail_1, event.detail_2, event.detail_3].filter(Boolean);
+                    const registerHref = `event-registration.php?event_id=${encodeURIComponent(String(event.id || ''))}&event=${encodeURIComponent(String(event.title || ''))}`;
+                    const detailHref = event.detail_url
+                        ? String(event.detail_url)
+                        : `event-details.html?title=${encodeURIComponent(String(event.title || ''))}&sport=${encodeURIComponent(String(event.sport_type || 'other'))}&date=${encodeURIComponent(String(event.date_label || ''))}&description=${encodeURIComponent(String(event.description || ''))}&detail1=${encodeURIComponent(String(event.detail_1 || ''))}&detail2=${encodeURIComponent(String(event.detail_2 || ''))}&detail3=${encodeURIComponent(String(event.detail_3 || ''))}`;
                     return `
                         <div class="event-card reveal is-visible">
-                            <div class="event-header ${sport.className}">
+                            <div class="event-header ${sport.className}" ${headerInlineStyle}>
                                 <span class="event-sport">${escapeHtml(sport.label)}</span>
                                 <span class="event-date">${escapeHtml(event.date_label)}</span>
                             </div>
@@ -196,15 +183,15 @@
                                 <ul class="event-details">
                                     ${details.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('')}
                                 </ul>
-                                <a href="#inscription" class="bt event-btn">${escapeHtml(event.cta_label || "S'inscrire")}</a>
+                                <div class="event-actions">
+                                    <a href="${escapeHtml(detailHref)}" class="bt bt-secondary event-btn event-btn-secondary">Voir plus</a>
+                                    <a href="${registerHref}" class="bt event-btn">${escapeHtml(event.cta_label || "S'inscrire")}</a>
+                                </div>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                select.innerHTML = '<option value="">Choisir un événement</option>' + events.map((event) => (
-                    `<option value="${escapeHtml(event.title)}">${escapeHtml(event.title)}</option>`
-                )).join('');
             };
 
             fetch('../php/public_events.php')

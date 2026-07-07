@@ -2,40 +2,40 @@
 ## 11 Juin 2026
 
 OK, vous trouvez ci-dessous 31 points à vérifier pour s'assurer que tout marche. C'est pas un test d'ingénieur nasa, juste des vérifications pratiques.
-
+ 
 ---
 
 ## Partie 1 : Connexion & Accès (6 tests)
 
 **1. Vous pouvez vous connecter en admin**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Allez sur `/social-cms/pages/login.php`, entrez login admin, vous devez arriver sur le dashboard
 - Problème rencontré ? 
 
 **2. Vous pouvez vous connecter en content_manager**
-- [ ] PASS [ ] FAIL
+- [X] PASS [] FAIL
 - Même chose avec un compte content_manager (ex: content1/test123)
 - Problème rencontré ? 
 
 **3. Un compte désactivé ne peut pas se connecter**
-- [ ] PASS [ ] FAIL
+- [ ] PASS [X] FAIL
 - Essayez avec un compte "disabled" → vous devez avoir un message d'erreur
 - Problème rencontré ? 
 
 **4. Les formulaires POST sont protégés contre les attaques (CSRF)**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Ouvrez la console (F12), éteignez JavaScript, essayez de soumettre un formulaire
 - Ça doit rejeter avec une erreur (ou rediriger vers login)
 - Problème rencontré ? 
 
 **5. Un user content_manager ne peut pas accéder à "Gestion des utilisateurs"**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Connecté en content_manager, allez sur `/social-cms/admin/users.php`
 - Ça doit vous rejeter (403 ou redirect login)
 - Problème rencontré ? 
 
 **6. Les sessions expirent (optionnel, skip si pas le temps)**
-- [ ] PASS [ ] FAIL [ ] SKIP
+- [ ] PASS [ ] FAIL [X] SKIP
 - Connectez-vous, attendez 30min, essayez d'accéder une page protégée
 - Vous devez être redirigé vers login
 - Problème rencontré ? 
@@ -45,31 +45,31 @@ OK, vous trouvez ci-dessous 31 points à vérifier pour s'assurer que tout march
 ## Partie 2 : Gestion des Utilisateurs (5 tests)
 
 **7. Créer un nouvel utilisateur**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Admin : Allez dans "Gestion des utilisateurs", créez un user (ex: testuser / test123)
 - Le user doit apparaître dans la liste
 - Problème rencontré ? 
 
 **8. Modifier un utilisateur (changer le rôle)**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Modifiez le user créé : changez son rôle de manager à content_manager
 - La modification doit être sauvée et visible en liste
 - Problème rencontré ? 
 
 **9. Supprimer un utilisateur**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Supprimez le user testuser
 - Il ne doit plus être dans la liste
 - Problème rencontré ? 
 
 **10. Pas de doublon de username**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Essayez de créer un user avec un username qui existe déjà
 - Le système doit rejeter (message d'erreur ou feedback)
 - Problème rencontré ? 
 
 **11. Voir la liste de tous les users**
-- [ ] PASS [ ] FAIL
+- [X] PASS [ ] FAIL
 - Allez dans "Gestion des utilisateurs", vous devez voir tous les users avec leurs colonnes (id, username, email, rôle, statut)
 - Ça doit être lisible et clair
 - Problème rencontré ? 

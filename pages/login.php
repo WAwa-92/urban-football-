@@ -6,10 +6,27 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// Si déjà connecté → rediriger directement selon le rôle
-if (!empty($_SESSION['admin_user'])) {
-    header('Location: ../admin/dashboard.php');
+function redirectAdminToWorkspace(array $adminUser): void
+{
+    $role = strtolower(trim((string) ($adminUser['role'] ?? 'admin')));
+    $role = str_replace([' ', '-'], '_', $role);
+
+    if (in_array($role, ['content_manager'], true)) {
+        header('Location: ../social-cms/dashboard.php');
+        exit;
+    }
+
+    header('Location: login.php?workspace=1');
     exit;
+}
+
+if (!empty($_SESSION['admin_user'])) {
+    $adminRole = strtolower(trim((string) ($_SESSION['admin_user']['role'] ?? 'admin')));
+    $adminRole = str_replace([' ', '-'], '_', $adminRole);
+
+    if ($adminRole === 'content_manager') {
+        redirectAdminToWorkspace($_SESSION['admin_user']);
+    }
 }
 if (!empty($_SESSION['site_user'])) {
     if (($_SESSION['site_user']['role'] ?? '') === 'coach') {
@@ -21,7 +38,6 @@ if (!empty($_SESSION['site_user'])) {
 }
 
 $pdo = getPDO();
-// S'assurer que le compte admin par défaut existe
 require_once __DIR__ . '/../admin/config.php';
 ensureDefaultAdmin($pdo);
 
@@ -34,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email    = strtolower(trim($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
 
-        // 1. Vérifier la table admin_users (admin / manager / super_admin)
         $stmt = $pdo->prepare('SELECT id, full_name, email, password_hash, role, status FROM admin_users WHERE email = :email LIMIT 1');
         $stmt->execute([':email' => $email]);
         $admin = $stmt->fetch();
@@ -48,11 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'role'      => $admin['role'],
             ];
             $pdo->prepare('UPDATE admin_users SET last_login_at = NOW() WHERE id = :id')->execute([':id' => $admin['id']]);
-            header('Location: ../admin/dashboard.php');
+
+            $adminRole = strtolower(trim((string) ($admin['role'] ?? 'admin')));
+            $adminRole = str_replace([' ', '-'], '_', $adminRole);
+
+            if ($adminRole === 'content_manager') {
+                redirectAdminToWorkspace($_SESSION['admin_user']);
+            }
+
+            header('Location: login.php?workspace=1');
             exit;
         }
 
-        // 2. Vérifier la table users (joueur / coach)
         $stmt2 = $pdo->prepare('SELECT id, full_name, email, password_hash, role, status FROM users WHERE email = :email LIMIT 1');
         $stmt2->execute([':email' => $email]);
         $user = $stmt2->fetch();
@@ -93,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <nav id="main-nav">
         <a href="../Urban Center.html" class="nav-brand">
-            <img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">
+            <img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo">
             Urban Center
         </a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
@@ -105,22 +127,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li><a href="events.html">Événements</a></li>
             <li><a href="gallery.html">Galerie</a></li>
             <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
-            <li><a href="login.php" class="nav-action">Se connecter</a></li>
-            <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
-            <li><a href="reservation.html" class="nav-action nav-action-reserve">Réserver</a></li>
         </ul>
     </nav>
 
-    <div class="page-hero" style="min-height:200px;">
+    <div class="page-hero auth-hero">
         <h1>Bon retour 👋</h1>
         <p>Content de vous revoir sur Urban Center.</p>
     </div>
 
-    <section class="container" style="max-width:520px; padding-top:48px; padding-bottom:60px;">
-        <div class="contact-form" style="max-width:100%;">
+    <section class="container auth-page">
+        <div class="contact-form auth-card">
+
+            <?php if (!empty($_SESSION['admin_user']) && (str_replace([' ', '-'], '_', strtolower((string) ($_SESSION['admin_user']['role'] ?? 'admin'))) !== 'content_manager')): ?>
+                <div class="auth-workspace-banner">
+                    <h2 class="auth-workspace-title">Espace administrateur</h2>
+                    <p class="auth-workspace-text">
+                        Vous pouvez accéder au dashboard de gestion du site et au Social CMS depuis cet espace.
+                    </p>
+                    <div class="auth-actions">
+                        <a href="../admin/dashboard.php" class="submit-btn auth-action-link">Dashboard du site</a>
+                        <a href="../social-cms/dashboard.php" class="submit-btn auth-action-link auth-action-link--dark">Dashboard CMS</a>
+                        <a href="logout.php" class="submit-btn auth-action-link auth-action-link--muted">Se déconnecter</a>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if (empty($_SESSION['admin_user'])): ?>
 
             <?php if ($error !== ''): ?>
-                <p style="color:#c0392b; margin-bottom:18px; font-weight:600;">❌ <?php echo htmlspecialchars($error); ?></p>
+                <p class="auth-error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
 
             <form method="POST" novalidate>
@@ -141,19 +176,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="submit-btn">Se connecter →</button>
             </form>
 
-            <p style="margin-top:22px; color:#666; font-size:0.95rem;">
+            <p class="auth-note auth-space-top">
                 Pas encore membre ?
-                <a href="register.php" style="color:#1e3c72; font-weight:700;">Créer un compte</a>
+                <a href="register.php" class="auth-link">Créer un compte</a>
             </p>
+
+            <p class="auth-note-compact auth-space-top-sm">
+                Les comptes admin / manager peuvent accéder au dashboard du site et au Social CMS depuis l'espace administrateur. Le rôle content manager va directement au Social CMS.
+            </p>
+
+            <?php endif; ?>
 
         </div>
     </section>
 
     <footer>
         <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
-        <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
-            Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
-            &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
+        <p class="auth-footer-note">
+            Contact : <a href="mailto:info@urbancenterhjb.com" class="footer-contact">info@urbancenterhjb.com</a>
         </p>
     </footer>
 

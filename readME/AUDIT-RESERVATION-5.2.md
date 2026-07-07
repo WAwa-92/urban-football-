@@ -1,18 +1,23 @@
-# ✅ AUDIT SYSTÈME DE RÉSERVATION EN LIGNE - 5.2
+# Audit réservation 5.2 (version courte)
 
-> ## ✅ MISE À JOUR DE RÉFÉRENCE — 3 juin 2026
->
-> **Conformité 5.2**: **100% fonctionnelle**.  
-> **Parcours**: sélection sport/terrain/date/créneau + informations client + envoi sécurisé.  
-> **Concurrence réservations**: lock transactionnel (`FOR UPDATE`) + rollback si conflit.  
-> **Admin**: modification statut/jour/heure + filtres/recherche/pagination + export.  
-> **Retour utilisateur**: confirmation affichée correctement après réservation (UI validée).  
-> **Sécurité**: CSRF + validations serveur + anti-spam honeypot.
->
-> ⚠️ Le contenu détaillé ci-dessous est conservé comme historique technique.
+Date: 15 juin 2026  
+Statut: **Conforme et fonctionnel (100% sur le périmètre 5.2)**
 
-## Vue d'ensemble
-Le système de réservation en ligne a été complètement audité et amélioré pour garantir la conformité avec le cahier des charges 5.2 (Réservation en ligne).
+## Ce qui a été fait
+- Réservation en 3 étapes (sport, terrain, date/créneau, infos client).
+- Créneaux indisponibles bloqués visuellement et côté serveur.
+- Protection des conflits avec transaction + `FOR UPDATE`.
+- Confirmation utilisateur après réservation (message + email).
+- Historique des réservations + annulation avec libération du créneau.
+
+## Ce qui manque encore
+- Campagne finale de tests manuels documentée.
+- Tests de charge et robustesse (pics d’utilisation).
+- Monitoring/alerting production (non bloquant soutenance).
+
+---
+
+Le détail technique complet est conservé ci-dessous en archive.
 
 ---
 
@@ -452,5 +457,4 @@ CREATE TABLE reservation_slots (
 
 ---
 
-**Audit terminé**: 2 juin 2026
-**Statut**: CONFORME CAHIER DES CHARGES 5.2 ✅
+

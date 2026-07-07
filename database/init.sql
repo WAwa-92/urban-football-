@@ -134,7 +134,7 @@ CREATE TABLE coaches (
 CREATE TABLE site_events (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	title VARCHAR(180) NOT NULL,
-	sport_type ENUM('football', 'padel', 'fitness', 'tennis', 'multi', 'other') NOT NULL DEFAULT 'multi',
+	sport_type ENUM('football', 'padel', 'fitness', 'women', 'tennis', 'multi', 'other') NOT NULL DEFAULT 'multi',
 	date_label VARCHAR(120) NOT NULL,
 	event_date DATE NULL,
 	event_time VARCHAR(50) NULL,
@@ -167,16 +167,16 @@ CREATE TABLE news (
 	INDEX idx_news_published_at (published_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO sports (name, slug, description) VALUES
-('Football', 'football', 'Réservation de terrains de football.'),
-('Tennis', 'tennis', 'Réservation de terrains de tennis.'),
-('Padel', 'padel', 'Réservation de terrains de padel.'),
-('Fitness', 'fitness', 'Abonnements et accès à la salle de fitness.')
-ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description);
+INSERT INTO sports (id, name, slug, description, is_active) VALUES
+(1, 'Football', 'football', 'Réservation de terrains de football.', 1),
+(3, 'Padel', 'padel', 'Réservation de terrains de padel.', 1),
+(4, 'Fitness', 'fitness', 'Abonnements et accès à la salle de fitness.', 1)
+ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description), is_active = VALUES(is_active);
+
+UPDATE sports SET is_active = 0 WHERE slug = 'tennis';
 
 INSERT INTO terrains (sport_id, name, description, price_per_hour) VALUES
 (1, 'Terrain Football', 'Terrain 5v5 principal', 60.00),
-(2, 'Court Tennis', 'Terrain de tennis extérieur', 40.00),
 (3, 'Court Padel', 'Terrain de padel moderne', 50.00),
 (4, 'Salle Fitness', 'Accès salle fitness', 30.00)
 ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description), price_per_hour = VALUES(price_per_hour);
@@ -200,7 +200,9 @@ INSERT INTO site_events (title, sport_type, date_label, event_date, event_time, 
 ('Tournoi Hebdomadaire 5v5', 'football', 'Chaque vendredi', NULL, '19h00', 'Terrain de football Urban Center', '4 équipes · 5 joueurs/équipe', 'Compétition de football en salle pour équipes locales avec trophée mensuel pour les finalistes.', '📅 Tous les vendredis à 19h00', '👥 4 équipes · 5 joueurs/équipe', '📍 Terrain de football Urban Center', 'S''inscrire', 1, 1),
 ('Soirée Padel Open', 'padel', 'Samedis', NULL, '18h00', 'Court de Padel Urban Center', 'Duos · 2v2', 'Matchs et inscriptions pour joueurs de padel de tous niveaux en format double élimination.', '📅 Chaque samedi à 18h00', '👥 Duos · 2v2', '📍 Court de Padel Urban Center', 'S''inscrire', 1, 2),
 ('Fitness Challenge Mensuel', 'fitness', '1er dimanche / mois', NULL, '10h00', 'Salle de Fitness Urban Center', 'Ouvert à tous les abonnés', 'Session d''entraînement collectif et défi sportif animé par le coach avec classement mensuel.', '📅 1er dimanche du mois à 10h00', '👥 Ouvert à tous les abonnés', '📍 Salle de Fitness Urban Center', 'S''inscrire', 1, 3),
-('Tournoi Tennis Amateur', 'tennis', 'Mensuel', NULL, NULL, 'Court de Tennis Urban Center', 'Individuel · Tous niveaux', 'Compétition amicale en simple pour les membres et visiteurs du complexe avec tirage au sort.', '📅 Dernier dimanche du mois', '👥 Individuel · Tous niveaux', '📍 Court de Tennis Urban Center', 'S''inscrire', 1, 4);
+('Urban Beach Fitness Women', 'women', 'Chaque dimanche', NULL, '08h00', 'Zone plage Urban Beach Fitness', 'Exclusivement pour femmes', 'Événement fitness en bord de plage exclusivement réservé aux femmes, avec séance encadrée et ambiance conviviale.', '📅 Dimanche à 08h00', '👩 Réservé aux femmes', '📍 Zone plage Urban Beach Fitness', 'S''inscrire', 1, 0);
+
+UPDATE site_events SET is_published = 0 WHERE sport_type = 'tennis';
 
 CREATE TABLE stadium_reservations (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

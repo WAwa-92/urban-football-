@@ -28,7 +28,7 @@ $coach = $stmt->fetch();
         <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
             <h1 class="section-title" style="text-align:left; margin-bottom:0;">Espace Coach</h1>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a class="bt" href="../Urban Center.html">Retour au site</a>
+                <a class="bt" href="../Urban Center.html">Retour au site public</a>
                 <a class="bt" href="logout.php">Déconnexion</a>
             </div>
         </div>

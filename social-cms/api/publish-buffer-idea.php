@@ -31,8 +31,6 @@ if (empty($cfg['token'])) {
     exit;
 }
 
-// NOTE STAGE: Intégration GraphQL Buffer réalisée avec assistance GitHub Copilot puis testée via mutation createIdea.
-
 $organizationId = trim((string) ($payload['organization_id'] ?? $cfg['organization_id'] ?? ''));
 if ($organizationId === '') {
     http_response_code(422);

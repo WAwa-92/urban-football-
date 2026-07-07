@@ -1,3 +1,3 @@
 <?php
-header('Location: /Urban-Center-main/social-cms/dashboard.php');
+header('Location: dashboard.php');
 exit;

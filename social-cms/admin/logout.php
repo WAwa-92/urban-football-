@@ -6,5 +6,5 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 unset($_SESSION['admin_user']);
 session_destroy();
 
-header('Location: /Urban-Center-main/social-cms/pages/login.php');
+header('Location: ../pages/login.php');
 exit;

@@ -188,7 +188,7 @@ cmsRenderHeader('Utilisateurs CMS', 'Créer, modifier et gérer les accès de l�
                     <div class="cms-actions">
                         <button class="cms-button" type="submit"><?php echo $editingUser ? 'Mettre à jour' : 'Créer le compte'; ?></button>
                         <?php if ($editingUser): ?>
-                            <a class="cms-button cms-button-ghost" href="/Urban-Center-main/social-cms/admin/users.php">Annuler</a>
+                            <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/admin/users.php'), ENT_QUOTES, 'UTF-8'); ?>">Annuler</a>
                         <?php endif; ?>
                     </div>
                 </form>
@@ -223,7 +223,7 @@ cmsRenderHeader('Utilisateurs CMS', 'Créer, modifier et gérer les accès de l�
                                 <td><?php echo htmlspecialchars($user['last_login_at'] ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td>
                                     <div class="cms-actions">
-                                        <a class="cms-button cms-button-ghost" href="/Urban-Center-main/social-cms/admin/users.php?edit=<?php echo (int) $user['id']; ?>">Modifier</a>
+                                        <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/social-cms/admin/users.php'), ENT_QUOTES, 'UTF-8'); ?>?edit=<?php echo (int) $user['id']; ?>">Modifier</a>
                                         <form method="post" onsubmit="return confirm('Supprimer ce compte ?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
                                             <input type="hidden" name="action" value="delete">

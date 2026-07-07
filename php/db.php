@@ -212,6 +212,24 @@ function ensureCoreTables(PDO $pdo): void
     );
 
     $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS event_registrations (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            event_id INT UNSIGNED NULL,
+            event_title VARCHAR(180) NOT NULL,
+            full_name VARCHAR(100) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            email VARCHAR(150) NOT NULL,
+            note TEXT NULL,
+            status ENUM('nouveau', 'traite') NOT NULL DEFAULT 'nouveau',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_event_registrations_event (event_id),
+            INDEX idx_event_registrations_status (status),
+            INDEX idx_event_registrations_phone (phone)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    );
+
+    $pdo->exec(
         "CREATE TABLE IF NOT EXISTS contact_messages (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
@@ -242,22 +260,23 @@ function tableHasColumn(PDO $pdo, string $tableName, string $columnName): bool
 function ensureCoreSeeds(PDO $pdo): void
 {
     $pdo->exec(
-        "INSERT INTO sports (name, slug, description) VALUES
-        ('Football', 'football', 'Réservation de terrains de football.'),
-        ('Tennis', 'tennis', 'Réservation de terrains de tennis.'),
-        ('Padel', 'padel', 'Réservation de terrains de padel.'),
-        ('Fitness', 'fitness', 'Abonnements et accès à la salle de fitness.')
+        "INSERT INTO sports (id, name, slug, description, is_active) VALUES
+        (1, 'Football', 'football', 'Réservation de terrains de football.', 1),
+        (3, 'Padel', 'padel', 'Réservation de terrains de padel.', 1),
+        (4, 'Fitness', 'fitness', 'Abonnements et accès à la salle de fitness.', 1)
         ON DUPLICATE KEY UPDATE
             name = VALUES(name),
-            description = VALUES(description)"
+            description = VALUES(description),
+            is_active = VALUES(is_active)"
     );
+
+    $pdo->exec("UPDATE sports SET is_active = 0 WHERE slug = 'tennis'");
 
     $terrainsCount = (int) $pdo->query('SELECT COUNT(*) FROM terrains')->fetchColumn();
     if ($terrainsCount === 0) {
         $pdo->exec(
             "INSERT INTO terrains (sport_id, name, description, price_per_hour) VALUES
             (1, 'Terrain Football', 'Terrain 5v5 principal', 60.00),
-            (2, 'Court Tennis', 'Terrain de tennis extérieur', 40.00),
             (3, 'Court Padel', 'Terrain de padel moderne', 50.00),
             (4, 'Salle Fitness', 'Accès salle fitness', 30.00)"
         );
@@ -290,7 +309,7 @@ function ensureSiteEventsTable(PDO $pdo): void
         "CREATE TABLE IF NOT EXISTS site_events (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(180) NOT NULL,
-            sport_type ENUM('football', 'padel', 'fitness', 'tennis', 'multi', 'other') NOT NULL DEFAULT 'multi',
+            sport_type ENUM('football', 'padel', 'fitness', 'women', 'tennis', 'multi', 'other') NOT NULL DEFAULT 'multi',
             date_label VARCHAR(120) NOT NULL,
             event_date DATE NULL,
             event_time VARCHAR(50) NULL,
@@ -311,11 +330,15 @@ function ensureSiteEventsTable(PDO $pdo): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
 
-    $count = (int) $pdo->query('SELECT COUNT(*) FROM site_events')->fetchColumn();
-    if ($count > 0) {
-        return;
-    }
+    $pdo->exec(
+        "ALTER TABLE site_events
+        MODIFY sport_type ENUM('football', 'padel', 'fitness', 'women', 'tennis', 'multi', 'other')
+        NOT NULL DEFAULT 'multi'"
+    );
 
+    $pdo->exec("UPDATE site_events SET is_published = 0 WHERE sport_type = 'tennis'");
+
+    $count = (int) $pdo->query('SELECT COUNT(*) FROM site_events')->fetchColumn();
     $stmt = $pdo->prepare(
         'INSERT INTO site_events (title, sport_type, date_label, event_date, event_time, location, participants_info, description, detail_1, detail_2, detail_3, cta_label, is_published, display_order)
          VALUES (:title, :sport_type, :date_label, :event_date, :event_time, :location, :participants_info, :description, :detail_1, :detail_2, :detail_3, :cta_label, :is_published, :display_order)'
@@ -370,26 +393,33 @@ function ensureSiteEventsTable(PDO $pdo): void
             'is_published' => 1,
             'display_order' => 3,
         ],
-        [
-            'title' => 'Tournoi Tennis Amateur',
-            'sport_type' => 'tennis',
-            'date_label' => 'Mensuel',
-            'event_date' => null,
-            'event_time' => null,
-            'location' => 'Court de Tennis Urban Center',
-            'participants_info' => 'Individuel · Tous niveaux',
-            'description' => 'Compétition amicale en simple pour les membres et visiteurs du complexe avec tirage au sort.',
-            'detail_1' => '📅 Dernier dimanche du mois',
-            'detail_2' => '👥 Individuel · Tous niveaux',
-            'detail_3' => '📍 Court de Tennis Urban Center',
-            'cta_label' => 'S\'inscrire',
-            'is_published' => 1,
-            'display_order' => 4,
-        ],
     ];
 
-    foreach ($defaults as $event) {
-        $stmt->execute($event);
+    if ($count === 0) {
+        foreach ($defaults as $event) {
+            $stmt->execute($event);
+        }
+    }
+
+    $womenCheck = $pdo->prepare("SELECT COUNT(*) FROM site_events WHERE LOWER(title) LIKE '%urban beach fitness women%' LIMIT 1");
+    $womenCheck->execute();
+    if ((int) $womenCheck->fetchColumn() === 0) {
+        $stmt->execute([
+            'title' => 'Urban Beach Fitness Women',
+            'sport_type' => 'women',
+            'date_label' => 'Chaque dimanche',
+            'event_date' => null,
+            'event_time' => '08h00',
+            'location' => 'Zone plage Urban Beach Fitness',
+            'participants_info' => 'Exclusivement pour femmes',
+            'description' => 'Événement fitness en bord de plage exclusivement réservé aux femmes, avec séance encadrée et ambiance conviviale.',
+            'detail_1' => '📅 Dimanche à 08h00',
+            'detail_2' => '👩 Réservé aux femmes',
+            'detail_3' => '📍 Zone plage Urban Beach Fitness',
+            'cta_label' => 'S\'inscrire',
+            'is_published' => 1,
+            'display_order' => 0,
+        ]);
     }
 }
 

@@ -17,9 +17,12 @@ function ensureDefaultAdmin(PDO $pdo): void
     $adminId = (int) ($stmt->fetchColumn() ?: 0);
 
     if ($adminId > 0) {
-        $activate = $pdo->prepare('UPDATE admin_users SET status = :status WHERE id = :id');
+        // Pour garder un accès démo/stage fiable, on normalise le compte admin par défaut.
+        $activate = $pdo->prepare('UPDATE admin_users SET status = :status, role = :role, password_hash = :password_hash WHERE id = :id');
         $activate->execute([
             ':status' => 'active',
+            ':role' => 'super_admin',
+            ':password_hash' => password_hash('Admin123!', PASSWORD_DEFAULT),
             ':id' => $adminId,
         ]);
         return;

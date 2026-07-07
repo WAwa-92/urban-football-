@@ -100,8 +100,9 @@ try {
 
     $pdo->commit();
 
+    $mailSent = false;
     if ($terrainData) {
-        sendConfirmationEmail(
+        $mailSent = sendConfirmationEmail(
             $email,
             $firstName,
             $lastName,
@@ -115,11 +116,16 @@ try {
         );
     }
 
+    $successMessage = $mailSent
+        ? 'Réservation confirmée. Un email de confirmation vous a été envoyé.'
+        : 'Réservation confirmée. Si vous ne recevez pas d’email, contactez-nous.';
+
     http_response_code(201);
     exit(json_encode([
         'success' => true,
-        'message' => 'Réservation confirmée avec succès.',
+        'message' => $successMessage,
         'reservation_id' => $reservationId,
+        'mail_sent' => $mailSent,
     ]));
 
 } catch (Throwable $e) {

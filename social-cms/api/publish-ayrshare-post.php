@@ -38,6 +38,17 @@ if (!is_array($platforms) || $platforms === []) {
     exit;
 }
 
+$platforms = array_values(array_filter(array_map(static function ($platform) {
+    $platform = strtolower(trim((string) $platform));
+    return $platform !== '' ? $platform : null;
+}, $platforms)));
+
+if ($platforms === []) {
+    http_response_code(422);
+    echo json_encode(['error' => 'platforms doit contenir au moins une plateforme valide.']);
+    exit;
+}
+
 $postId = (int) ($payload['post_id'] ?? 0);
 $postText = trim((string) ($payload['post'] ?? ''));
 
@@ -64,11 +75,12 @@ if ($postText === '') {
 
 $body = [
     'post' => $postText,
-    'platforms' => array_values(array_unique(array_map('strval', $platforms))),
+    'platforms' => array_values(array_unique($platforms)),
 ];
 
-if (!empty($payload['mediaUrls']) && is_array($payload['mediaUrls'])) {
-    $body['mediaUrls'] = $payload['mediaUrls'];
+$mediaUrls = $payload['mediaUrls'] ?? $payload['media_urls'] ?? [];
+if (!empty($mediaUrls) && is_array($mediaUrls)) {
+    $body['mediaUrls'] = array_values(array_filter(array_map('strval', $mediaUrls)));
 }
 
 if (!empty($payload['scheduleDate'])) {

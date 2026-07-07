@@ -4,270 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation — Urban Center Hessi Djerbi</title>
-    <meta name="description" content="Réservez votre terrain de football, padel, tennis ou votre séance fitness à Urban Center Hassi Djerbi.">
+    <meta name="description" content="Réservez votre terrain de football, padel ou votre séance fitness à Urban Center Hessi Djerbi.">
     <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
     <link rel="canonical" href="https://urbancenter.tn/pages/reservation.html">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/pages.css">
-    <style>
-        .resa-hero {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            text-align: center;
-            padding: 80px 16px 40px;
-        }
-        .resa-hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 10px; }
-        .resa-hero p  { font-size: 1.05rem; opacity: .85; }
-
-        .stepper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0;
-            padding: 28px 16px 0;
-            max-width: 640px;
-            margin: 0 auto;
-        }
-        .step-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            position: relative;
-        }
-        .step-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 18px;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background: #d1d5db;
-            z-index: 0;
-        }
-        .step-item.done:not(:last-child)::after,
-        .step-item.active:not(:last-child)::after {
-            background: #ff6b35;
-        }
-        .step-dot {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #d1d5db;
-            color: #fff;
-            font-weight: 800;
-            font-size: .9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-            transition: background .3s;
-        }
-        .step-item.active .step-dot { background: #ff6b35; }
-        .step-item.done   .step-dot { background: #1e3c72; }
-        .step-item.done   .step-dot::after { content: '✓'; }
-        .step-item.done   .step-dot span   { display: none; }
-        .step-label {
-            font-size: .72rem;
-            margin-top: 6px;
-            color: #6b7280;
-            text-align: center;
-        }
-        .step-item.active .step-label { color: #ff6b35; font-weight: 700; }
-        .step-item.done   .step-label { color: #1e3c72; }
-
-        .resa-wrap {
-            max-width: 720px;
-            margin: 32px auto 60px;
-            padding: 0 16px;
-        }
-        .step-panel {
-            display: none;
-            animation: fadeIn .35s ease;
-        }
-        .step-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .sport-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin-top: 20px;
-        }
-        @media (min-width: 480px) {
-            .sport-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        .sport-btn {
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 20px 10px;
-            background: #fff;
-            cursor: pointer;
-            text-align: center;
-            transition: border-color .25s, box-shadow .25s, transform .2s;
-        }
-        .sport-btn:hover { border-color: #ff6b35; transform: translateY(-3px); }
-        .sport-btn.selected { border-color: #ff6b35; box-shadow: 0 0 0 3px rgba(255,107,53,.18); background: #fff8f5; }
-        .sport-btn .sb-icon { font-size: 2.2rem; margin-bottom: 8px; display: block; }
-        .sport-btn .sb-name { font-weight: 700; color: #1e3c72; font-size: .95rem; }
-        .sport-btn .sb-price { font-size: .78rem; color: #6b7280; margin-top: 4px; }
-
-        .terrain-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .terrain-btn {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
-            padding: 16px 18px;
-            background: #fff;
-            cursor: pointer;
-            transition: border-color .25s, transform .2s;
-            text-align: left;
-        }
-        .terrain-btn:hover  { border-color: #ff6b35; transform: translateX(4px); }
-        .terrain-btn.selected { border-color: #ff6b35; background: #fff8f5; }
-        .terrain-btn .tb-icon { font-size: 1.6rem; }
-        .terrain-btn .tb-info strong { display: block; color: #1e3c72; }
-        .terrain-btn .tb-info span   { font-size: .82rem; color: #6b7280; }
-        .terrain-btn .tb-price { margin-left: auto; font-weight: 800; color: #ff6b35; white-space: nowrap; }
-
-        .date-row {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-top: 16px;
-        }
-        @media (min-width: 560px) { .date-row { flex-direction: row; } }
-        .date-row .form-group { flex: 1; margin-bottom: 0; }
-
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 16px;
-        }
-        @media (min-width: 480px) { .slots-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 640px) { .slots-grid { grid-template-columns: repeat(5, 1fr); } }
-
-        .slot-btn {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 10px 6px;
-            background: #fff;
-            cursor: pointer;
-            font-size: .82rem;
-            font-weight: 700;
-            color: #1e3c72;
-            text-align: center;
-            transition: border-color .2s, background .2s;
-        }
-        .slot-btn:hover:not(:disabled) { border-color: #ff6b35; }
-        .slot-btn.selected { border-color: #ff6b35; background: #fff8f5; color: #ff6b35; }
-        .slot-btn:disabled { background: #f3f4f6; color: #c0c0c0; cursor: not-allowed; border-color: #e5e7eb; text-decoration: line-through; }
-        .slots-loading { text-align: center; padding: 20px; color: #6b7280; font-size: .9rem; }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0;
-        }
-        @media (min-width: 560px) {
-            .info-grid { grid-template-columns: 1fr 1fr; column-gap: 20px; }
-        }
-
-        .resa-summary {
-            background: linear-gradient(135deg, rgba(30,60,114,.06), rgba(255,107,53,.06));
-            border: 1px solid rgba(30,60,114,.12);
-            border-radius: 18px;
-            padding: 20px 22px;
-            margin-bottom: 24px;
-        }
-        .resa-summary h3 { color: #1e3c72; margin-bottom: 14px; font-size: 1.05rem; }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 7px 0;
-            border-bottom: 1px solid rgba(15,23,42,.06);
-            font-size: .92rem;
-        }
-        .summary-row:last-child { border-bottom: none; }
-        .summary-row .sr-label { color: #6b7280; }
-        .summary-row .sr-val   { font-weight: 700; color: #1e3c72; }
-        .summary-total { background: #1e3c72; color: #fff; border-radius: 10px; padding: 12px 18px; display: flex; justify-content: space-between; margin-top: 14px; font-weight: 800; font-size: 1.05rem; }
-
-        .step-nav {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: 28px;
-        }
-        .btn-prev {
-            padding: 13px 28px;
-            border: 2px solid #1e3c72;
-            border-radius: 50px;
-            background: transparent;
-            color: #1e3c72;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background .2s, color .2s;
-        }
-        .btn-prev:hover { background: #1e3c72; color: #fff; }
-        .btn-next, .btn-submit {
-            flex: 1;
-            padding: 13px 28px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3c72 58%, #ff7a18 100%);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform .2s, box-shadow .2s;
-            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.24), 0 8px 18px rgba(255, 122, 24, 0.2);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-        }
-        .btn-next:hover, .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28), 0 10px 22px rgba(255, 122, 24, 0.24); }
-        .btn-next:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-
-        .resa-confirm {
-            display: none;
-            text-align: center;
-            padding: 48px 16px;
-        }
-        .resa-confirm.active { display: block; }
-        .confirm-icon { font-size: 4rem; margin-bottom: 16px; }
-        .resa-confirm h2 { color: #1e3c72; margin-bottom: 12px; }
-        .resa-confirm p  { color: #6b7280; max-width: 480px; margin: 0 auto 24px; }
-
-        .form-error { color: #dc2626; font-size: .85rem; margin-top: 6px; display: none; }
-        .form-error.show { display: block; }
-
-        .panel-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #1e3c72;
-            margin-bottom: 6px;
-        }
-        .panel-sub { font-size: .88rem; color: #6b7280; margin-bottom: 4px; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/reservation.css">
 </head>
 <body>
 
 <div class="resa-hero">
     <h1>Réserver un terrain</h1>
-    <p>Football · Padel · Tennis · Fitness — Urban Center Hassi Djerbi</p>
+    <p>Football · Padel · Fitness — Urban Center Hessi Djerbi</p>
 </div>
 
 <nav id="main-nav">
-    <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
+    <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo">Urban Center</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
     </button>
@@ -279,7 +31,6 @@
         <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
         <li><a href="login.php" class="nav-action">Se connecter</a></li>
         <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
-        <li><a href="reservation.html" class="nav-action nav-action-reserve nav-active">Réserver</a></li>
     </ul>
 </nav>
 
@@ -310,15 +61,10 @@
                 <span class="sb-name">Football</span>
                 <span class="sb-price">Terrain 5v5</span>
             </button>
-            <button class="sport-btn" type="button" data-sport-id="2" data-sport-name="Padel" data-sport-icon="🏓">
+            <button class="sport-btn" type="button" data-sport-id="3" data-sport-name="Padel" data-sport-icon="🏓">
                 <span class="sb-icon">🏓</span>
                 <span class="sb-name">Padel</span>
                 <span class="sb-price">Court couvert</span>
-            </button>
-            <button class="sport-btn" type="button" data-sport-id="3" data-sport-name="Tennis" data-sport-icon="🎾">
-                <span class="sb-icon">🎾</span>
-                <span class="sb-name">Tennis</span>
-                <span class="sb-price">Court extérieur</span>
             </button>
             <button class="sport-btn" type="button" data-sport-id="4" data-sport-name="Fitness" data-sport-icon="💪">
                 <span class="sb-icon">💪</span>
@@ -327,7 +73,7 @@
             </button>
         </div>
 
-        <div id="terrain-section" style="display:none; margin-top:28px;">
+        <div id="terrain-section" class="terrain-section hidden-field">
             <p class="panel-title">Choisissez le terrain</p>
             <div class="terrain-list" id="terrain-list"></div>
         </div>
@@ -345,13 +91,13 @@
 
         <div class="date-row">
             <div class="form-group">
-                <label for="resa-date">Date <span style="color:#ff6b35">*</span></label>
+                <label for="resa-date">Date <span class="required-star">*</span></label>
                 <input type="date" id="resa-date" required>
             </div>
         </div>
 
-        <div id="slots-wrap" style="display:none; margin-top:20px;">
-            <p class="panel-title" style="font-size:1rem;">Créneaux disponibles</p>
+        <div id="slots-wrap" class="slots-wrap hidden-field">
+            <p class="panel-title panel-title-sm">Créneaux disponibles</p>
             <div id="slots-grid" class="slots-grid"></div>
         </div>
 
@@ -381,28 +127,28 @@
             <input type="hidden" name="reservation_date" id="f-date">
             <input type="hidden" name="reservation_time" id="f-time">
             <input type="hidden" name="source"           value="reservation_page">
-            <input type="text" name="website" style="display:none" autocomplete="off" tabindex="-1" aria-hidden="true">
+            <input type="text" name="website" class="honeypot" autocomplete="off" tabindex="-1" aria-hidden="true">
             <input type="hidden" name="csrf_token" value="" data-csrf-token>
 
             <div class="info-grid">
                 <div class="form-group">
-                    <label for="f-first">Prénom <span style="color:#ff6b35">*</span></label>
+                    <label for="f-first">Prénom <span class="required-star">*</span></label>
                     <input type="text" id="f-first" name="first_name" required placeholder="Votre prénom">
                 </div>
                 <div class="form-group">
-                    <label for="f-last">Nom <span style="color:#ff6b35">*</span></label>
+                    <label for="f-last">Nom <span class="required-star">*</span></label>
                     <input type="text" id="f-last" name="last_name" required placeholder="Votre nom">
                 </div>
                 <div class="form-group">
-                    <label for="f-phone">Téléphone <span style="color:#ff6b35">*</span></label>
+                    <label for="f-phone">Téléphone <span class="required-star">*</span></label>
                     <input type="tel" id="f-phone" name="phone" required placeholder="Ex: 22334455" maxlength="8" pattern="[0-9]{8}">
                 </div>
                 <div class="form-group">
-                    <label for="f-email">Email <span style="color:#ff6b35">*</span></label>
+                    <label for="f-email">Email <span class="required-star">*</span></label>
                     <input type="email" id="f-email" name="email" required placeholder="votre@email.com">
                 </div>
                 <div class="form-group">
-                    <label for="f-players">Nombre de joueurs <span style="color:#ff6b35">*</span></label>
+                    <label for="f-players">Nombre de joueurs <span class="required-star">*</span></label>
                     <input type="number" id="f-players" name="players_count" required min="1" max="30" placeholder="Ex: 10">
                 </div>
                 <div class="form-group">
@@ -420,20 +166,19 @@
     </div>
 
     <div class="resa-confirm" id="resa-confirm">
-        <div class="confirm-icon">🎉</div>
+        <div class="confirm-icon">OK</div>
         <h2>Réservation confirmée !</h2>
-        <p id="confirm-text">Votre réservation a bien été enregistrée. Vous serez contacté(e) par téléphone pour confirmation finale.</p>
-        <a href="../Urban Center.html" class="bt" style="display:inline-block; margin-right:10px;">Retour à l'accueil</a>
-        <a href="reservation.html" class="bt bt-secondary" style="display:inline-block;">Nouvelle réservation</a>
+        <p id="confirm-text">Votre réservation est validée. Un email récapitulatif vient de vous être envoyé.</p>
+        <a href="../Urban Center.html" class="bt reservation-back">Retour à l'accueil</a>
+        <a href="reservation.html" class="bt bt-secondary reservation-new">Nouvelle réservation</a>
     </div>
 
 </div>
 
 <footer>
     <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
-    <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
-        Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
-        &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
+    <p class="reservation-footer-note">
+        Contact : <a href="mailto:info@urbancenterhjb.com" class="footer-contact">info@urbancenterhjb.com</a>
     </p>
 </footer>
 
@@ -448,16 +193,10 @@
             terrains: [{ id: 1, name: 'Terrain Football Principal', price: 60 }],
         },
         {
-            id: 2,
+            id: 3,
             icon: '🏓',
             name: 'Padel',
-            terrains: [{ id: 2, name: 'Court Padel', price: 50 }],
-        },
-        {
-            id: 3,
-            icon: '🎾',
-            name: 'Tennis',
-            terrains: [{ id: 3, name: 'Court Tennis', price: 45 }],
+            terrains: [{ id: 3, name: 'Court Padel', price: 50 }],
         },
         {
             id: 4,
@@ -575,7 +314,7 @@
         const slotsWrap = getEl('slots-wrap');
         const slotsGrid = getEl('slots-grid');
         slotsWrap.style.display = 'block';
-        slotsGrid.innerHTML = '<p class="slots-loading">⏳ Chargement des créneaux…</p>';
+        slotsGrid.innerHTML = '<p class="slots-loading">Chargement des créneaux…</p>';
 
         fetch(`../php/get_slots.php?terrain_id=${booking.terrainId}&date=${booking.date}`)
             .then((response) => {
@@ -725,16 +464,19 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                const confirmationMessage = data.message || 'Votre réservation a bien été enregistrée.';
+                let confirmationMessage = data.message || 'Votre réservation a bien été enregistrée.';
+                if (data.reservation_id) {
+                    confirmationMessage += ` (N° ${data.reservation_id})`;
+                }
                 showConfirmation(confirmationMessage);
                 return;
             }
 
             const errorMessage = data.message || 'Une erreur est survenue.';
             if (errorMessage.toLowerCase().includes('réservé') || errorMessage.toLowerCase().includes('créneau')) {
-                getEl('err-3').textContent = '❌ Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
+                getEl('err-3').textContent = 'Ce créneau vient d\'être réservé. Veuillez choisir un autre.';
             } else {
-                getEl('err-3').textContent = `❌ ${errorMessage}`;
+                getEl('err-3').textContent = errorMessage;
             }
 
             getEl('err-3').classList.add('show');
@@ -742,7 +484,7 @@
             submitBtn.textContent = 'Confirmer la réservation';
 
         } catch (error) {
-            getEl('err-3').textContent = '❌ Erreur réseau. Veuillez réessayer.';
+            getEl('err-3').textContent = 'Erreur réseau. Veuillez réessayer.';
             getEl('err-3').classList.add('show');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Confirmer la réservation';

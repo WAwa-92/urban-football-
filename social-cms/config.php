@@ -6,6 +6,27 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+function cmsBasePath(): string
+{
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $basePath = preg_replace('#/social-cms(?:/.*)?$#', '', $scriptName);
+    $basePath = is_string($basePath) ? rtrim($basePath, '/') : '';
+
+    return $basePath === '/' ? '' : $basePath;
+}
+
+function cmsUrl(string $path): string
+{
+    $normalizedPath = '/' . ltrim($path, '/');
+    return cmsBasePath() . $normalizedPath;
+}
+
+function cmsNormalizedRole(): string
+{
+    $role = strtolower(trim((string) ($_SESSION['admin_user']['role'] ?? 'admin')));
+    return str_replace([' ', '-'], '_', $role);
+}
+
 function cmsPdo(): PDO
 {
     static $pdo = null;
@@ -33,7 +54,7 @@ function cmsIsConnected(): bool
 function cmsRequireAuth(): void
 {
     if (!cmsIsConnected()) {
-        header('Location: /Urban-Center-main/social-cms/pages/login.php');
+        header('Location: ' . cmsUrl('/social-cms/pages/login.php'));
         exit;
     }
 }
@@ -42,8 +63,8 @@ function cmsEnsureManagerAccess(): void
 {
     cmsRequireAuth();
 
-    $role = $_SESSION['admin_user']['role'] ?? 'admin';
-    if (!in_array($role, ['admin', 'manager', 'content_manager', 'super_admin'], true)) {
+    $role = cmsNormalizedRole();
+    if (!in_array($role, ['admin', 'manager', 'content_manager', 'super_admin', 'superadmin'], true)) {
         http_response_code(403);
         exit('Accès refusé.');
     }
@@ -69,9 +90,43 @@ function cmsFormatBytes(int $bytes): string
 
 function cmsEnv(string $key, ?string $default = null): ?string
 {
+    static $localEnv = null;
+
     $value = getenv($key);
 
     if ($value === false || $value === '') {
+        $serverValue = $_ENV[$key] ?? $_SERVER[$key] ?? null;
+        if (is_string($serverValue) && $serverValue !== '') {
+            return $serverValue;
+        }
+
+        if ($localEnv === null) {
+            $localEnv = [];
+            $envPath = dirname(__DIR__) . '/.env.local';
+
+            if (is_file($envPath) && is_readable($envPath)) {
+                $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+                foreach ($lines as $line) {
+                    $trimmedLine = trim($line);
+                    if ($trimmedLine === '' || str_starts_with($trimmedLine, '#') || !str_contains($trimmedLine, '=')) {
+                        continue;
+                    }
+
+                    [$envKey, $envValue] = explode('=', $trimmedLine, 2);
+                    $envKey = trim($envKey);
+                    $envValue = trim($envValue);
+
+                    if ($envKey !== '') {
+                        $localEnv[$envKey] = trim($envValue, "\"'");
+                    }
+                }
+            }
+        }
+
+        if (array_key_exists($key, $localEnv) && $localEnv[$key] !== '') {
+            return $localEnv[$key];
+        }
+
         return $default;
     }
 

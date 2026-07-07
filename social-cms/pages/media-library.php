@@ -41,9 +41,9 @@ cmsRenderHeader('Bibliothèque multimédia', 'Classer, rechercher et préparer l
                 <?php elseif ($uploadStatus === 'error'): ?>
                     <p class="cms-chip warning"><?php echo htmlspecialchars($uploadMessage !== '' ? $uploadMessage : 'Erreur pendant le téléversement.', ENT_QUOTES, 'UTF-8'); ?></p>
                 <?php endif; ?>
-                <form class="cms-form" action="/Urban-Center-main/social-cms/api/upload-media.php" method="post" enctype="multipart/form-data">
+                <form class="cms-form" action="<?php echo htmlspecialchars(cmsUrl('/social-cms/api/upload-media.php'), ENT_QUOTES, 'UTF-8'); ?>" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
-                    <input type="hidden" name="redirect_to" value="/Urban-Center-main/social-cms/pages/media-library.php">
+                    <input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars(cmsUrl('/social-cms/pages/media-library.php'), ENT_QUOTES, 'UTF-8'); ?>">
                     <div class="cms-field">
                         <label for="title">Titre</label>
                         <input id="title" name="title" type="text" required placeholder="Ex. Flyer tournoi juin">
@@ -93,9 +93,9 @@ cmsRenderHeader('Bibliothèque multimédia', 'Classer, rechercher et préparer l
                     <article class="cms-thumb">
                         <figure>
                             <?php if (($item['file_type'] ?? '') === 'video'): ?>
-                                <video controls src="/Urban-Center-main/<?php echo htmlspecialchars($item['file_path'], ENT_QUOTES, 'UTF-8'); ?>"></video>
+                                <video controls src="<?php echo htmlspecialchars(cmsUrl('/' . ltrim((string) $item['file_path'], '/')), ENT_QUOTES, 'UTF-8'); ?>"></video>
                             <?php else: ?>
-                                <img src="/Urban-Center-main/<?php echo htmlspecialchars($item['file_path'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8'); ?>">
+                                <img src="<?php echo htmlspecialchars(cmsUrl('/' . ltrim((string) $item['file_path'], '/')), ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8'); ?>">
                             <?php endif; ?>
                         </figure>
                         <div class="cms-thumb-body">
@@ -103,7 +103,8 @@ cmsRenderHeader('Bibliothèque multimédia', 'Classer, rechercher et préparer l
                             <p class="cms-muted" style="margin:6px 0 10px;">
                                 <?php echo htmlspecialchars($item['category'], ENT_QUOTES, 'UTF-8'); ?> · <?php echo cmsFormatBytes((int) $item['file_size']); ?>
                             </p>
-                            <a class="cms-button cms-button-ghost" href="/Urban-Center-main/<?php echo htmlspecialchars($item['file_path'], ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Prévisualiser</a>
+                            <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/' . ltrim((string) $item['file_path'], '/')), ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Prévisualiser</a>
+                                        <button class="cms-button cms-button-danger" style="margin-top:6px;" data-action="delete-media" data-id="<?php echo (int) $item['id']; ?>" data-csrf="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">Supprimer</button>
                         </div>
                     </article>
                 <?php endforeach; endif; ?>
@@ -111,3 +112,32 @@ cmsRenderHeader('Bibliothèque multimédia', 'Classer, rechercher et préparer l
         </section>
 <?php
 cmsRenderFooter();
+            ?>
+            <script>
+            document.addEventListener('click', async (e) => {
+                const btn = e.target.closest('[data-action="delete-media"]');
+                if (!btn) return;
+                if (!confirm('Supprimer ce média définitivement ?')) return;
+
+                const id = btn.dataset.id;
+                const csrf = btn.dataset.csrf;
+
+                btn.disabled = true;
+                btn.textContent = '…';
+
+                const res = await fetch('<?php echo htmlspecialchars(cmsUrl('/social-cms/api/delete-media.php'), ENT_QUOTES, 'UTF-8'); ?>', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id: Number(id), csrf_token: csrf}),
+                });
+
+                if (res.ok) {
+                    btn.closest('article').remove();
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.error || 'Erreur lors de la suppression.');
+                    btn.disabled = false;
+                    btn.textContent = 'Supprimer';
+                }
+            });
+            </script>

@@ -6,7 +6,6 @@ requireAdmin();
 $pdo = getPDO();
 $message = '';
 
-// --- Mise à jour réservation (statut + jour + heure) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isValidCsrfToken($_POST['csrf_token'] ?? null)) {
         $message = 'Session expirée. Merci de réessayer.';
@@ -123,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- Filtres ---
 $allowedStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
 $filterStatus  = isset($_GET['status']) && in_array($_GET['status'], $allowedStatuses, true) ? $_GET['status'] : '';
 $filterSport   = isset($_GET['sport'])  ? trim($_GET['sport'])  : '';
@@ -151,7 +149,87 @@ if ($filterSearch !== '') {
 
 $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
-// --- Pagination ---
+$calendarYear = max(2024, (int) ($_GET['year'] ?? date('Y')));
+$calendarMonth = (int) ($_GET['month'] ?? date('n'));
+if ($calendarMonth < 1) {
+    $calendarMonth = 12;
+    $calendarYear--;
+}
+if ($calendarMonth > 12) {
+    $calendarMonth = 1;
+    $calendarYear++;
+}
+
+$calendarStart = sprintf('%04d-%02d-01', $calendarYear, $calendarMonth);
+$calendarEnd = date('Y-m-t', strtotime($calendarStart));
+
+$calendarWhere = $where;
+$calendarWhere[] = 'rs.reservation_date BETWEEN :calendar_start AND :calendar_end';
+$calendarWhereClause = 'WHERE ' . implode(' AND ', $calendarWhere);
+
+$calendarParams = $params;
+$calendarParams[':calendar_start'] = $calendarStart;
+$calendarParams[':calendar_end'] = $calendarEnd;
+
+$calendarSql = "SELECT r.id,
+                       r.first_name,
+                       r.last_name,
+                       r.status,
+                       s.name AS sport_name,
+                       t.name AS terrain_name,
+                       rs.reservation_date,
+                       ts.label AS slot_label
+                       ,ts.start_time AS slot_start_time
+                       ,ts.end_time AS slot_end_time
+                FROM reservations r
+                INNER JOIN sports s ON s.id = r.sport_id
+                INNER JOIN terrains t ON t.id = r.terrain_id
+                INNER JOIN reservation_slots rs ON rs.id = r.reservation_slot_id
+                INNER JOIN time_slots ts ON ts.id = rs.time_slot_id
+                $calendarWhereClause
+                ORDER BY rs.reservation_date ASC, ts.start_time ASC, r.created_at ASC";
+
+$calendarStmt = $pdo->prepare($calendarSql);
+foreach ($calendarParams as $key => $value) {
+    $calendarStmt->bindValue($key, $value);
+}
+$calendarStmt->execute();
+$calendarReservations = $calendarStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$reservationsByDay = [];
+foreach ($calendarReservations as $calendarReservation) {
+    $dayNumber = (int) date('j', strtotime((string) $calendarReservation['reservation_date']));
+    $reservationsByDay[$dayNumber][] = $calendarReservation;
+}
+
+$firstDayOffset = (int) date('N', strtotime($calendarStart));
+$daysInMonth = (int) date('t', strtotime($calendarStart));
+$monthNamesFr = [
+    1 => 'Janvier',
+    2 => 'Février',
+    3 => 'Mars',
+    4 => 'Avril',
+    5 => 'Mai',
+    6 => 'Juin',
+    7 => 'Juillet',
+    8 => 'Août',
+    9 => 'Septembre',
+    10 => 'Octobre',
+    11 => 'Novembre',
+    12 => 'Décembre',
+];
+$monthLabel = ($monthNamesFr[$calendarMonth] ?? 'Mois') . ' ' . $calendarYear;
+
+// On compresse les matchs passés dans le planning pour garder une lecture claire sur mobile.
+$nowTs = time();
+
+$prevMonthDate = date('Y-m-01', strtotime($calendarStart . ' -1 month'));
+$nextMonthDate = date('Y-m-01', strtotime($calendarStart . ' +1 month'));
+$prevMonthYear = (int) date('Y', strtotime($prevMonthDate));
+$prevMonth = (int) date('n', strtotime($prevMonthDate));
+$nextMonthYear = (int) date('Y', strtotime($nextMonthDate));
+$nextMonth = (int) date('n', strtotime($nextMonthDate));
+
 $perPage     = 15;
 $currentPage = max(1, (int) ($_GET['page'] ?? 1));
 $offset      = ($currentPage - 1) * $perPage;
@@ -185,13 +263,10 @@ $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
 $stmt->execute();
 $reservations = $stmt->fetchAll();
 
-// Liste des sports pour le filtre
 $sports = $pdo->query('SELECT name FROM sports ORDER BY name')->fetchAll(PDO::FETCH_COLUMN);
 
-// Liste des créneaux pour édition admin
 $timeSlots = $pdo->query('SELECT id, label FROM time_slots ORDER BY start_time ASC')->fetchAll(PDO::FETCH_ASSOC);
 
-// Couleurs des badges de statut
 $badgeStyle = [
     'pending'   => 'background:#f59e0b;color:#fff;',
     'confirmed' => 'background:#10b981;color:#fff;',
@@ -271,6 +346,107 @@ $badgeLabel = [
                 <a href="reservations.php" style="padding:10px 18px; border-radius:8px; background:#333; color:#fff; text-decoration:none; font-size:0.9rem;">✕ Réinitialiser</a>
             <?php endif; ?>
         </form>
+
+        <!-- Planning calendrier -->
+        <div class="contact-form" style="max-width:100%; margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                <h2 class="form-title" style="margin:0;">Planning des matchs — <?= htmlspecialchars($monthLabel) ?></h2>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <?php
+                    $monthQueryBase = array_filter([
+                        'status' => $filterStatus,
+                        'sport' => $filterSport,
+                        'search' => $filterSearch,
+                    ]);
+                    ?>
+                    <a class="bt" style="padding:8px 14px; font-size:0.82rem;" href="?<?= http_build_query(array_merge($monthQueryBase, ['year' => $prevMonthYear, 'month' => $prevMonth])) ?>">← Mois précédent</a>
+                    <a class="bt" style="padding:8px 14px; font-size:0.82rem;" href="?<?= http_build_query(array_merge($monthQueryBase, ['year' => (int) date('Y'), 'month' => (int) date('n')])) ?>">Aujourd'hui</a>
+                    <a class="bt" style="padding:8px 14px; font-size:0.82rem;" href="?<?= http_build_query(array_merge($monthQueryBase, ['year' => $nextMonthYear, 'month' => $nextMonth])) ?>">Mois suivant →</a>
+                </div>
+            </div>
+
+            <p style="color:#6b7280; font-size:0.88rem; margin-bottom:14px;">
+                Chaque nouvelle réservation est automatiquement affichée dans ce calendrier dès qu'elle est enregistrée.
+            </p>
+
+            <div style="display:grid; grid-template-columns:repeat(7, minmax(120px,1fr)); gap:8px; overflow-x:auto; padding-bottom:6px;">
+                <?php foreach (['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] as $weekDay): ?>
+                    <div style="font-weight:700; color:#1e3c72; text-align:center; font-size:0.84rem; padding:6px 4px;">
+                        <?= $weekDay ?>
+                    </div>
+                <?php endforeach; ?>
+
+                <?php for ($i = 1; $i < $firstDayOffset; $i++): ?>
+                    <div style="min-height:120px; border:1px dashed #d1d5db; border-radius:10px; background:#fafafa;"></div>
+                <?php endfor; ?>
+
+                <?php for ($day = 1; $day <= $daysInMonth; $day++): ?>
+                    <?php
+                    $isToday = ((int) date('j') === $day) && ((int) date('n') === $calendarMonth) && ((int) date('Y') === $calendarYear);
+                    $dayReservations = $reservationsByDay[$day] ?? [];
+                    ?>
+                    <div style="min-height:120px; border:1px solid <?= $isToday ? '#ff7a18' : '#e5e7eb' ?>; border-radius:10px; background:<?= $isToday ? '#fff7ed' : '#ffffff' ?>; padding:8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <strong style="font-size:0.86rem; color:<?= $isToday ? '#c2410c' : '#111827' ?>;"><?= $day ?></strong>
+                            <span style="font-size:0.72rem; color:#6b7280;"><?= count($dayReservations) ?> match<?= count($dayReservations) > 1 ? 's' : '' ?></span>
+                        </div>
+
+                        <?php if (empty($dayReservations)): ?>
+                            <p style="font-size:0.72rem; color:#9ca3af; margin:0;">Aucune réservation</p>
+                        <?php else: ?>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <?php foreach ($dayReservations as $item): ?>
+                                    <?php
+                                    $status = (string) $item['status'];
+                                    $reservationDateTime = strtotime((string) $item['reservation_date'] . ' ' . (string) ($item['slot_end_time'] ?: $item['slot_start_time']));
+                                    $isPast = $reservationDateTime > 0 && $reservationDateTime < $nowTs;
+                                    $displayStatus = $status;
+
+                                    if ($status !== 'cancelled' && $isPast) {
+                                        $displayStatus = 'finished';
+                                    }
+
+                                    $statusStyle = match ($displayStatus) {
+                                        'pending' => 'background:#f59e0b;color:#fff;',
+                                        'confirmed' => 'background:#10b981;color:#fff;',
+                                        'finished' => 'background:#334155;color:#fff;',
+                                        'cancelled' => 'background:#6b7280;color:#fff;',
+                                        default => 'background:#6b7280;color:#fff;',
+                                    };
+
+                                    $displayLabel = match ($displayStatus) {
+                                        'pending' => 'En attente',
+                                        'confirmed' => 'Confirmé',
+                                        'finished' => 'Terminé',
+                                        'cancelled' => 'Annulé',
+                                        default => $badgeLabel[$status] ?? $status,
+                                    };
+                                    ?>
+                                    <div style="border:1px solid #e5e7eb; border-radius:8px; padding:6px; background:#f8fafc;">
+                                        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                                            <span style="font-size:0.72rem; font-weight:700; color:#1e3c72;"><?= htmlspecialchars((string) $item['slot_label']) ?></span>
+                                            <span style="<?= $statusStyle ?> font-size:0.64rem; padding:2px 7px; border-radius:10px; white-space:nowrap;"><?= htmlspecialchars($displayLabel) ?></span>
+                                        </div>
+                                        <?php if ($displayStatus === 'finished' || $displayStatus === 'cancelled'): ?>
+                                            <div style="font-size:0.72rem; margin-top:4px; color:#475569;">
+                                                Match passé : détails masqués pour alléger l’affichage.
+                                            </div>
+                                        <?php else: ?>
+                                            <div style="font-size:0.74rem; margin-top:4px; color:#111827;">
+                                                <?= htmlspecialchars(trim($item['first_name'] . ' ' . $item['last_name'])) ?>
+                                            </div>
+                                            <div style="font-size:0.68rem; color:#6b7280; margin-top:2px;">
+                                                <?= htmlspecialchars((string) $item['sport_name']) ?> · <?= htmlspecialchars((string) $item['terrain_name']) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endfor; ?>
+            </div>
+        </div>
 
         <!-- Tableau -->
         <div class="contact-form" style="max-width:100%;">

@@ -1,24 +1,48 @@
-# Cahier des Charges - Module Social CMS
-## Urban Center Sport & Leisure Complex
+# Cahier des charges — Social CMS (version courte)
 
-**Date**: 11 Juin 2026  
-**Développé par**: [À remplir - Stagiaire]  
-**Client**: Urban Center  
-**À signer par**: Patron/Maître de stage
+Date: 15 juin 2026  
+Développé par: wael bakkay  
+Client: Urban Center
+
+## Objectif
+Centraliser la communication réseaux sociaux de Urban Center: création de contenu, planification, publication multi-réseaux et suivi.
+
+## Ce qui a été fait
+- Bibliothèque média (upload, filtres, suppression).
+- Calendrier éditorial (création, modification, statuts).
+- Générateur de contenu (OpenAI + fallback local).
+- Publication multi-plateforme via Ayrshare.
+- Dashboard analytics + gestion des utilisateurs + notifications.
+
+## Ce qui manque encore
+- Exécuter les tests manuels complets et documenter les résultats.
+- Corriger les bugs critiques/importants trouvés en test.
+- Finaliser le rapport de stage et la présentation.
+
+## Point d'avancement au 15 juin
+
+### Ce qui est fait aujourd'hui
+- Vérification technique rapide: lint PHP OK sur tous les fichiers `social-cms`.
+- Audit réservation et cahier des charges maintenus en version courte + archive technique.
+- Base projet stable et prête pour la phase de validation finale.
+
+### Ce qu'il reste à faire pour clôturer
+1. Exécuter les 31 tests manuels (checklist) et remplir les résultats.
+2. Corriger seulement les bugs bloquants/majeurs.
+3. Finaliser le cahier des charges avec le bilan réel PASS/FAIL.
+4. Terminer les livrables académiques: rapport + présentation.
+
+### Ce qui est envisageable (si temps)
+- Module IA "suggestions" (accept/reject/edit + historique).
+- Publication automatique planifiée (cron).
+- Intégration Meta API en bonus.
+- Dashboard engagement plus détaillé.
 
 ---
 
+Le détail complet est conservé ci-dessous.
+
 ## Le contexte (pourquoi on a besoin de ça)
-
-Urban Center gère un complexe sportif avec plein d'activités (foot, tennis, padel, yoga, fitness, etc.). Avant, la communication sur les réseaux sociaux c'était : pas vraiment organisé, pas cohérent, prise de tête.
-
-L'objectif ? Créer une plateforme centralisée où les community managers peuvent :
-- Créer du contenu intelligemment (avec aide IA)
-- Programmer les publications à l'avance
-- Publier sur Facebook, Instagram, TikTok et LinkedIn en un clic
-- Suivre ce qui marche et ce qui marche pas
-
-**Délai** : Tout ça en 2 mois de stage.
 
 ---
 

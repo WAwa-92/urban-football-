@@ -41,12 +41,23 @@ $stmt->execute([
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message envoyé</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages.css">
 </head>
 <body>
-    <div class="container" style="padding: 60px 20px; text-align: center;">
-        <h1>Message envoyé</h1>
-        <p>Merci, votre message a bien été reçu.</p>
-        <p><a href="../Urban Center.html#contactez-nous">Retour au site</a></p>
-    </div>
+    <section class="success-page">
+        <div class="success-card">
+            <div class="success-icon">✉️</div>
+            <h1 class="success-title">Message envoyé avec succès</h1>
+            <p class="success-text">Merci, votre demande a bien été transmise à l'équipe Urban Center.</p>
+            <p class="success-highlight">Nous revenons vers vous rapidement par téléphone ou par email.</p>
+            <div class="success-actions">
+                <a class="bt" href="../Urban Center.html#contactez-nous">Retour au contact</a>
+                <a class="bt bt-secondary" href="../Urban Center.html">Retour à l'accueil</a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
+    </footer>
 </body>
 </html>

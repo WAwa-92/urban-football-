@@ -107,13 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <div class="container" style="max-width: 560px; margin-top: 80px;">
-        <div class="contact-form" style="max-width: 100%;">
-            <h1 class="section-title" style="font-size: 2rem; margin-bottom: 20px;">Créer un compte</h1>
-            <p style="margin-bottom: 20px; color: #666;">Inscrivez-vous puis vous serez connecté automatiquement.</p>
+    <div class="container auth-page-wide">
+        <div class="contact-form auth-card">
+            <h1 class="section-title auth-title">Créer un compte</h1>
+            <p class="auth-note auth-space-top">Inscrivez-vous puis vous serez connecté automatiquement.</p>
 
             <?php if ($error !== ''): ?>
-                <p style="color: #c0392b; margin-bottom: 15px;"><?php echo htmlspecialchars($error); ?></p>
+                <p class="auth-error-small"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
             <form method="POST">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" name="password_confirm" required>
                 </div>
 
-                <div id="coach-extra-fields" style="display:<?php echo (($_POST['account_type'] ?? '') === 'coach') ? 'block' : 'none'; ?>;">
+                <div id="coach-extra-fields" class="<?php echo (($_POST['account_type'] ?? '') === 'coach') ? '' : 'auth-display-none'; ?>">
                     <div class="form-group">
                         <label>Spécialité (coach)</label>
                         <input type="text" name="specialty" value="<?php echo htmlspecialchars($_POST['specialty'] ?? ''); ?>" placeholder="Ex: Préparation physique">
@@ -159,12 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="submit-btn">S'inscrire</button>
             </form>
 
-            <p style="margin-top: 16px; color: #666; font-size: 0.95rem;">
+            <p class="auth-note auth-space-top">
                 Déjà un compte ?
-                <a href="login.php" style="color:#1e3c72; font-weight:700;">Se connecter</a>
-            </p>
-            <p style="margin-top: 8px;">
-                <a href="login.php" style="color:#1e3c72; font-weight:700;">Se connecter</a>
+                <a href="login.php" class="auth-link">Se connecter</a>
             </p>
         </div>
     </div>

@@ -1,17 +1,19 @@
 <?php
 require_once __DIR__ . '/../../php/db.php';
 require_once __DIR__ . '/../../php/csrf.php';
+require_once __DIR__ . '/../../admin/config.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
 if (!empty($_SESSION['admin_user'])) {
-    header('Location: /Urban-Center-main/social-cms/dashboard.php');
+    header('Location: ../dashboard.php');
     exit;
 }
 
 $pdo = getPDO();
+ensureDefaultAdmin($pdo);
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             $pdo->prepare('UPDATE admin_users SET last_login_at = NOW() WHERE id = :id')->execute([':id' => $user['id']]);
-            header('Location: /Urban-Center-main/social-cms/dashboard.php');
+            header('Location: ../dashboard.php');
             exit;
         }
 
@@ -67,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <?php if ($message !== ''): ?>
-            <p style="color:#b91c1c;font-weight:700;margin:18px 0 0;">⚠️ <?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+            <p style="color:#b91c1c;font-weight:700;margin:18px 0 0;"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
         <?php endif; ?>
 
         <form method="post" class="cms-form" style="margin-top:18px;">
@@ -82,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="cms-actions">
                 <button class="cms-button" type="submit">Se connecter</button>
-                <a class="cms-button cms-button-ghost" href="/Urban-Center-main/Urban Center.html">Retour au site</a>
+                <a class="cms-button cms-button-ghost" href="<?php echo htmlspecialchars(cmsUrl('/Urban Center.html'), ENT_QUOTES, 'UTF-8'); ?>">Retour au site public</a>
             </div>
         </form>
 

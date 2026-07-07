@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ctaLabel = trim($_POST['cta_label'] ?? "S'inscrire");
         $isPublished = isset($_POST['is_published']) ? 1 : 0;
         $displayOrder = (int) ($_POST['display_order'] ?? 0);
-        $allowedSportTypes = ['football', 'padel', 'fitness', 'tennis', 'multi', 'other'];
+        $allowedSportTypes = ['football', 'padel', 'fitness', 'women', 'tennis', 'multi', 'other'];
 
         if ($title === '' || $dateLabel === '' || $description === '' || !in_array($sportType, $allowedSportTypes, true)) {
             $error = 'Titre, sport, libellé de date et description sont obligatoires.';
@@ -177,15 +177,34 @@ foreach ($events as $event) {
     }
 }
 
-function adminEventBadge(string $sportType): string
+function adminEventBadge(string $sportType, string $title = ''): string
 {
+    if ($sportType === 'other' && preg_match('/women|femme/i', $title)) {
+        return '👩 Women Only';
+    }
+
     return match ($sportType) {
         'football' => '⚽ Football',
         'padel' => '🏓 Padel',
         'fitness' => '💪 Fitness',
-        'tennis' => '🎾 Tennis',
+        'women' => '👩 Women Only',
         'multi' => '🏟 Multi-sport',
         default => '📣 Annonce',
+    };
+}
+
+function adminEventBadgeStyle(string $sportType, string $title = ''): string
+{
+    if ($sportType === 'women' || ($sportType === 'other' && preg_match('/women|femme/i', $title))) {
+        return 'background: rgba(157, 23, 77, 0.14); color: #9d174d;';
+    }
+
+    return match ($sportType) {
+        'football' => 'background: rgba(30, 60, 114, 0.12); color: #1e3c72;',
+        'padel' => 'background: rgba(22, 101, 52, 0.12); color: #166534;',
+        'fitness' => 'background: rgba(124, 45, 18, 0.12); color: #9a3412;',
+        'multi' => 'background: rgba(15, 23, 42, 0.1); color: #334155;',
+        default => 'background: rgba(100, 116, 139, 0.14); color: #475569;',
     };
 }
 ?>
@@ -238,7 +257,7 @@ function adminEventBadge(string $sportType): string
                     <div class="form-group">
                         <label>Sport *</label>
                         <select name="sport_type" required>
-                            <?php foreach (['football' => 'Football', 'padel' => 'Padel', 'fitness' => 'Fitness', 'tennis' => 'Tennis', 'multi' => 'Multi-sport', 'other' => 'Autre'] as $key => $label): ?>
+                            <?php foreach (['football' => 'Football', 'padel' => 'Padel', 'fitness' => 'Fitness', 'women' => 'Women Only', 'multi' => 'Multi-sport', 'other' => 'Autre'] as $key => $label): ?>
                                 <option value="<?php echo $key; ?>" <?php echo $currentEvent['sport_type'] === $key ? 'selected' : ''; ?>><?php echo $label; ?></option>
                             <?php endforeach; ?>
                         </select>
@@ -327,7 +346,11 @@ function adminEventBadge(string $sportType): string
                                     <strong><?php echo htmlspecialchars($event['title']); ?></strong>
                                     <div style="font-size:0.9rem; color:#64748b; margin-top:4px;"><?php echo htmlspecialchars(strlen($event['description']) > 90 ? substr($event['description'], 0, 90) . '...' : $event['description']); ?></div>
                                 </td>
-                                <td style="padding:12px; border-bottom:1px solid #eee;"><?php echo htmlspecialchars(adminEventBadge($event['sport_type'])); ?></td>
+                                <td style="padding:12px; border-bottom:1px solid #eee;">
+                                    <span style="display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; <?php echo adminEventBadgeStyle((string) $event['sport_type'], (string) $event['title']); ?>">
+                                        <?php echo htmlspecialchars(adminEventBadge((string) $event['sport_type'], (string) $event['title'])); ?>
+                                    </span>
+                                </td>
                                 <td style="padding:12px; border-bottom:1px solid #eee;"><?php echo htmlspecialchars($event['date_label']); ?></td>
                                 <td style="padding:12px; border-bottom:1px solid #eee;">
                                     <span style="display:inline-block; padding:6px 10px; border-radius:999px; background:<?php echo (int) $event['is_published'] === 1 ? 'rgba(22,101,52,0.12)' : 'rgba(148,163,184,0.2)'; ?>; color:<?php echo (int) $event['is_published'] === 1 ? '#166534' : '#475569'; ?>; font-weight:700;">

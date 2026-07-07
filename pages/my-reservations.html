@@ -4,226 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes réservations — Urban Center Hessi Djerbi</title>
-    <meta name="description" content="Consultez l'historique de vos réservations de terrains à Urban Center Hassi Djerbi.">
+    <meta name="description" content="Consultez l'historique de vos réservations de terrains à Urban Center Hessi Djerbi.">
     <link rel="shortcut icon" href="../assets/img/logo.jpg" type="image/x-icon">
     <link rel="canonical" href="https://urbancenter.tn/pages/my-reservations.html">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/pages.css">
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            text-align: center;
-            padding: 80px 16px 40px;
-        }
-        .hero-section h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 10px; }
-        .hero-section p { font-size: 1.05rem; opacity: .85; }
-
-        .main-wrap {
-            max-width: 900px;
-            margin: 40px auto 60px;
-            padding: 0 16px;
-        }
-
-        .filters-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 28px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 12px;
-        }
-        @media (min-width: 560px) {
-            .filters-section {
-                flex-direction: row;
-                align-items: center;
-                gap: 14px;
-            }
-        }
-        .filter-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .filter-group label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-        .filter-group select {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-        .btn-reset {
-            padding: 8px 16px;
-            background: #1e3c72;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background .2s;
-        }
-        .btn-reset:hover { background: #0f172a; }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            background: #f9f9f9;
-            border-radius: 12px;
-        }
-        .empty-state h2 { color: #6b7280; margin-bottom: 12px; }
-        .empty-state p { color: #9ca3af; margin-bottom: 20px; }
-        .empty-state .bt { display: inline-block; }
-
-        .reservations-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .reservation-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            transition: box-shadow .2s, border-color .2s;
-        }
-        .reservation-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-color: #ff6b35;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f3f4f6;
-        }
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #1e3c72;
-        }
-        .card-id {
-            font-size: 0.85rem;
-            color: #6b7280;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .status-confirmed {
-            background: #dbeafe;
-            color: #0369a1;
-        }
-        .status-pending {
-            background: #fef3c7;
-            color: #b45309;
-        }
-        .status-cancelled {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        @media (min-width: 640px) {
-            .card-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (min-width: 900px) {
-            .card-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        .card-item {
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
-        .card-item .label {
-            font-size: 0.8rem;
-            color: #6b7280;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .card-item .value {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #1e3c72;
-        }
-
-        .card-footer {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 2px solid #f3f4f6;
-            display: flex;
-            gap: 10px;
-        }
-        .card-footer .btn {
-            flex: 1;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all .2s;
-        }
-        .btn-modify {
-            background: #1e3c72;
-            color: #fff;
-        }
-        .btn-modify:hover { background: #0f172a; }
-        .btn-cancel {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        .btn-cancel:hover { background: #fecaca; }
-
-        .loading {
-            text-align: center;
-            padding: 40px 20px;
-            color: #6b7280;
-        }
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid #e5e7eb;
-            border-top-color: #ff6b35;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .error-banner {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        .error-banner.show { display: block; }
-    </style>
 </head>
 <body>
 
@@ -233,7 +18,7 @@
 </div>
 
 <nav id="main-nav">
-    <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" style="border-radius:50%;vertical-align:middle;margin-right:8px;">Urban Center</a>
+    <a href="../Urban Center.html" class="nav-brand"><img src="../assets/img/logo.jpg" width="36" height="36" alt="Logo" class="nav-brand-logo">Urban Center</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
     </button>
@@ -245,7 +30,6 @@
         <li><a href="../Urban Center.html#contactez-nous">Contact</a></li>
         <li><a href="login.php" class="nav-action">Se connecter</a></li>
         <li><a href="register.php" class="nav-action-secondary">S'inscrire</a></li>
-        <li><a href="reservation.html" class="nav-action nav-action-reserve">Réserver</a></li>
     </ul>
 </nav>
 
@@ -257,10 +41,6 @@
             <label for="filter-sport">Sport</label>
             <select id="filter-sport">
                 <option value="">Tous les sports</option>
-                <option value="1">Football</option>
-                <option value="2">Padel</option>
-                <option value="3">Tennis</option>
-                <option value="4">Fitness</option>
             </select>
         </div>
         <div class="filter-group">
@@ -282,203 +62,12 @@
 
 <footer>
     <p>&copy; 2026 Urban Center Hessi Djerbi. Tous droits réservés.</p>
-    <p style="margin-top:8px;opacity:0.8;font-size:0.9rem;">
-        Contact : <a href="mailto:info@urbancenterhjb.com" style="color:#ff7a18;text-decoration:none;">info@urbancenterhjb.com</a>
-        &nbsp;·&nbsp; Téléphone : <a href="tel:+21600000000" style="color:#ff7a18;text-decoration:none;">+216 XX XXX XXX</a>
+    <p class="page-footer-note">
+        Contact : <a href="mailto:info@urbancenterhjb.com" class="footer-contact">info@urbancenterhjb.com</a>
     </p>
 </footer>
 
 <script src="../assets/js/app.js" defer></script>
-<script>
-(function () {
-    const containerEl = document.getElementById('reservations-container');
-    const errorBannerEl = document.getElementById('error-banner');
-    const filterSportEl = document.getElementById('filter-sport');
-    const filterStatusEl = document.getElementById('filter-status');
-    const btnResetEl = document.getElementById('btn-reset-filters');
-
-    let allReservations = [];
-
-    async function loadReservations() {
-        containerEl.innerHTML = '<div class="loading"></div>';
-        errorBannerEl.classList.remove('show');
-
-        try {
-            const response = await fetch('../php/get_user_reservations.php');
-            if (!response.ok) {
-                throw new Error('Erreur lors du chargement');
-            }
-
-            const data = await response.json();
-            allReservations = data.reservations || [];
-
-            if (allReservations.length === 0) {
-                showEmpty();
-            } else {
-                renderReservations(allReservations);
-            }
-        } catch (error) {
-            showError(error.message || 'Impossible de charger vos réservations.');
-            containerEl.innerHTML = '<div class="empty-state"><h2>Erreur</h2><p>Une erreur est survenue.</p></div>';
-        }
-    }
-
-    function showEmpty() {
-        containerEl.innerHTML = `
-            <div class="empty-state">
-                <h2>😔 Aucune réservation</h2>
-                <p>Vous n'avez pas encore de réservation. Commencez dès maintenant !</p>
-                <a href="reservation.html" class="bt">Faire une réservation</a>
-            </div>
-        `;
-    }
-
-    function showError(message) {
-        errorBannerEl.textContent = message;
-        errorBannerEl.classList.add('show');
-    }
-
-    function renderReservations(reservations) {
-        if (reservations.length === 0) {
-            showEmpty();
-            return;
-        }
-
-        containerEl.innerHTML = `
-            <div class="reservations-list">
-                ${reservations.map((res) => renderCard(res)).join('')}
-            </div>
-        `;
-
-        containerEl.querySelectorAll('.btn-cancel').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                const resId = parseInt(btn.dataset.resId, 10);
-                cancelReservation(resId);
-            });
-        });
-    }
-
-    function renderCard(reservation) {
-        const dateObj = new Date(reservation.reservation_date + 'T00:00:00');
-        const dateFormatted = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const endTime = addOneHour(reservation.reservation_time);
-
-        const statusText = {
-            'confirmed': 'Confirmée',
-            'pending': 'En attente',
-            'cancelled': 'Annulée',
-            'rejected': 'Rejetée'
-        }[reservation.status] || reservation.status;
-
-        const canCancel = reservation.status === 'confirmed' || reservation.status === 'pending';
-
-        return `
-            <div class="reservation-card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">${reservation.terrain_name}</div>
-                        <div class="card-id">N° ${reservation.id}</div>
-                    </div>
-                    <span class="status-badge status-${reservation.status}">${statusText}</span>
-                </div>
-
-                <div class="card-grid">
-                    <div class="card-item">
-                        <div class="label">Sport</div>
-                        <div class="value">${reservation.sport_name}</div>
-                    </div>
-                    <div class="card-item">
-                        <div class="label">Date</div>
-                        <div class="value">${dateFormatted}</div>
-                    </div>
-                    <div class="card-item">
-                        <div class="label">Créneau</div>
-                        <div class="value">${reservation.reservation_time} — ${endTime}</div>
-                    </div>
-                    <div class="card-item">
-                        <div class="label">Joueurs</div>
-                        <div class="value">${reservation.players_count}</div>
-                    </div>
-                    <div class="card-item">
-                        <div class="label">Tarif/h</div>
-                        <div class="value">${reservation.price_per_hour} DT</div>
-                    </div>
-                    <div class="card-item">
-                        <div class="label">Total</div>
-                        <div class="value">${reservation.price_per_hour} DT</div>
-                    </div>
-                </div>
-
-                ${reservation.comment ? `<p style="margin-top: 12px; font-size: 0.9rem; color: #6b7280;"><strong>Note:</strong> ${reservation.comment}</p>` : ''}
-
-                <div class="card-footer">
-                    ${canCancel ? `<button class="card-footer .btn btn-cancel" data-res-id="${reservation.id}">Annuler</button>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    function addOneHour(time) {
-        const [hour, minute] = time.split(':').map(Number);
-        return `${String(hour + 1).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-    }
-
-    function getFilteredReservations() {
-        let filtered = allReservations;
-
-        const sportFilter = filterSportEl.value;
-        if (sportFilter) {
-            filtered = filtered.filter((res) => res.sport_id === parseInt(sportFilter, 10));
-        }
-
-        const statusFilter = filterStatusEl.value;
-        if (statusFilter) {
-            filtered = filtered.filter((res) => res.status === statusFilter);
-        }
-
-        return filtered;
-    }
-
-    function applyFilters() {
-        const filtered = getFilteredReservations();
-        renderReservations(filtered);
-    }
-
-    async function cancelReservation(resId) {
-        if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
-            return;
-        }
-
-        try {
-            const response = await fetch('../php/cancel_reservation.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reservation_id: resId }),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                showError('✅ Réservation annulée.');
-                loadReservations();
-            } else {
-                showError(data.message || 'Erreur lors de l\'annulation.');
-            }
-        } catch (error) {
-            showError('Erreur réseau lors de l\'annulation.');
-        }
-    }
-
-    filterSportEl.addEventListener('change', applyFilters);
-    filterStatusEl.addEventListener('change', applyFilters);
-    btnResetEl.addEventListener('click', () => {
-        filterSportEl.value = '';
-        filterStatusEl.value = '';
-        renderReservations(allReservations);
-    });
-
-    loadReservations();
-})();
-</script>
+<script src="../assets/js/my-reservations.js" defer></script>
 </body>
 </html>
